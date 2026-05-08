@@ -1,0 +1,35 @@
+# Ignorar archivos de entorno (MUY IMPORTANTE)
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Mac/Windows
+.DS_Store
+Thumbs.db
+
+# N8N y Docker
+n8n/.env
+n8n/.env*
+n8n/node_modules/
+n8n/local-files/
+
+# Strapi
+strapi/.env
+strapi/.tmp/
+strapi/build/
+strapi/dist/
+
+# Frontend
+frontend/.env
+frontend/.env.local
+frontend/.next/
+
+# Logs
+n8n/*.log
+strapi/*.log
+*.log

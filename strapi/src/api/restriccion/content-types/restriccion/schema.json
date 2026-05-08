@@ -1,0 +1,26 @@
+{
+  "kind": "collectionType",
+  "collectionName": "restriccions",
+  "info": {
+    "singularName": "restriccion",
+    "pluralName": "restriccions",
+    "displayName": "Restriccion"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "tipo_restriccion": {
+      "type": "string"
+    },
+    "descripcion": {
+      "type": "text"
+    },
+    "id_estado": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::estado-diario.estado-diario"
+    }
+  }
+}

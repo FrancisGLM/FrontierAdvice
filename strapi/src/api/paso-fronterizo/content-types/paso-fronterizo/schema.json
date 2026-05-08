@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "paso_fronterizos",
+  "info": {
+    "singularName": "paso-fronterizo",
+    "pluralName": "paso-fronterizos",
+    "displayName": "PasoFronterizo"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "nombre_oficial": {
+      "type": "string"
+    },
+    "region": {
+      "type": "string"
+    },
+    "tipo_complejo": {
+      "type": "string"
+    },
+    "habilitado_para": {
+      "type": "json"
+    }
+  }
+}

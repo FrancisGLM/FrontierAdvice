@@ -1,0 +1,82 @@
+services:
+  strapiDB:
+    container_name: strapiDB
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: frontieradvice_db
+      POSTGRES_USER: strapi
+      POSTGRES_PASSWORD: strapi123
+    ports:
+      - "5432:5432"
+    volumes:
+      - strapi-data:/var/lib/postgresql/data
+    networks:
+      - frontier-network
+
+  strapi:
+    container_name: strapi
+    build: ./strapi
+    restart: unless-stopped
+    env_file: ./strapi/.env
+    environment:
+      NODE_ENV: development
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: strapiDB
+      DATABASE_PORT: 5432
+      DATABASE_NAME: frontieradvice_db
+      DATABASE_USERNAME: strapi
+      DATABASE_PASSWORD: strapi123
+    ports:
+      - "1337:1337"
+    volumes:
+      - ./strapi/config:/opt/app/config
+      - ./strapi/src:/opt/app/src
+      - ./strapi/public/uploads:/opt/app/public/uploads
+      - ./strapi/package.json:/opt/app/package.json
+      - ./strapi/types:/opt/app/types
+      - ./strapi/package-lock.json:/opt/app/package-lock.json
+      - ./strapi/.env:/opt/app/.env
+    depends_on:
+      - strapiDB
+    networks:
+      - frontier-network
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:latest
+    container_name: n8n-frontier
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    env_file:
+      - ./n8n/.env
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./n8n/local-files:/files
+    networks:
+      - frontier-network
+
+
+  frontend:
+    container_name: frontier-frontend
+    build: ./frontend
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_STRAPI_URL: http://strapi:1337
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+    ports:
+      - "3000:3000"
+    networks:
+      - frontier-network
+    depends_on:
+      - strapi
+
+volumes:
+  strapi-data:
+  n8n_data:
+
+networks:
+  frontier-network:
+    driver: bridge

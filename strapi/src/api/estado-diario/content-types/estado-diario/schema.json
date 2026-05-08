@@ -1,0 +1,35 @@
+{
+  "kind": "collectionType",
+  "collectionName": "estado_diarios",
+  "info": {
+    "singularName": "estado-diario",
+    "pluralName": "estado-diarios",
+    "displayName": "EstadoDiario"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "fecha_reporte": {
+      "type": "datetime"
+    },
+    "estado_general": {
+      "type": "string"
+    },
+    "fuente": {
+      "type": "string"
+    },
+    "mensaje_original": {
+      "type": "text"
+    },
+    "creado_en": {
+      "type": "datetime"
+    },
+    "id_paso": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::paso-fronterizo.paso-fronterizo"
+    }
+  }
+}
