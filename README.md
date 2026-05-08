@@ -192,5 +192,4 @@ Los workflows se versionan como JSON en `n8n/workflows/`. Para importarlos:
 
 ## Licencia
 
-Proyecto académico privado — Universidad Católica del Maule, 2026.  
-Todos los derechos reservados.
+Proyecto académico privado — Universidad Católica del Maule, 2026.
