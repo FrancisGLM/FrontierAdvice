@@ -477,6 +477,42 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiAlertaEventoAlertaEvento
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'alerta_eventos';
+  info: {
+    displayName: 'AlertaEvento';
+    pluralName: 'alerta-eventos';
+    singularName: 'alerta-evento';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    descripcion: Schema.Attribute.Text;
+    fecha_evento: Schema.Attribute.DateTime;
+    fuente: Schema.Attribute.String;
+    idpaso: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::paso-fronterizo.paso-fronterizo'
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::alerta-evento.alerta-evento'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    tipo_alerta: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiEstadoDiarioEstadoDiario
   extends Struct.CollectionTypeSchema {
   collectionName: 'estado_diarios';
@@ -573,6 +609,42 @@ export interface ApiRestriccionRestriccion extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
     tipo_restriccion: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiSenalPredictivaSenalPredictiva
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'senal_predictivas';
+  info: {
+    displayName: 'SenalPredictiva';
+    pluralName: 'senal-predictivas';
+    singularName: 'senal-predictiva';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    fecha_calculo: Schema.Attribute.DateTime;
+    horizonte_horas: Schema.Attribute.Integer;
+    id_paso: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::paso-fronterizo.paso-fronterizo'
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::senal-predictiva.senal-predictiva'
+    > &
+      Schema.Attribute.Private;
+    motivo_resumen: Schema.Attribute.Text;
+    nivel_riesgo: Schema.Attribute.Enumeration<['Alto', 'Medio', 'Bajo']>;
+    publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1091,9 +1163,11 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::alerta-evento.alerta-evento': ApiAlertaEventoAlertaEvento;
       'api::estado-diario.estado-diario': ApiEstadoDiarioEstadoDiario;
       'api::paso-fronterizo.paso-fronterizo': ApiPasoFronterizoPasoFronterizo;
       'api::restriccion.restriccion': ApiRestriccionRestriccion;
+      'api::senal-predictiva.senal-predictiva': ApiSenalPredictivaSenalPredictiva;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

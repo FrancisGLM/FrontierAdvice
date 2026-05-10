@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "senal_predictivas",
+  "info": {
+    "singularName": "senal-predictiva",
+    "pluralName": "senal-predictivas",
+    "displayName": "SenalPredictiva"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "horizonte_horas": {
+      "type": "integer"
+    },
+    "nivel_riesgo": {
+      "type": "enumeration",
+      "enum": [
+        "Alto",
+        "Medio",
+        "Bajo"
+      ]
+    },
+    "motivo_resumen": {
+      "type": "text"
+    },
+    "fecha_calculo": {
+      "type": "datetime"
+    },
+    "id_paso": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::paso-fronterizo.paso-fronterizo"
+    }
+  }
+}
