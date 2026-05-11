@@ -3767,17 +3767,7 @@
     "authors": "Nyxu Infinity",
     "name": "v2.4.3",
     "description": "",
-    "autosaved": true,
-    "workflowPublishHistory": [
-      {
-        "createdAt": "2026-05-11T03:28:46.419Z",
-        "id": 13,
-        "workflowId": "sYJ97yX2X89ePUgZ",
-        "versionId": "50272fb7-0ce7-42dc-8551-d709215e9e91",
-        "event": "activated",
-        "userId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
-      }
-    ]
+    "autosaved": true
   },
   "activeVersionId": "50272fb7-0ce7-42dc-8551-d709215e9e91",
   "connections": {
@@ -4857,7 +4847,6 @@
     }
   },
   "createdAt": "2026-05-08T21:02:59.606Z",
-  "description": null,
   "id": "sYJ97yX2X89ePUgZ",
   "isArchived": false,
   "meta": {
@@ -7547,7 +7536,6 @@
       }
     }
   ],
-  "pinData": {},
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
@@ -7558,27 +7546,18 @@
       "createdAt": "2026-05-08T21:02:59.611Z",
       "role": "workflow:owner",
       "workflowId": "sYJ97yX2X89ePUgZ",
-      "projectId": "0mwVSLULhlB6ku2N",
-      "project": {
-        "updatedAt": "2026-05-08T10:08:26.296Z",
-        "createdAt": "2026-05-08T08:11:46.302Z",
-        "id": "0mwVSLULhlB6ku2N",
-        "name": "Nyxu Infinity <nyxuofficial@gmail.com>",
-        "type": "personal",
-        "icon": null,
-        "description": null,
-        "creatorId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
-      }
+      "projectId": "0mwVSLULhlB6ku2N"
     }
   ],
   "staticData": {
     "node:Schedule Trigger": {
-      "recurrenceRules": []
+      "recurrenceRules": [
+        0
+      ]
     }
   },
   "tags": [],
   "triggerCount": 3,
   "updatedAt": "2026-05-11T03:28:31.601Z",
-  "versionCounter": 174,
   "versionId": "50272fb7-0ce7-42dc-8551-d709215e9e91"
 }
