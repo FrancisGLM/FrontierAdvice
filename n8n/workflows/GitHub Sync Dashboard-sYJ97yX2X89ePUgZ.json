@@ -1,9 +1,9 @@
 {
   "active": true,
   "activeVersion": {
-    "updatedAt": "2026-05-11T08:01:20.000Z",
-    "createdAt": "2026-05-11T08:01:14.884Z",
-    "versionId": "3a8e65ed-086b-4775-8592-bddf171b7c20",
+    "updatedAt": "2026-05-12T03:24:13.000Z",
+    "createdAt": "2026-05-11T08:58:31.414Z",
+    "versionId": "9ab23f09-69f2-4b68-a5c9-5d256f41997e",
     "workflowId": "sYJ97yX2X89ePUgZ",
     "nodes": [
       {
@@ -44,6 +44,12 @@
                 "id": "7094ebcb-cc14-49ea-af91-f0d347008ca0",
                 "name": "webhook_actions",
                 "value": "90dad0ac-e16c-4b42-8655-f534213546d7",
+                "type": "string"
+              },
+              {
+                "id": "83e4d0c5-2470-4203-920d-89407bd4a1ae",
+                "name": "repo.branch",
+                "value": "n8n-dev",
                 "type": "string"
               }
             ]
@@ -1745,15 +1751,15 @@
       },
       {
         "parameters": {
-          "content": "# ⚠️ MOST IMPORTANT NODE\n## Stores global configs\n\n# 1️⃣\n- provide GitHub `repository owner name`, \n- `repository name`\n- `repository subfolder` (recommended)\n\n# 2️⃣\n- `instance_url` - keep .env variables or set up manually\n- `webhook_path` - keep .env variables or set up manually\n- `webhook_actions` - taken from `Webhook-actions` node\n\n## ⚠️ ATTENTION: CLOUD USERS!\n### Replace `instance_url` with your cloud n8n URL",
-          "height": 656,
-          "width": 512,
+          "content": "# ⚠️ MOST IMPORTANT NODE\n## Stores global configs\n\n# 1️⃣\n- provide GitHub `repository owner name`, \n- `repository name`\n- `repository subfolder` (recommended)\n\n# 2️⃣\n- `instance_url` - keep .env variables or set up manually\n- `webhook_path` - keep .env variables or set up manually\n- `webhook_actions` - taken from `Webhook-actions` node\n",
+          "height": 592,
+          "width": 480,
           "color": 3
         },
         "type": "n8n-nodes-base.stickyNote",
         "position": [
-          9968,
-          3184
+          9984,
+          3248
         ],
         "typeVersion": 1,
         "id": "d36f17ca-457e-4319-845e-962e6966a8ab",
@@ -1866,7 +1872,9 @@
           },
           "filePath": "={{ $('Globals').first().json.repo.path }}{{ $('WorkflowData').first().json.WorkflowData.name.replace(/[<>:\"/\\\\|?*]/g, '_').trim().replace(/^\\.|\\.$/g, '_') }}-{{$('WorkflowData').first().json.WorkflowData.id}}.json",
           "asBinaryProperty": false,
-          "additionalParameters": {}
+          "additionalParameters": {
+            "reference": "={{ $('Globals').first().json.repo.branch }}"
+          }
         },
         "id": "fdcf8af5-f3fe-4d18-ad3d-e309ab2b2c9e",
         "name": "GH | Get file data",
@@ -3765,11 +3773,11 @@
       }
     },
     "authors": "Nyxu Infinity",
-    "name": "v2.6.1",
+    "name": "v2.6.2",
     "description": "",
     "autosaved": true
   },
-  "activeVersionId": "3a8e65ed-086b-4775-8592-bddf171b7c20",
+  "activeVersionId": "9ab23f09-69f2-4b68-a5c9-5d256f41997e",
   "connections": {
     "Globals": {
       "main": [
@@ -7560,7 +7568,7 @@
   "staticData": {
     "node:Schedule Trigger": {
       "recurrenceRules": [
-        6
+        0
       ]
     }
   },
