@@ -1,0 +1,400 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Mock_User_Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Normalizer2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fields": {
+      "main": [
+        [
+          {
+            "node": "Normalizer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalizer": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Maps APi": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MOCK Data": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ASK Data": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mock_User_Request": {
+      "main": [
+        [
+          {
+            "node": "Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalizer2": {
+      "main": [
+        [
+          {
+            "node": "Data=empty?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data=empty?": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Formater",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formater": {
+      "main": [
+        [
+          {
+            "node": "Post Frontend",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post Frontend": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "createdAt": "2026-05-22T04:21:57.463Z",
+  "id": "QTQGHjFa4X8l3MZb",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "FI division",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -624,
+        -144
+      ],
+      "id": "87b424a6-f040-4e74-aab9-d7d2c5e7f323",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        64,
+        -144
+      ],
+      "id": "43a60fe3-cf58-4175-8ed2-e474991ca77e",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {
+          "maxOutputTokens": 2048
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -16,
+        80
+      ],
+      "id": "d93f1274-a9c4-43e2-aa8c-e7f789848245",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "gkGbag9Eoxr0uPjN",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "errorMessage": "HELP"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        768,
+        -288
+      ],
+      "id": "7356499b-e825-4cd2-9a2f-2d33b11437bd",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -256,
+        -144
+      ],
+      "id": "47713f6c-abf0-433b-88bc-3fe587410226",
+      "name": "Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -96,
+        -144
+      ],
+      "id": "80641d11-a7fc-496f-950b-4c6fbf240987",
+      "name": "Normalizer"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openrouteservice.org/v2/directions/driving-car/geojson",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        320,
+        96
+      ],
+      "id": "5a7c4e21-5810-4039-958e-09b1afc2264c",
+      "name": "Maps APi",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "GnIWw1xZZzhXRcXd",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      data: {\n        id: 101,\n        documentId: \"fl-mock-101\",\n        createdAt: \"2026-05-22T04:30:00.000Z\",\n        updatedAt: \"2026-05-22T04:30:00.000Z\",\n        publishedAt: \"2026-05-22T04:30:00.000Z\",\n        attributes: {\n          titulo: \"Mock FL para pruebas de integración con FI\",\n          origen_frontend: \"FL\",\n          estado_flujo: \"mocked_pending_fl\",\n          entorno: \"development\",\n\n          empresa: {\n            id: 12,\n            rut: \"76.123.456-7\",\n            razon_social: \"Transportes Demo SpA\",\n            comuna: \"Talca\",\n            region: \"Maule\",\n            pais: \"Chile\"\n          },\n\n          payload_frontend: {\n            input_usuario: {\n              origen: \"Talca, Chile\",\n              destino: \"Mendoza, Argentina\",\n              tipo_carga: \"General\",\n              prioridad: \"media\",\n              fecha_consulta: \"2026-05-22\",\n              observaciones_usuario: \"Mock temporal mientras FL está en desarrollo\"\n            },\n            filtros: {\n              incluir_pasos_alternativos: true,\n              evitar_peajes: false,\n              preferir_ruta_mas_rapida: true\n            },\n            ui_context: {\n              fuente: \"FL\",\n              version_formulario: \"0.1.0-mock\",\n              idioma: \"es-CL\"\n            }\n          },\n\n          scraping: {\n            ejecucion_id: \"scrap-20260522-0001\",\n            estado: \"success\",\n            fuente_principal: \"agente_web\",\n            fecha_extraccion: \"2026-05-22T04:25:00.000Z\",\n            tiempo_total_ms: 8420,\n            datos_crudos_resumen: {\n              pasos_detectados: 3,\n              incidencias_detectadas: 2,\n              confianza_global: 0.87\n            },\n            pasos_fronterizos: [\n              {\n                nombre: \"Paso Los Libertadores\",\n                pais_origen: \"Chile\",\n                pais_destino: \"Argentina\",\n                estado: \"demora_media\",\n                tiempo_estimado_cruce_min: 95,\n                habilitado: true,\n                observacion: \"Tránsito fluido con espera moderada\",\n                fuente: \"scraping\"\n              },\n              {\n                nombre: \"Paso Pehuenche\",\n                pais_origen: \"Chile\",\n                pais_destino: \"Argentina\",\n                estado: \"habilitado\",\n                tiempo_estimado_cruce_min: 40,\n                habilitado: true,\n                observacion: \"Menor congestión que la ruta principal\",\n                fuente: \"scraping\"\n              },\n              {\n                nombre: \"Paso Cardenal Samoré\",\n                pais_origen: \"Chile\",\n                pais_destino: \"Argentina\",\n                estado: \"no_evaluado\",\n                tiempo_estimado_cruce_min: null,\n                habilitado: true,\n                observacion: \"Fuera del rango principal de búsqueda\",\n                fuente: \"scraping\"\n              }\n            ],\n            incidencias: [\n              {\n                tipo: \"clima\",\n                severidad: \"media\",\n                titulo: \"Nevadas leves en alta cordillera\",\n                descripcion: \"Posibles variaciones en tiempos de tránsito durante la tarde\",\n                afecta_a: [\"Paso Los Libertadores\"]\n              },\n              {\n                tipo: \"flujo_vehicular\",\n                severidad: \"baja\",\n                titulo: \"Aumento de vehículos particulares\",\n                descripcion: \"Mayor demanda por fin de semana\",\n                afecta_a: [\"Paso Los Libertadores\", \"Paso Pehuenche\"]\n              }\n            ]\n          },\n\n          analisis_ia: {\n            proveedor: \"mock-agent\",\n            version_modelo: \"test-1\",\n            fecha_analisis: \"2026-05-22T04:26:00.000Z\",\n            resumen_ejecutivo: \"Se detecta que Paso Pehuenche presenta mejor condición relativa para esta consulta.\",\n            recomendacion_principal: {\n              paso_sugerido: \"Paso Pehuenche\",\n              justificacion_breve: \"Menor tiempo estimado de cruce y menor congestión relativa.\",\n              confianza: 0.84\n            },\n            alternativas: [\n              {\n                paso: \"Paso Los Libertadores\",\n                motivo_no_principal: \"Mayor tiempo estimado de cruce.\"\n              }\n            ]\n          },\n\n          salida_fi: {\n            panel_respuesta: {\n              titulo: \"Resultado sugerido para FI\",\n              resumen: \"Para esta simulación, se recomienda Paso Pehuenche como mejor alternativa.\",\n              alerta: \"Verificar clima antes de salir.\",\n              badges: [\"mock\", \"strapi\", \"pendiente-fl\"]\n            },\n            mapa: {\n              centro: {\n                lat: -35.4264,\n                lng: -71.6554\n              },\n              zoom: 6,\n              marcadores: [\n                {\n                  id: \"mk-1\",\n                  nombre: \"Talca\",\n                  tipo: \"origen\",\n                  lat: -35.4264,\n                  lng: -71.6554\n                },\n                {\n                  id: \"mk-2\",\n                  nombre: \"Paso Pehuenche\",\n                  tipo: \"paso_sugerido\",\n                  lat: -35.9736,\n                  lng: -70.5619\n                },\n                {\n                  id: \"mk-3\",\n                  nombre: \"Mendoza\",\n                  tipo: \"destino\",\n                  lat: -32.8895,\n                  lng: -68.8458\n                }\n              ],\n              rutas: [\n                {\n                  id: \"ruta-principal\",\n                  nombre: \"Ruta sugerida\",\n                  paso_asociado: \"Paso Pehuenche\",\n                  distancia_km: 564,\n                  duracion_min: 430,\n                  color: \"#2563eb\",\n                  recomendada: true\n                },\n                {\n                  id: \"ruta-alternativa-1\",\n                  nombre: \"Ruta alternativa\",\n                  paso_asociado: \"Paso Los Libertadores\",\n                  distancia_km: 612,\n                  duracion_min: 510,\n                  color: \"#94a3b8\",\n                  recomendada: false\n                }\n              ]\n            }\n          },\n\n          metadata: {\n            mock: true,\n            mock_version: \"1.0.0\",\n            esperado_por: \"FI\",\n            generado_para: \"n8n Code node\",\n            notas: \"Este registro emula lo que FL debería persistir en Strapi para consumo de FI.\"\n          }\n        }\n      },\n      meta: {\n        pagination: {\n          page: 1,\n          pageSize: 1,\n          pageCount: 1,\n          total: 1\n        }\n      }\n    }\n  }\n];"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.3,
+      "position": [
+        160,
+        112
+      ],
+      "id": "5a6ef1d3-e42a-42f1-9fbe-d2460f5d42bd",
+      "name": "MOCK Data"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        224,
+        272
+      ],
+      "id": "4dcc1972-4e85-4a6f-a457-c9b84696c35e",
+      "name": "ASK Data",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -432,
+        -144
+      ],
+      "id": "f9226b1d-0f44-449c-a4f8-0b52e2bff35e",
+      "name": "Mock_User_Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        384,
+        -144
+      ],
+      "id": "cbdb79de-db77-4e24-9972-c2428c6c0eb6",
+      "name": "Normalizer2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "54419ab6-ef3f-43de-97cf-a6e511786c33",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        560,
+        -144
+      ],
+      "id": "f33d3573-c631-42e0-a455-18f55d630338",
+      "name": "Data=empty?"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        768,
+        -144
+      ],
+      "id": "c4427e5a-87af-4da0-8c9a-12a29e99545a",
+      "name": "Formater"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        960,
+        -144
+      ],
+      "id": "f2363fe4-d78c-4f84-87d3-ed4d483a85b8",
+      "name": "Post Frontend",
+      "disabled": true
+    }
+  ],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-05-22T04:21:57.467Z",
+      "createdAt": "2026-05-22T04:21:57.467Z",
+      "role": "workflow:owner",
+      "workflowId": "QTQGHjFa4X8l3MZb",
+      "projectId": "EyuFxRt8AgWPBaxB"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-05-22T05:15:15.640Z",
+  "versionId": "c3451024-aa5d-4203-841b-afdf7c580749"
+}
