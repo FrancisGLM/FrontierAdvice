@@ -149,6 +149,7 @@
     }
   },
   "createdAt": "2026-05-22T04:21:57.463Z",
+  "description": null,
   "id": "QTQGHjFa4X8l3MZb",
   "isArchived": false,
   "meta": {
@@ -379,6 +380,7 @@
       "disabled": true
     }
   ],
+  "pinData": {},
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
@@ -389,12 +391,23 @@
       "createdAt": "2026-05-22T04:21:57.467Z",
       "role": "workflow:owner",
       "workflowId": "QTQGHjFa4X8l3MZb",
-      "projectId": "EyuFxRt8AgWPBaxB"
+      "projectId": "EyuFxRt8AgWPBaxB",
+      "project": {
+        "updatedAt": "2026-05-08T12:20:49.684Z",
+        "createdAt": "2026-05-08T12:12:30.737Z",
+        "id": "EyuFxRt8AgWPBaxB",
+        "name": "Franco Ingravallo <fingravallo2002@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "34c88ee8-ca63-418a-a5b5-63b4ead3ae7d"
+      }
     }
   ],
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
   "updatedAt": "2026-05-22T05:15:15.640Z",
+  "versionCounter": 107,
   "versionId": "c3451024-aa5d-4203-841b-afdf7c580749"
 }
