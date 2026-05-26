@@ -3900,17 +3900,7 @@
     "authors": "Nyxu Infinity",
     "name": "v2.6.2",
     "description": "",
-    "autosaved": true,
-    "workflowPublishHistory": [
-      {
-        "createdAt": "2026-05-12T06:35:14.944Z",
-        "id": 57,
-        "workflowId": "sYJ97yX2X89ePUgZ",
-        "versionId": "25961f1d-8031-4c7e-a5d0-34591865a5d7",
-        "event": "activated",
-        "userId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
-      }
-    ]
+    "autosaved": true
   },
   "activeVersionId": "25961f1d-8031-4c7e-a5d0-34591865a5d7",
   "connections": {
@@ -7828,13 +7818,12 @@
   "staticData": {
     "node:Schedule Trigger": {
       "recurrenceRules": [
-        0
+        18
       ]
     }
   },
   "tags": [],
   "triggerCount": 3,
   "updatedAt": "2026-05-12T06:35:05.494Z",
-  "versionCounter": 329,
   "versionId": "25961f1d-8031-4c7e-a5d0-34591865a5d7"
 }
