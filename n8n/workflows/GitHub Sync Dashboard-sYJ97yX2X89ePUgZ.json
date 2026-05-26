@@ -5008,7 +5008,6 @@
     }
   },
   "createdAt": "2026-05-08T21:02:59.606Z",
-  "description": null,
   "id": "sYJ97yX2X89ePUgZ",
   "isArchived": false,
   "meta": {
@@ -7813,7 +7812,6 @@
       "name": "Respond1"
     }
   ],
-  "pinData": {},
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
@@ -7824,17 +7822,7 @@
       "createdAt": "2026-05-08T21:02:59.611Z",
       "role": "workflow:owner",
       "workflowId": "sYJ97yX2X89ePUgZ",
-      "projectId": "0mwVSLULhlB6ku2N",
-      "project": {
-        "updatedAt": "2026-05-08T10:08:26.296Z",
-        "createdAt": "2026-05-08T08:11:46.302Z",
-        "id": "0mwVSLULhlB6ku2N",
-        "name": "Nyxu Infinity <nyxuofficial@gmail.com>",
-        "type": "personal",
-        "icon": null,
-        "description": null,
-        "creatorId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
-      }
+      "projectId": "0mwVSLULhlB6ku2N"
     }
   ],
   "staticData": {
