@@ -7,7 +7,51 @@
       "main": [
         [
           {
-            "node": "Search Tweets",
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Client": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
             "type": "main",
             "index": 0
           }
@@ -28,40 +72,82 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -352,
-        -128
+        -368,
+        -240
       ],
       "id": "3e81029e-5d4d-4511-aa07-685f9e9c97ff",
       "name": "When clicking ‘Execute workflow’"
     },
     {
       "parameters": {
-        "operation": "search",
-        "searchText": "Complejo",
-        "additionalFields": {}
+        "options": {}
       },
-      "type": "n8n-nodes-base.twitter",
-      "typeVersion": 2,
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
       "position": [
-        -144,
-        -128
+        -112,
+        -240
       ],
-      "id": "ae00a60b-aab9-40f8-a1ff-bff624f1907e",
-      "name": "Search Tweets"
+      "id": "bc094d4a-2654-4d58-ada5-bcb9cb162d58",
+      "name": "AI Agent"
     },
     {
       "parameters": {
-        "operation": "search",
-        "additionalFields": {}
+        "options": {}
       },
-      "type": "n8n-nodes-twitter-scraper.twitterScraper",
-      "typeVersion": 1,
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
       "position": [
-        128,
+        -112,
+        16
+      ],
+      "id": "9d109a22-0d7c-44ca-8d7a-30964abcbcbb",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "gkGbag9Eoxr0uPjN",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.2,
+      "position": [
+        32,
+        16
+      ],
+      "id": "5b3bd5d1-a614-4137-a275-115b94294b1a",
+      "name": "MCP Client"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
         -240
       ],
-      "id": "97572f53-65e2-4c4e-917e-22a02837a73a",
-      "name": "Search tweets"
+      "id": "ea15232d-da89-4667-ad4d-8965b70418f3",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        448,
+        -240
+      ],
+      "id": "151372f2-c720-476b-90b0-ad6af90fdf0b",
+      "name": "HTTP Request"
     }
   ],
   "settings": {
@@ -80,6 +166,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-05-28T02:45:33.988Z",
-  "versionId": "595facab-e826-46ff-8c09-513515b33a41"
+  "updatedAt": "2026-05-28T04:52:28.156Z",
+  "versionId": "04deec03-115e-465a-97d4-585405398243"
 }
