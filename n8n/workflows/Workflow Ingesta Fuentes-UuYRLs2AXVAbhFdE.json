@@ -1,0 +1,85 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Search Tweets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-05-12T05:37:32.263Z",
+  "id": "UuYRLs2AXVAbhFdE",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Workflow Ingesta Fuentes",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        -128
+      ],
+      "id": "3e81029e-5d4d-4511-aa07-685f9e9c97ff",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "searchText": "Complejo",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 2,
+      "position": [
+        -144,
+        -128
+      ],
+      "id": "ae00a60b-aab9-40f8-a1ff-bff624f1907e",
+      "name": "Search Tweets"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-twitter-scraper.twitterScraper",
+      "typeVersion": 1,
+      "position": [
+        128,
+        -240
+      ],
+      "id": "97572f53-65e2-4c4e-917e-22a02837a73a",
+      "name": "Search tweets"
+    }
+  ],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-05-12T05:37:32.270Z",
+      "createdAt": "2026-05-12T05:37:32.270Z",
+      "role": "workflow:owner",
+      "workflowId": "UuYRLs2AXVAbhFdE",
+      "projectId": "0mwVSLULhlB6ku2N"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-05-28T02:45:33.988Z",
+  "versionId": "595facab-e826-46ff-8c09-513515b33a41"
+}
