@@ -7,7 +7,7 @@
       "main": [
         [
           {
-            "node": "AI Agent",
+            "node": "Set Source Metadata",
             "type": "main",
             "index": 0
           }
@@ -57,6 +57,121 @@
           }
         ]
       ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Normalize WhatsApp Messages",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Source Metadata": {
+      "main": [
+        [
+          {
+            "node": "Build Extract Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Extract Request": {
+      "main": [
+        [
+          {
+            "node": "Mock WhatsApp Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mock WhatsApp Messages": {
+      "main": [
+        [
+          {
+            "node": "Normalize Whatsapp Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize WhatsApp Messages": {
+      "main": [
+        []
+      ]
+    },
+    "Parse Model Output": {
+      "main": [
+        [
+          {
+            "node": "Buscar PasoFronterizo por codigo_fuente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Source Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Whatsapp Messages": {
+      "main": [
+        [
+          {
+            "node": "Parse Model Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Normalize Whatsapp Messages",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar PasoFronterizo por codigo_fuente": {
+      "main": [
+        [
+          {
+            "node": "Build EstadoDiario Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build EstadoDiario Payload": {
+      "main": [
+        [
+          {
+            "node": "POST EstadoDiario a Strapi",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2026-05-12T05:37:32.263Z",
@@ -80,6 +195,8 @@
     },
     {
       "parameters": {
+        "promptType": "define",
+        "text": "Eres un extractor de datos para FrontierAdvice Chile.\n\nUsa la herramienta MCP Playwright para abrir https://x.com/UPFronterizos y leer los últimos 8 posts visibles sin iniciar sesión.\n\nDebes devolver exclusivamente JSON válido con esta estructura:\n\n{\n  \"items\": [\n    {\n      \"codigo_fuente\": \"los-libertadores\",\n      \"nombre_detectado\": \"Paso Los Libertadores\",\n      \"estado_general\": \"cerrado\",\n      \"mensaje_original\": \"texto del post\",\n      \"fecha_reporte\": \"2026-05-29T00:00:00Z\",\n      \"confianza_extraccion\": 0.92,\n      \"restricciones\": [\n        {\n          \"tipo_restriccion\": \"clima_nieve\",\n          \"descripcion\": \"Cierre por nevadas\"\n        }\n      ],\n      \"alertas\": [\n        {\n          \"tipo_alerta\": \"evento_climatico\",\n          \"descripcion\": \"Nevadas en alta montaña\",\n          \"fuente\": \"x_upfronterizos\"\n        }\n      ]\n    }\n  ]\n}\n\nReglas:\n- Ignora posts que no hablen del estado de pasos fronterizos.\n- No inventes datos.\n- estado_general solo puede ser: habilitado, cerrado, habilitado_con_precaucion, demora, sin_informacion.\n- codigo_fuente debe ir en kebab-case.\n- Si no logras detectar fecha exacta, usa la fecha actual de ejecución.\n- Devuelve solo JSON, sin markdown ni texto adicional.",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
@@ -89,11 +206,15 @@
         -240
       ],
       "id": "bc094d4a-2654-4d58-ada5-bcb9cb162d58",
-      "name": "AI Agent"
+      "name": "AI Agent",
+      "disabled": true
     },
     {
       "parameters": {
-        "options": {}
+        "modelName": "models/gemini-2.5-flash",
+        "options": {
+          "maxOutputTokens": 4096
+        }
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1.1,
@@ -108,10 +229,13 @@
           "id": "gkGbag9Eoxr0uPjN",
           "name": "Google Gemini(PaLM) Api account"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
+        "endpointUrl": "http://playwright-mcp:8000/sse",
+        "serverTransport": "sse",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
@@ -121,11 +245,12 @@
         16
       ],
       "id": "5b3bd5d1-a614-4137-a275-115b94294b1a",
-      "name": "MCP Client"
+      "name": "MCP Client",
+      "disabled": true
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+        "jsCode": "const raw = $json.output || $json.text || $json.response || $json.data || $json;\nlet parsed = raw;\n\nif (typeof raw === 'string') {\n  const cleaned = raw.replace(/```json\\n?/g, '').replace(/```\\n?/g, '').trim();\n  parsed = JSON.parse(cleaned);\n}\n\nif (!parsed.items || !Array.isArray(parsed.items)) {\n  throw new Error('El agente no devolvió items[]. Output recibido: ' + JSON.stringify(raw).substring(0, 500));\n}\n\nreturn parsed.items.map(item => ({\n  json: {\n    codigo_fuente: item.codigo_fuente || null,\n    nombre_detectado: item.nombre_detectado || null,\n    estado_general: item.estado_general || 'sin_informacion',\n    mensaje_original: item.mensaje_original || '',\n    fecha_reporte: item.fecha_reporte || new Date().toISOString(),\n    confianza_extraccion: item.confianza_extraccion ?? 0.5,\n    fuente: 'x_upfronterizos',\n    restricciones: Array.isArray(item.restricciones) ? item.restricciones : [],\n    alertas: Array.isArray(item.alertas) ? item.alertas : [],\n  }\n}));;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -134,10 +259,23 @@
         -240
       ],
       "id": "ea15232d-da89-4667-ad4d-8965b70418f3",
-      "name": "Code in JavaScript"
+      "name": "Code in JavaScript",
+      "disabled": true
     },
     {
       "parameters": {
+        "url": "https://strapi.frontieradvice.tech/api/paso-fronterizos",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "=filters[codigo_fuente][$eq]",
+              "value": "={{ $json.codigo_fuente }}"
+            }
+          ]
+        },
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -147,7 +285,280 @@
         -240
       ],
       "id": "151372f2-c720-476b-90b0-ad6af90fdf0b",
-      "name": "HTTP Request"
+      "name": "HTTP Request",
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash",
+        "options": {
+          "maxOutputTokens": 4096
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        432,
+        -416
+      ],
+      "id": "2b6969bb-0ff5-41e6-84f9-c0136d9bf744",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "gkGbag9Eoxr0uPjN",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c3554675-8133-44fd-b41d-151f1116a547",
+              "name": "source_id",
+              "value": "whatsapp_upf",
+              "type": "string"
+            },
+            {
+              "id": "f8a86458-6a1d-4e85-ac53-bd241b2c70fb",
+              "name": "source_type",
+              "value": "whatsapp_channel",
+              "type": "string"
+            },
+            {
+              "id": "2f1dfe10-7d20-43dd-9be7-cd5de792f568",
+              "name": "source_name",
+              "value": "Canal WhatsApp UPF",
+              "type": "string"
+            },
+            {
+              "id": "5576a1bc-b6c2-49db-b264-4d47bcf4d3c4",
+              "name": "channel_label",
+              "value": "Unidad de Pasos Fronterizos",
+              "type": "string"
+            },
+            {
+              "id": "56625d89-3c57-42a5-a860-7289139bdbe9",
+              "name": "captured_at",
+              "value": "={{$now}}",
+              "type": "string"
+            },
+            {
+              "id": "94319ef0-b2bf-49ee-9db5-934278862f0d",
+              "name": "max_messages",
+              "value": "5",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -112,
+        -592
+      ],
+      "id": "1ab1e094-3302-41c6-a87f-44c2e59abc7b",
+      "name": "Set Source Metadata"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      source_id: $json.source_id,\n      source_type: $json.source_type,\n      source_name: $json.source_name,\n      channel_label: $json.channel_label,\n      captured_at: $json.captured_at,\n      max_messages: $json.max_messages,\n      extract_mode: \"latest_messages\"\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        64,
+        -592
+      ],
+      "id": "7eafd9f7-0d22-4294-a76d-b140091b06a4",
+      "name": "Build Extract Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      source_id: $json.source_id,\n      source_type: $json.source_type,\n      source_name: $json.source_name,\n      channel_label: $json.channel_label,\n      captured_at: $json.captured_at,\n      messages: [\n        \"Complejo Los Libertadores cerrado preventivamente por nevadas y bajas temperaturas.\",\n        \"Paso Pehuenche habilitado con precaución para vehículos menores.\",\n        \"Cardenal Samoré opera con normalidad en ambos sentidos.\",\n        \"Se recomienda revisar estado meteorológico antes de viajar.\",\n        \"Horarios diferenciados para transporte de carga en algunos complejos.\"\n      ]\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        -592
+      ],
+      "id": "9dc5e8a5-9d9d-49fd-a85f-0da3e32d7267",
+      "name": "Mock WhatsApp Messages"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Eres un normalizador de mensajes oficiales sobre pasos fronterizos de Chile.\n\nDebes convertir mensajes provenientes de WhatsApp en JSON estricto.\n\nReglas:\n- Detecta cada paso fronterizo mencionado.\n- Clasifica \"estado_general\" como uno de:\n  \"abierto\", \"cerrado\", \"abierto_con_precaucion\", \"suspendido\", \"desconocido\".\n- Extrae observaciones, restricciones y alertas si existen.\n- Conserva el mensaje original.\n- Si no hay paso explícito, puedes omitir ese mensaje.\n- Responde SOLO con JSON válido.\n- No uses markdown.\n- No agregues texto extra.\n\nFormato exacto de salida:\n{\n  \"items\": [\n    {\n      \"fuente\": \"whatsapp_upf\",\n      \"nombre_detectado\": \"\",\n      \"estado_general\": \"\",\n      \"mensaje_original\": \"\",\n      \"observaciones\": \"\",\n      \"restricciones\": [],\n      \"alertas\": [],\n      \"confianza_extraccion\": 0.0\n    }\n  ]\n}\n\nMensajes a normalizar:\n{{ JSON.stringify($json.messages) }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        432,
+        -592
+      ],
+      "id": "db7aa9be-9d7f-4607-90c1-296865847d40",
+      "name": "Normalize WhatsApp Messages",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw =\n  $json.text ??\n  $json.output ??\n  $json.response ??\n  $json.result ??\n  $json.message ??\n  $json.content ??\n  $json;\n\nlet parsed;\nlet cleaned = raw;\n\nif (typeof cleaned === \"string\") {\n  cleaned = cleaned.replace(/```json\\s*/g, \"\").replace(/```/g, \"\").trim();\n\n  const start = cleaned.indexOf(\"{\");\n  const end = cleaned.lastIndexOf(\"}\");\n  if (start !== -1 && end !== -1) {\n    cleaned = cleaned.slice(start, end + 1);\n  }\n\n  parsed = JSON.parse(cleaned);\n} else {\n  parsed = cleaned;\n}\n\nif (!parsed || !parsed.items || !Array.isArray(parsed.items)) {\n  throw new Error(\"No se encontró items[] en la salida del modelo. Output recibido: \" + JSON.stringify($json).slice(0, 1000));\n}\n\nreturn parsed.items.map(item => ({\n  json: {\n    codigo_fuente: item.codigo_fuente || null,\n    fecha_reporte: item.fecha_reporte || $(\"Set Source Metadata\").first().json.captured_at,\n    estado_general: item.estado_general || \"desconocido\",\n    fuente: item.fuente || \"whatsapp_upf\",\n    mensaje_original: item.mensaje_original || null,\n    confianza_extraccion: item.confianza_extraccion ?? 0.5,\n    origen_tipo: item.origen_tipo || \"whatsapp_channel\"\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        752,
+        -592
+      ],
+      "id": "27f936f5-18cf-4667-9cf5-55b85cd21cd6",
+      "name": "Parse Model Output"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://strapi.frontieradvice.tech/api/estado-diarios",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": []
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1296,
+        -592
+      ],
+      "id": "a851a1f8-bb5f-4fe6-b434-96d2b182ac58",
+      "name": "POST EstadoDiario a Strapi",
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 2
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -368,
+        -592
+      ],
+      "id": "4a04e9ce-35e9-4de7-bfde-8bbdb8e3133d",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Eres un normalizador de mensajes oficiales sobre pasos fronterizos de Chile para FrontierAdvice.\n\nTu tarea es convertir mensajes provenientes de WhatsApp en JSON estricto.\n\nDebes devolver SOLO JSON válido, sin markdown, sin explicación y sin texto adicional.\n\nReglas:\n- Detecta el paso fronterizo mencionado si existe.\n- Clasifica \"estado_general\" como uno de:\n  \"abierto\", \"cerrado\", \"abierto_con_precaucion\", \"suspendido\", \"desconocido\".\n- Conserva el mensaje original completo.\n- \"fuente\" debe ser siempre \"whatsapp_upf\".\n- \"origen_tipo\" debe ser siempre \"whatsapp_channel\".\n- \"confianza_extraccion\" debe ser un número entre 0 y 1.\n- \"fecha_reporte\" debe usar la fecha de ejecución si no existe una fecha explícita en el mensaje.\n- Si no se puede identificar con certeza el paso, deja \"codigo_fuente\" en null.\n- Omite mensajes que no aporten estado operativo útil.\n\nFormato exacto de salida:\n{\n  \"items\": [\n    {\n      \"codigo_fuente\": null,\n      \"fecha_reporte\": \"{{$json.captured_at}}\",\n      \"estado_general\": \"\",\n      \"fuente\": \"whatsapp_upf\",\n      \"mensaje_original\": \"\",\n      \"confianza_extraccion\": 0.0,\n      \"origen_tipo\": \"whatsapp_channel\"\n    }\n  ]\n}\n\nMensajes a normalizar:\n{{ JSON.stringify($json.messages) }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        432,
+        -944
+      ],
+      "id": "ef1bc701-c0ed-4d96-9275-669dd2eb2ab1",
+      "name": "Normalize Whatsapp Messages"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash",
+        "options": {
+          "maxOutputTokens": 4096
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        432,
+        -768
+      ],
+      "id": "15730e70-2b46-412d-9ec7-a62b96e52aa5",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "gkGbag9Eoxr0uPjN",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://strapi.frontieradvice.tech/api/paso-fronterizos",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filters[codigo_fuente][$eq]",
+              "value": "={{$json.codigo_fuente}}"
+            },
+            {
+              "name": "pagination[pageSize]",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        944,
+        -592
+      ],
+      "id": "2199185b-8841-4056-aa42-a7d8315e84cd",
+      "name": "Buscar PasoFronterizo por codigo_fuente",
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const pasoResp = $json.data || [];\nif (!pasoResp.length) {\n  throw new Error(\"No se encontró PasoFronterizo para codigo_fuente\");\n}\n\nconst paso = pasoResp[0];\n\nconst original = $(\"Parse Model Output\").item.json;\n\nreturn [\n  {\n    json: {\n      data: {\n        fecha_reporte: original.fecha_reporte,\n        estado_general: original.estado_general,\n        fuente: original.fuente,\n        mensaje_original: original.mensaje_original,\n        confianza_extraccion: String(original.confianza_extraccion),\n        origen_tipo: original.origen_tipo,\n        id_paso: paso.id\n      }\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        -592
+      ],
+      "id": "89849eb8-a035-4105-8771-2b63f1755966",
+      "name": "Build EstadoDiario Payload"
     }
   ],
   "settings": {
@@ -166,6 +577,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-05-28T04:52:28.156Z",
-  "versionId": "04deec03-115e-465a-97d4-585405398243"
+  "updatedAt": "2026-05-29T08:24:26.351Z",
+  "versionId": "3336a5e5-3cf9-4475-a923-068a61c4b06f"
 }
