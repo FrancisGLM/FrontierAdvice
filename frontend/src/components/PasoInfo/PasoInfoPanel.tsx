@@ -16,10 +16,25 @@ const estadoConfig = {
   cerrado: { label: 'CERRADO', bg: 'var(--status-closed-bg)', text: 'var(--status-closed)' },
 };
 
-export default function PasoInfoPanel({ paso, onClose }: PasoInfoPanelProps) {
-  if (!paso) return null;
+import { useState, useEffect } from 'react';
 
-  const cfg = estadoConfig[paso.estado];
+export default function PasoInfoPanel({ paso, onClose }: PasoInfoPanelProps) {
+  const [activePaso, setActivePaso] = useState<PasoFronterizo | null>(paso);
+
+  useEffect(() => {
+    if (paso) {
+      setActivePaso(paso);
+    } else {
+      const timer = setTimeout(() => setActivePaso(null), 400); // match transition duration
+      return () => clearTimeout(timer);
+    }
+  }, [paso]);
+
+  const displayPaso = paso || activePaso;
+
+  if (!displayPaso) return null;
+
+  const cfg = estadoConfig[displayPaso.estado];
 
   return (
     <>
@@ -42,9 +57,9 @@ export default function PasoInfoPanel({ paso, onClose }: PasoInfoPanelProps) {
               <Mountain size={20} />
             </div>
             <div className={styles.identityInfo}>
-              <h3 className={styles.pasoName}>{paso.nombre}</h3>
-              {paso.subtitulo && (
-                <p className={styles.pasoSubtitle}>{paso.subtitulo}</p>
+              <h3 className={styles.pasoName}>{displayPaso.nombre}</h3>
+              {displayPaso.subtitulo && (
+                <p className={styles.pasoSubtitle}>{displayPaso.subtitulo}</p>
               )}
             </div>
             <div className={styles.flags}>
@@ -68,30 +83,30 @@ export default function PasoInfoPanel({ paso, onClose }: PasoInfoPanelProps) {
           <div className={styles.metaList}>
             <div className={styles.metaItem}>
               <Clock size={16} className={styles.metaIcon} />
-              <span>Última actualización: {paso.ultimaActualizacion}</span>
+              <span>Última actualización: {displayPaso.ultimaActualizacion}</span>
             </div>
-            {paso.altitud && (
+            {displayPaso.altitud && (
               <div className={styles.metaItem}>
                 <Mountain size={16} className={styles.metaIcon} />
-                <span>Altitud: {paso.altitud.toLocaleString()} m.s.n.m.</span>
+                <span>Altitud: {displayPaso.altitud.toLocaleString()} m.s.n.m.</span>
               </div>
             )}
             <div className={styles.metaItem}>
               <MapPin size={16} className={styles.metaIcon} />
-              <span>Región: {paso.region}</span>
+              <span>Región: {displayPaso.region}</span>
             </div>
           </div>
 
           <div className={styles.divider} />
 
           {/* Forecast */}
-          <WeatherForecast pronostico={paso.pronostico} />
+          <WeatherForecast pronostico={displayPaso.pronostico} />
         </div>
       </aside>
 
       {/* Mobile Backdrop */}
       <div 
-        className={`md:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-30 transition-opacity ${paso ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+        className={`md:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-[55] transition-opacity ${paso ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
         onClick={onClose}
       />
     </>

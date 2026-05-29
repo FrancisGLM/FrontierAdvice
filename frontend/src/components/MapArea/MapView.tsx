@@ -239,7 +239,6 @@ export default function MapView({ pasos, onSelectPaso, selectedPasoId }: MapView
 
       outer.on('click', () => {
         onSelectPaso(paso);
-        map.flyTo(latlng, 8, { duration: 1.2, easeLinearity: 0.25 });
       });
       
       outer.addTo(map);
@@ -252,9 +251,22 @@ export default function MapView({ pasos, onSelectPaso, selectedPasoId }: MapView
     if (!mapRef.current || !selectedPasoId) return;
     const paso = pasos.find((p) => p.id === selectedPasoId);
     if (paso) {
+      const map = mapRef.current;
+      const zoom = map.getZoom() > 8 ? map.getZoom() : 8;
+      
+      const targetPoint = map.project([paso.lat, paso.lng], zoom);
       const isMobile  = window.innerWidth <= 768;
-      const targetLng = isMobile ? paso.lng : paso.lng - 0.5;
-      mapRef.current.flyTo([paso.lat, targetLng], 8, { duration: 1.2, easeLinearity: 0.25 });
+      
+      if (isMobile) {
+        // Shift map center down to move point up, avoiding bottom sheet
+        targetPoint.y += window.innerHeight * 0.2;
+      } else {
+        // Shift map center right to move point left, avoiding side panel (width: 352px)
+        targetPoint.x += 176;
+      }
+      
+      const targetLatLng = map.unproject(targetPoint, zoom);
+      map.flyTo(targetLatLng, zoom, { duration: 1.2, easeLinearity: 0.25 });
     }
   }, [selectedPasoId, pasos]);
 
