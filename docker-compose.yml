@@ -66,6 +66,7 @@ services:
     volumes:
       - ./frontend/src:/app/src
       - ./frontend/public:/app/public
+      - ./frontend/next.config.ts:/app/next.config.ts
     ports:
       - "3000:3000"
     networks:
@@ -73,9 +74,24 @@ services:
     depends_on:
       - strapi
 
+  playwright-mcp:
+    image: acuvity/mcp-server-playwright:0.0.56
+    container_name: playwright-mcp
+    user: "0:0"
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    networks:
+      - frontier-network
+    environment:
+      PLAYWRIGHT_BROWSERS_PATH: /tmp/ms-playwright
+    volumes:
+      - playwright_tmp:/tmp/ms-playwright
+
 volumes:
   strapi-data:
   n8n_data:
+  playwright_tmp:
 
 networks:
   frontier-network:

@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  allowedDevOrigins: ['frontieradvice.tech', 'strapi.frontieradvice.tech'],
 };
 
 export default nextConfig;

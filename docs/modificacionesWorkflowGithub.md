@@ -91,14 +91,3 @@ Rama 1: Conectar a los nodos configurados con la credencial de GitHub del Desarr
 Rama 2: Conectar a los nodos configurados con la credencial de GitHub del Desarrollador 2.
 
 (Opcional) Ajuste del Mensaje de Commit: Modificar el parámetro commitMessage en los nodos de GitHub para que incluya automáticamente el nombre del autor, por ejemplo: [n8n Sync] Actualizado por {{$json.query.user}}.
-
-Fase 3: Checklist de Pruebas
-[ ] Entrar a la URL del Dashboard. ¿Aparece el prompt solicitando nombre?
-
-[ ] Refrescar la página. ¿Mantiene la sesión sin volver a preguntar?
-
-[ ] Cerrar la pestaña y volver a abrirla. ¿Pide el nombre de nuevo? (Confirmación de sessionStorage).
-
-[ ] Usar el botón "Cerrar Sesión". ¿Borra los datos y recarga la vista?
-
-[ ] Hacer un guardado. ¿El commit en GitHub refleja al autor correcto según la rama del nodo Switch?
