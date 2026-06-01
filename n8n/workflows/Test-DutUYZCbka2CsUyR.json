@@ -1,0 +1,177 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Client": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-05-29T20:10:16.137Z",
+  "id": "DutUYZCbka2CsUyR",
+  "isArchived": false,
+  "meta": null,
+  "name": "Test",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Eres un extractor de datos para FrontierAdvice Chile.\n\nUsa la herramienta MCP Playwright para abrir https://x.com/UPFronterizos y leer los últimos 8 posts visibles sin iniciar sesión.\n\nDebes devolver exclusivamente JSON válido con esta estructura:\n\n{\n  \"items\": [\n    {\n      \"codigo_fuente\": \"los-libertadores\",\n      \"nombre_detectado\": \"Paso Los Libertadores\",\n      \"estado_general\": \"cerrado\",\n      \"mensaje_original\": \"texto del post\",\n      \"fecha_reporte\": \"2026-05-29T00:00:00Z\",\n      \"confianza_extraccion\": 0.92,\n      \"restricciones\": [\n        {\n          \"tipo_restriccion\": \"clima_nieve\",\n          \"descripcion\": \"Cierre por nevadas\"\n        }\n      ],\n      \"alertas\": [\n        {\n          \"tipo_alerta\": \"evento_climatico\",\n          \"descripcion\": \"Nevadas en alta montaña\",\n          \"fuente\": \"x_upfronterizos\"\n        }\n      ]\n    }\n  ]\n}\n\nReglas:\n- Ignora posts que no hablen del estado de pasos fronterizos.\n- No inventes datos.\n- estado_general solo puede ser: habilitado, cerrado, habilitado_con_precaucion, demora, sin_informacion.\n- codigo_fuente debe ir en kebab-case.\n- Si no logras detectar fecha exacta, usa la fecha actual de ejecución.\n- Devuelve solo JSON, sin markdown ni texto adicional.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -496,
+        -192
+      ],
+      "id": "fe87607e-cbd2-4470-b6cb-127a6f50c82a",
+      "name": "AI Agent",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {
+          "maxOutputTokens": 4096
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -496,
+        64
+      ],
+      "id": "4bce4005-05f3-4444-9c0a-983b6ad13a97",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "gkGbag9Eoxr0uPjN",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "endpointUrl": "http://playwright-mcp:8000/sse",
+        "serverTransport": "sse",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.2,
+      "position": [
+        -352,
+        64
+      ],
+      "id": "8bab1fdc-235a-4321-a1c9-c351d49edce4",
+      "name": "MCP Client",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $json.output || $json.text || $json.response || $json.data || $json;\nlet parsed = raw;\n\nif (typeof raw === 'string') {\n  const cleaned = raw.replace(/```json\\n?/g, '').replace(/```\\n?/g, '').trim();\n  parsed = JSON.parse(cleaned);\n}\n\nif (!parsed.items || !Array.isArray(parsed.items)) {\n  throw new Error('El agente no devolvió items[]. Output recibido: ' + JSON.stringify(raw).substring(0, 500));\n}\n\nreturn parsed.items.map(item => ({\n  json: {\n    codigo_fuente: item.codigo_fuente || null,\n    nombre_detectado: item.nombre_detectado || null,\n    estado_general: item.estado_general || 'sin_informacion',\n    mensaje_original: item.mensaje_original || '',\n    fecha_reporte: item.fecha_reporte || new Date().toISOString(),\n    confianza_extraccion: item.confianza_extraccion ?? 0.5,\n    fuente: 'x_upfronterizos',\n    restricciones: Array.isArray(item.restricciones) ? item.restricciones : [],\n    alertas: Array.isArray(item.alertas) ? item.alertas : [],\n  }\n}));;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -144,
+        -192
+      ],
+      "id": "b22c39c6-8699-4f89-8697-d88e5cd767ca",
+      "name": "Code in JavaScript",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "url": "https://strapi.frontieradvice.tech/api/paso-fronterizos",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "=filters[codigo_fuente][$eq]",
+              "value": "={{ $json.codigo_fuente }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        64,
+        -192
+      ],
+      "id": "eccd3ac8-744b-4780-8576-e11970bba28b",
+      "name": "HTTP Request",
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      },
+      "disabled": true
+    }
+  ],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-05-29T20:10:16.141Z",
+      "createdAt": "2026-05-29T20:10:16.141Z",
+      "role": "workflow:owner",
+      "workflowId": "DutUYZCbka2CsUyR",
+      "projectId": "0mwVSLULhlB6ku2N"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-05-29T20:10:16.137Z",
+  "versionId": "3b6e9141-eca1-436b-b09d-1f179bdc50f5"
+}
