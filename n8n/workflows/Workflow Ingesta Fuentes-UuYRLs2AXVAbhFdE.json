@@ -14,61 +14,6 @@
         ]
       ]
     },
-    "Google Gemini Chat Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "MCP Client": {
-      "ai_tool": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "AI Agent": {
-      "main": [
-        [
-          {
-            "node": "Code in JavaScript",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code in JavaScript": {
-      "main": [
-        [
-          {
-            "node": "HTTP Request",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Google Gemini Chat Model1": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Normalize WhatsApp Messages",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Set Source Metadata": {
       "main": [
         [
@@ -100,11 +45,6 @@
             "index": 0
           }
         ]
-      ]
-    },
-    "Normalize WhatsApp Messages": {
-      "main": [
-        []
       ]
     },
     "Parse Model Output": {
@@ -175,7 +115,6 @@
     }
   },
   "createdAt": "2026-05-12T05:37:32.263Z",
-  "description": null,
   "id": "UuYRLs2AXVAbhFdE",
   "isArchived": false,
   "meta": {
@@ -193,130 +132,6 @@
       ],
       "id": "3e81029e-5d4d-4511-aa07-685f9e9c97ff",
       "name": "When clicking ‘Execute workflow’"
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "Eres un extractor de datos para FrontierAdvice Chile.\n\nUsa la herramienta MCP Playwright para abrir https://x.com/UPFronterizos y leer los últimos 8 posts visibles sin iniciar sesión.\n\nDebes devolver exclusivamente JSON válido con esta estructura:\n\n{\n  \"items\": [\n    {\n      \"codigo_fuente\": \"los-libertadores\",\n      \"nombre_detectado\": \"Paso Los Libertadores\",\n      \"estado_general\": \"cerrado\",\n      \"mensaje_original\": \"texto del post\",\n      \"fecha_reporte\": \"2026-05-29T00:00:00Z\",\n      \"confianza_extraccion\": 0.92,\n      \"restricciones\": [\n        {\n          \"tipo_restriccion\": \"clima_nieve\",\n          \"descripcion\": \"Cierre por nevadas\"\n        }\n      ],\n      \"alertas\": [\n        {\n          \"tipo_alerta\": \"evento_climatico\",\n          \"descripcion\": \"Nevadas en alta montaña\",\n          \"fuente\": \"x_upfronterizos\"\n        }\n      ]\n    }\n  ]\n}\n\nReglas:\n- Ignora posts que no hablen del estado de pasos fronterizos.\n- No inventes datos.\n- estado_general solo puede ser: habilitado, cerrado, habilitado_con_precaucion, demora, sin_informacion.\n- codigo_fuente debe ir en kebab-case.\n- Si no logras detectar fecha exacta, usa la fecha actual de ejecución.\n- Devuelve solo JSON, sin markdown ni texto adicional.",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "typeVersion": 3.1,
-      "position": [
-        -112,
-        -240
-      ],
-      "id": "bc094d4a-2654-4d58-ada5-bcb9cb162d58",
-      "name": "AI Agent",
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "modelName": "models/gemini-2.5-flash",
-        "options": {
-          "maxOutputTokens": 4096
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1.1,
-      "position": [
-        -112,
-        16
-      ],
-      "id": "9d109a22-0d7c-44ca-8d7a-30964abcbcbb",
-      "name": "Google Gemini Chat Model",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "gkGbag9Eoxr0uPjN",
-          "name": "Google Gemini(PaLM) Api account"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "endpointUrl": "http://playwright-mcp:8000/sse",
-        "serverTransport": "sse",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
-      "typeVersion": 1.2,
-      "position": [
-        32,
-        16
-      ],
-      "id": "5b3bd5d1-a614-4137-a275-115b94294b1a",
-      "name": "MCP Client",
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "jsCode": "const raw = $json.output || $json.text || $json.response || $json.data || $json;\nlet parsed = raw;\n\nif (typeof raw === 'string') {\n  const cleaned = raw.replace(/```json\\n?/g, '').replace(/```\\n?/g, '').trim();\n  parsed = JSON.parse(cleaned);\n}\n\nif (!parsed.items || !Array.isArray(parsed.items)) {\n  throw new Error('El agente no devolvió items[]. Output recibido: ' + JSON.stringify(raw).substring(0, 500));\n}\n\nreturn parsed.items.map(item => ({\n  json: {\n    codigo_fuente: item.codigo_fuente || null,\n    nombre_detectado: item.nombre_detectado || null,\n    estado_general: item.estado_general || 'sin_informacion',\n    mensaje_original: item.mensaje_original || '',\n    fecha_reporte: item.fecha_reporte || new Date().toISOString(),\n    confianza_extraccion: item.confianza_extraccion ?? 0.5,\n    fuente: 'x_upfronterizos',\n    restricciones: Array.isArray(item.restricciones) ? item.restricciones : [],\n    alertas: Array.isArray(item.alertas) ? item.alertas : [],\n  }\n}));;"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        240,
-        -240
-      ],
-      "id": "ea15232d-da89-4667-ad4d-8965b70418f3",
-      "name": "Code in JavaScript",
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "url": "https://strapi.frontieradvice.tech/api/paso-fronterizos",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "strapiTokenApi",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {
-              "name": "=filters[codigo_fuente][$eq]",
-              "value": "={{ $json.codigo_fuente }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.4,
-      "position": [
-        448,
-        -240
-      ],
-      "id": "151372f2-c720-476b-90b0-ad6af90fdf0b",
-      "name": "HTTP Request",
-      "credentials": {
-        "strapiTokenApi": {
-          "id": "eUSeEuEvTFDfOYVR",
-          "name": "Strapi FrontierAdvice"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "modelName": "models/gemini-3.5-flash",
-        "options": {
-          "maxOutputTokens": 4096
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1.1,
-      "position": [
-        432,
-        -416
-      ],
-      "id": "2b6969bb-0ff5-41e6-84f9-c0136d9bf744",
-      "name": "Google Gemini Chat Model1",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "gkGbag9Eoxr0uPjN",
-          "name": "Google Gemini(PaLM) Api account"
-        }
-      },
-      "disabled": true
     },
     {
       "parameters": {
@@ -391,27 +206,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        240,
-        -592
+        256,
+        -752
       ],
       "id": "9dc5e8a5-9d9d-49fd-a85f-0da3e32d7267",
       "name": "Mock WhatsApp Messages"
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "=Eres un normalizador de mensajes oficiales sobre pasos fronterizos de Chile.\n\nDebes convertir mensajes provenientes de WhatsApp en JSON estricto.\n\nReglas:\n- Detecta cada paso fronterizo mencionado.\n- Clasifica \"estado_general\" como uno de:\n  \"abierto\", \"cerrado\", \"abierto_con_precaucion\", \"suspendido\", \"desconocido\".\n- Extrae observaciones, restricciones y alertas si existen.\n- Conserva el mensaje original.\n- Si no hay paso explícito, puedes omitir ese mensaje.\n- Responde SOLO con JSON válido.\n- No uses markdown.\n- No agregues texto extra.\n\nFormato exacto de salida:\n{\n  \"items\": [\n    {\n      \"fuente\": \"whatsapp_upf\",\n      \"nombre_detectado\": \"\",\n      \"estado_general\": \"\",\n      \"mensaje_original\": \"\",\n      \"observaciones\": \"\",\n      \"restricciones\": [],\n      \"alertas\": [],\n      \"confianza_extraccion\": 0.0\n    }\n  ]\n}\n\nMensajes a normalizar:\n{{ JSON.stringify($json.messages) }}",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "typeVersion": 3.1,
-      "position": [
-        432,
-        -592
-      ],
-      "id": "db7aa9be-9d7f-4607-90c1-296865847d40",
-      "name": "Normalize WhatsApp Messages",
-      "disabled": true
     },
     {
       "parameters": {
@@ -486,14 +285,14 @@
       "typeVersion": 1.9,
       "position": [
         432,
-        -944
+        -592
       ],
       "id": "ef1bc701-c0ed-4d96-9275-669dd2eb2ab1",
       "name": "Normalize Whatsapp Messages"
     },
     {
       "parameters": {
-        "modelName": "models/gemini-3.5-flash",
+        "modelName": "models/gemini-2.5-flash",
         "options": {
           "maxOutputTokens": 4096
         }
@@ -502,7 +301,7 @@
       "typeVersion": 1.1,
       "position": [
         432,
-        -768
+        -384
       ],
       "id": "15730e70-2b46-412d-9ec7-a62b96e52aa5",
       "name": "Google Gemini Chat Model2",
@@ -560,9 +359,24 @@
       ],
       "id": "89849eb8-a035-4105-8771-2b63f1755966",
       "name": "Build EstadoDiario Payload"
+    },
+    {
+      "parameters": {
+        "content": "Solo para Test rapido",
+        "height": 208,
+        "width": 192,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        208,
+        -800
+      ],
+      "id": "e20288b4-f095-46dd-a372-a905b50b61b1",
+      "name": "Sticky Note"
     }
   ],
-  "pinData": {},
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
@@ -573,23 +387,12 @@
       "createdAt": "2026-05-12T05:37:32.270Z",
       "role": "workflow:owner",
       "workflowId": "UuYRLs2AXVAbhFdE",
-      "projectId": "0mwVSLULhlB6ku2N",
-      "project": {
-        "updatedAt": "2026-05-08T10:08:26.296Z",
-        "createdAt": "2026-05-08T08:11:46.302Z",
-        "id": "0mwVSLULhlB6ku2N",
-        "name": "Nyxu Infinity <nyxuofficial@gmail.com>",
-        "type": "personal",
-        "icon": null,
-        "description": null,
-        "creatorId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
-      }
+      "projectId": "0mwVSLULhlB6ku2N"
     }
   ],
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-05-29T08:24:26.351Z",
-  "versionCounter": 159,
-  "versionId": "3336a5e5-3cf9-4475-a923-068a61c4b06f"
+  "updatedAt": "2026-06-01T21:54:35.623Z",
+  "versionId": "cea834ca-0c9d-456c-8dc2-fd38f6960f95"
 }
