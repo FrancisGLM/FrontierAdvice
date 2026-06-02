@@ -67,8 +67,7 @@
         -192
       ],
       "id": "fe87607e-cbd2-4470-b6cb-127a6f50c82a",
-      "name": "AI Agent",
-      "disabled": true
+      "name": "AI Agent"
     },
     {
       "parameters": {
@@ -90,8 +89,7 @@
           "id": "gkGbag9Eoxr0uPjN",
           "name": "Google Gemini(PaLM) Api account"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
@@ -106,8 +104,7 @@
         64
       ],
       "id": "8bab1fdc-235a-4321-a1c9-c351d49edce4",
-      "name": "MCP Client",
-      "disabled": true
+      "name": "MCP Client"
     },
     {
       "parameters": {
@@ -120,8 +117,7 @@
         -192
       ],
       "id": "b22c39c6-8699-4f89-8697-d88e5cd767ca",
-      "name": "Code in JavaScript",
-      "disabled": true
+      "name": "Code in JavaScript"
     },
     {
       "parameters": {
@@ -152,8 +148,7 @@
           "id": "eUSeEuEvTFDfOYVR",
           "name": "Strapi FrontierAdvice"
         }
-      },
-      "disabled": true
+      }
     }
   ],
   "settings": {
@@ -172,6 +167,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-05-29T20:10:16.137Z",
-  "versionId": "3b6e9141-eca1-436b-b09d-1f179bdc50f5"
+  "updatedAt": "2026-06-01T23:07:19.175Z",
+  "versionId": "372892d9-e28e-4baa-bbab-10a8706d2308"
 }
