@@ -525,6 +525,7 @@ export interface ApiEstadoDiarioEstadoDiario
     draftAndPublish: true;
   };
   attributes: {
+    confianza_extraccion: Schema.Attribute.String;
     creado_en: Schema.Attribute.DateTime;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -543,6 +544,7 @@ export interface ApiEstadoDiarioEstadoDiario
     > &
       Schema.Attribute.Private;
     mensaje_original: Schema.Attribute.Text;
+    origen_tipo: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -562,6 +564,7 @@ export interface ApiPasoFronterizoPasoFronterizo
     draftAndPublish: true;
   };
   attributes: {
+    codigo_fuente: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

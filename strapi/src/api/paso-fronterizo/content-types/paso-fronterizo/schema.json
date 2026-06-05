@@ -22,6 +22,9 @@
     },
     "habilitado_para": {
       "type": "json"
+    },
+    "codigo_fuente": {
+      "type": "string"
     }
   }
 }
