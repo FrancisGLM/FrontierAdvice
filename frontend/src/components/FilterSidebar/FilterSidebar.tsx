@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { PasoFronterizo, FiltrosMapa } from '@/lib/types';
 import { regiones } from '@/lib/mockData';
 import styles from './FilterSidebar.module.css';
+import IncidenteModal from '@/components/IncidenteModal/IncidenteModal';
 
 interface FilterSidebarProps {
   filtros: FiltrosMapa;
@@ -28,10 +29,7 @@ export default function FilterSidebar({
   selectedPasoId,
 }: FilterSidebarProps) {
   const [isOpenMobile, setIsOpenMobile] = useState(false);
-
-  const handleSoon = () => {
-    alert('Función disponible próximamente');
-  };
+  const [incidenteOpen, setIncidenteOpen] = useState(false);
 
   return (
     <>
@@ -140,20 +138,30 @@ export default function FilterSidebar({
 
         {/* Bottom buttons */}
         <div className={styles.bottomSection}>
-          <button onClick={handleSoon} className={styles.primaryButton}>
+          <button
+            id="sidebar-reportar-incidente"
+            onClick={() => setIncidenteOpen(true)}
+            className={styles.primaryButton}
+          >
             <AlertTriangle size={14} />
             Reportar incidente
           </button>
         </div>
       </aside>
-      
+
       {/* Mobile Backdrop */}
       {isOpenMobile && (
-        <div 
+        <div
           className="md:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-30"
           onClick={() => setIsOpenMobile(false)}
         />
       )}
+
+      {/* Incidente Modal */}
+      <IncidenteModal
+        open={incidenteOpen}
+        onClose={() => setIncidenteOpen(false)}
+      />
     </>
   );
 }

@@ -18,6 +18,17 @@ export type Region =
   | 'Aysén'
   | 'Magallanes';
 
+export interface ClimaActual {
+  temperatura: number;
+  sensacionTermica: number;
+  descripcion: string;
+  icono: IconoClima;
+  viento: number; // km/h
+  humedad: number; // %
+  visibilidad: number; // km
+  presion: number; // hPa
+}
+
 export interface PronosticoDia {
   dia: string;
   icono: IconoClima;
@@ -36,6 +47,7 @@ export interface PasoFronterizo {
   ultimaActualizacion: string;
   altitud?: number;
   pronostico: PronosticoDia[];
+  climaActual?: ClimaActual;
 }
 
 export interface FiltrosMapa {

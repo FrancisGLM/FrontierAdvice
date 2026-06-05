@@ -3,6 +3,7 @@
 import { X, Clock, Mountain, MapPin } from 'lucide-react';
 import { PasoFronterizo } from '@/lib/types';
 import WeatherForecast from './WeatherForecast';
+import CurrentWeather from './CurrentWeather';
 import styles from './PasoInfo.module.css';
 
 interface PasoInfoPanelProps {
@@ -96,6 +97,11 @@ export default function PasoInfoPanel({ paso, onClose }: PasoInfoPanelProps) {
               <span>Región: {displayPaso.region}</span>
             </div>
           </div>
+
+          {/* Current Weather */}
+          {displayPaso.climaActual && (
+            <CurrentWeather clima={displayPaso.climaActual} />
+          )}
 
           <div className={styles.divider} />
 

@@ -87,11 +87,29 @@ services:
       PLAYWRIGHT_BROWSERS_PATH: /tmp/ms-playwright
     volumes:
       - playwright_tmp:/tmp/ms-playwright
+  
+  waha-frontier:
+    image: devlikeapro/waha
+    container_name: waha-frontier
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    environment:
+      - WHATSAPP_API_KEY=e18db994-592d-46bb-9b96-e2da839c0961
+      - WHATSAPP_START_SESSION=default
+      - WAHA_DASHBOARD_USERNAME=admin
+      - WAHA_DASHBOARD_PASSWORD=89157549
+    volumes:
+      - waha_sessions:/app/.sessions
+    networks:
+      - frontier-network
 
 volumes:
   strapi-data:
   n8n_data:
   playwright_tmp:
+  waha_sessions:
+  
 
 networks:
   frontier-network:
