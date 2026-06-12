@@ -1,0 +1,796 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Config": {
+      "main": [
+        [
+          {
+            "node": "Obtener Mensajes WAHA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener Mensajes WAHA": {
+      "main": [
+        [
+          {
+            "node": "Filtrar y Splitear Mensajes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtrar y Splitear Mensajes": {
+      "main": [
+        [
+          {
+            "node": "IF Sin Relevantes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Sin Relevantes": {
+      "main": [
+        [
+          {
+            "node": "Log Sin Relevantes",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Verificar Duplicado en Strapi",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar Duplicado en Strapi": {
+      "main": [
+        [
+          {
+            "node": "IF Ya Existe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Ya Existe": {
+      "main": [
+        [
+          {
+            "node": "Log Duplicado",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Guardar MensajeWAHA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar MensajeWAHA": {
+      "main": [
+        [
+          {
+            "node": "Wait 3s (Rate Limit)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Output Gemini": {
+      "main": [
+        [
+          {
+            "node": "IF Tiene Datos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Tiene Datos": {
+      "main": [
+        [
+          {
+            "node": "Buscar PasoFronterizo",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Sin Relevantes1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar PasoFronterizo": {
+      "main": [
+        [
+          {
+            "node": "IF Paso Encontrado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Paso Encontrado": {
+      "main": [
+        [
+          {
+            "node": "Build EstadoDiario",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Paso No Encontrado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build EstadoDiario": {
+      "main": [
+        [
+          {
+            "node": "POST EstadoDiario Strapi",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST EstadoDiario Strapi": {
+      "main": [
+        [
+          {
+            "node": "Marcar Mensaje Procesado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Whatsapp Messages": {
+      "main": [
+        [
+          {
+            "node": "Parse Output Gemini",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 3s (Rate Limit)": {
+      "main": [
+        [
+          {
+            "node": "Normalize Whatsapp Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalizar con Gemini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Normalize Whatsapp Messages",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-06-12T08:12:34.344Z",
+  "id": "5fNE6Pd43tEjlGcc",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "fc2c66c5-9f4a-43ad-a10e-ecaa74a8eb9a",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1",
+              "name": "source_id",
+              "value": "whatsapp_upf",
+              "type": "string"
+            },
+            {
+              "id": "a2",
+              "name": "source_name",
+              "value": "Canal WhatsApp UPF",
+              "type": "string"
+            },
+            {
+              "id": "a3",
+              "name": "captured_at",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "a4",
+              "name": "limit_mensajes",
+              "value": 200,
+              "type": "number"
+            },
+            {
+              "id": "a5",
+              "name": "strapi_url",
+              "value": "http://strapi:1337",
+              "type": "string"
+            },
+            {
+              "id": "a6",
+              "name": "gemini_delay_ms",
+              "value": 3000,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5958820f-2eff-4abd-8631-1d903a99e09c",
+      "name": "Set Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -416,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://waha-frontier:3000/api/default/chats/120363198041682325@newsletter/messages",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "={{ $json.limit_mensajes }}"
+            },
+            {
+              "name": "downloadMedia",
+              "value": "false"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Api-Key",
+              "value": "={{ $env.WAHA_API_KEY }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4efa2990-6731-4b20-a129-e9a685dbc17c",
+      "name": "Obtener Mensajes WAHA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -176,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const KEYWORDS = [\n  \"complejo\",\"fronterizo\",\"frontera\",\"habilitado\",\"cerrado\",\"abierto\",\n  \"suspendido\",\"precaución\",\"precaucion\",\"habilitada\",\"cerrada\",\n  \"horario\",\"ingreso\",\"salida\",\"vehículo\",\"vehiculo\",\"paso\",\n  \"hrs\",\"hora\",\"a.m.\",\"p.m.\",\n  \"nevada\",\"nieve\",\"tormenta\",\"temporal\",\"viento\",\"lluvia\",\n  \"congelamiento\",\"deslizamiento\",\"alud\",\"ruta\",\n  \"los libertadores\",\"cardenal\",\"pehuenche\",\"pircas negras\",\n  \"jama\",\"colchane\",\"agua negra\",\"vergara\",\"pichachén\",\"pichachen\",\n  \"hua hum\",\"samoré\",\"samore\",\"san francisco\",\"dorotea\",\"casas viejas\",\n  \"san sebastián\",\"san sebastian\",\"bellavista\",\"integración austral\",\n  \"don guillermo\",\"pino hachado\",\"chungará\",\"chungara\",\"chacalluta\",\n  \"ollague\",\"collahuasi\",\"portillo\",\"río blanco\",\n  \"atacama\",\"coquimbo\",\"valparaíso\",\"valparaiso\",\"maule\",\n  \"biobío\",\"biobio\",\"araucanía\",\"araucania\",\"aysén\",\"aysen\",\n  \"magallanes\",\"antofagasta\",\"tarapacá\",\"tarapaca\"\n];\n\nfunction hasKeyword(text) {\n  const lower = text.toLowerCase();\n  return KEYWORDS.some(kw => lower.includes(kw));\n}\n\nconst rawInput = $input.first().json;\nlet msgs = [];\nif (Array.isArray(rawInput)) {\n  msgs = rawInput;\n} else if (Array.isArray(rawInput.messages)) {\n  msgs = rawInput.messages;\n} else {\n  msgs = $input.all().map(i => i.json).filter(m => m.body);\n}\n\nconst config = $(\"Set Config\").first().json;\n\nconst relevantes = msgs.filter(m => m.body && m.body.trim().length > 10 && hasKeyword(m.body));\n\nconsole.log(`Total mensajes: ${msgs.length} | Relevantes: ${relevantes.length}`);\n\nif (relevantes.length === 0) {\n  return [{ json: { sin_relevantes: true, total: msgs.length } }];\n}\n\n// Retornar 1 item por mensaje (ordenados del más antiguo al más nuevo)\nreturn [...relevantes]\n  .sort((a, b) => a.timestamp - b.timestamp)\n  .map(m => ({ json: {\n    msg_id:        m.id,\n    msg_body:      m.body,\n    msg_timestamp: m.timestamp,\n    msg_fecha_iso: new Date(m.timestamp * 1000).toISOString(),\n    msg_row_id:    m._data?.rowId ?? null,\n    msg_server_id: m._data?.serverId ?? null,\n    source_id:     config.source_id,\n    source_name:   config.source_name,\n    captured_at:   config.captured_at,\n    strapi_url:    config.strapi_url,\n    gemini_delay:  config.gemini_delay_ms\n  }}));"
+      },
+      "id": "39a14a5f-3779-4ba9-8d07-b1a79577bb24",
+      "name": "Filtrar y Splitear Mensajes",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        64,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.sin_relevantes }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and",
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          }
+        },
+        "options": {}
+      },
+      "id": "5d412ae1-ced9-41d1-ac16-9da70cd0dfcc",
+      "name": "IF Sin Relevantes",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        304,
+        608
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "59056bb7-4102-4c80-9c27-13c01fb8121e",
+      "name": "Log Sin Relevantes",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        544,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.strapi_url }}/api/mensaje-wahas",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filters[msg_id_waha][$eq]",
+              "value": "={{ $json.msg_id }}"
+            },
+            {
+              "name": "fields[0]",
+              "value": "id"
+            },
+            {
+              "name": "fields[1]",
+              "value": "msg_id_waha"
+            },
+            {
+              "name": "fields[2]",
+              "value": "procesado"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.STRAPI_API_TOKEN }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "87ebebb7-1f7a-41eb-beea-627795e7584f",
+      "name": "Verificar Duplicado en Strapi",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        544,
+        736
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "c2",
+              "leftValue": "={{ $json.data?.length ?? 0 }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and",
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          }
+        },
+        "options": {}
+      },
+      "id": "66e2386c-260a-4ddc-ae2d-1ed100b090ed",
+      "name": "IF Ya Existe",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        784,
+        736
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a3801527-0231-41e3-a180-c177c968dc6c",
+      "name": "Log Duplicado",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1024,
+        592
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Verificar Duplicado en Strapi').item.json.config?.strapi_url ?? 'http://strapi:1337' }}/api/mensaje-wahas",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.STRAPI_API_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  data: {\n    msg_id_waha:   $('Filtrar y Splitear Mensajes').item.json.msg_id,\n    msg_body:      $('Filtrar y Splitear Mensajes').item.json.msg_body,\n    msg_timestamp: $('Filtrar y Splitear Mensajes').item.json.msg_timestamp,\n    msg_fecha_iso: $('Filtrar y Splitear Mensajes').item.json.msg_fecha_iso,\n    msg_row_id:    $('Filtrar y Splitear Mensajes').item.json.msg_row_id,\n    msg_server_id: $('Filtrar y Splitear Mensajes').item.json.msg_server_id,\n    fuente:        \"whatsapp_upf\",\n    relevante:     true,\n    procesado:     false\n  }\n}) }}",
+        "options": {}
+      },
+      "id": "76aa0a8c-402f-481f-af1a-669190017260",
+      "name": "Guardar MensajeWAHA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1024,
+        848
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "id": "e9f77a76-0ca8-4f99-9bbb-a934df5eed69",
+      "name": "Wait 3s (Rate Limit)",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1264,
+        848
+      ],
+      "webhookId": "wait-rate-limit"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "id": "c4248cfe-0f27-47ef-945d-2ba3e60b55c9",
+      "name": "Normalizar con Gemini",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        1056
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "gkGbag9Eoxr0uPjN",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const raw = $input.item.json?.output ?? $input.item.json?.text ?? $input.item.json?.content ?? \"\";\nconst msgMeta = $('Filtrar y Splitear Mensajes').item.json;\n\nlet parsed;\ntry {\n  const cleaned = raw.replace(/```json\\n?|```/g, \"\").trim();\n  parsed = JSON.parse(cleaned);\n} catch(e) {\n  return [{ json: { parse_error: true, raw, ...msgMeta } }];\n}\n\nconst items = parsed?.items ?? [];\nif (items.length === 0) {\n  return [{ json: { sin_datos: true, ...msgMeta } }];\n}\n\nreturn items.map(item => ({ json: { ...item, ...msgMeta } }));"
+      },
+      "id": "7b9e2b48-b995-4dfc-91ed-cad961d7654d",
+      "name": "Parse Output Gemini",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1744,
+        848
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "c3",
+              "leftValue": "={{ $json.sin_datos || $json.parse_error }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and",
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          }
+        },
+        "options": {}
+      },
+      "id": "322e3f89-4f22-4020-996c-625df44bd1fd",
+      "name": "IF Tiene Datos",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1984,
+        848
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://strapi:1337/api/paso-fronterizos",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filters[codigo_fuente][$eq]",
+              "value": "={{ $json.codigo_fuente }}"
+            },
+            {
+              "name": "fields[0]",
+              "value": "id"
+            },
+            {
+              "name": "fields[1]",
+              "value": "nombre_oficial"
+            },
+            {
+              "name": "fields[2]",
+              "value": "region"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.STRAPI_API_TOKEN }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3b13d57d-35af-48d1-94d8-557221dbb1d2",
+      "name": "Buscar PasoFronterizo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2224,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "c4",
+              "leftValue": "={{ $json.data?.length ?? 0 }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and",
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          }
+        },
+        "options": {}
+      },
+      "id": "b0162832-a166-4931-8165-b9ff5ff3ba4b",
+      "name": "IF Paso Encontrado",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2464,
+        768
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "47cb9369-18d0-474c-93b8-05de607a1254",
+      "name": "Log Paso No Encontrado",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2704,
+        928
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const paso  = $('Buscar PasoFronterizo').item.json.data[0];\nconst d     = $('Parse Output Gemini').item.json;\nconst msgM  = $('Filtrar y Splitear Mensajes').item.json;\n\nreturn [{ json: {\n  payload: {\n    data: {\n      fecha_reporte:        d.msg_fecha_iso,\n      estado_general:       d.estado ?? \"desconocido\",\n      fuente:               \"whatsapp_upf\",\n      mensaje_original:     d.mensaje_original ?? msgM.msg_body,\n      origen_tipo:          \"whatsapp_channel\",\n      confianza_extraccion: parseFloat(d.confianza ?? 0.5),\n      id_paso:              paso.id,\n      horario_apertura:     d.horario_apertura ?? null,\n      horario_cierre:       d.horario_cierre ?? null,\n      motivo_estado:        d.motivo_estado ?? null,\n      nivel_riesgo_calc:    d.nivel_riesgo ?? null,\n      tipo_vehiculos:       d.tipo_vehiculos ?? [],\n      dias_operacion:       d.dias_operacion ?? [],\n      msg_timestamp:        msgM.msg_timestamp,\n      msg_id_waha:          msgM.msg_id,\n      msg_server_id:        msgM.msg_server_id ?? null\n    }\n  },\n  paso_nombre: paso.nombre_oficial,\n  paso_id:     paso.id\n}}];"
+      },
+      "id": "19b9ff9e-ef38-43bd-bd6a-aeeb47d61a92",
+      "name": "Build EstadoDiario",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2704,
+        656
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://strapi:1337/api/estado-diarios",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.STRAPI_API_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.payload) }}",
+        "options": {}
+      },
+      "id": "589f9f81-ee7c-421e-a4f6-52fb79b99ba6",
+      "name": "POST EstadoDiario Strapi",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2944,
+        656
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "http://strapi:1337/api/mensaje-wahas/{{ $('Guardar MensajeWAHA').item.json.data?.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.STRAPI_API_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"data\": { \"procesado\": true } }",
+        "options": {}
+      },
+      "id": "7a4b0532-08eb-4786-83f0-fed9ec44b7ca",
+      "name": "Marcar Mensaje Procesado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3184,
+        656
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "f1f8fa69-fe98-44e3-a89b-ec0e56eb56dc",
+      "name": "Log Sin Relevantes1",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2224,
+        1008
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Eres un normalizador de mensajes oficiales sobre pasos fronterizos de Chile para FrontierAdvice.\n\nTu tarea es convertir mensajes de WhatsApp del canal oficial de la UPF (Unidad de Pasos Fronterizos) en JSON estricto.\n\nDebes devolver SOLO JSON válido, sin markdown, sin explicación y sin texto adicional.\n\nReglas:\n- Un mensaje puede mencionar UNO o VARIOS pasos fronterizos. Genera un item por cada paso identificado.\n- Clasifica \"estado_general\" como uno de: \"abierto\", \"cerrado\", \"abierto_con_precaucion\", \"suspendido\", \"desconocido\".\n  - HABILITADO → \"abierto\"\n  - NO HABILITADO / CERRADO / fin de temporada → \"cerrado\"\n  - con precaución / nevada / temporal / condiciones adversas → \"abierto_con_precaucion\"\n- Conserva el mensaje original completo en \"mensaje_original\".\n- \"fuente\" debe ser siempre \"whatsapp_upf\".\n- \"origen_tipo\" debe ser siempre \"whatsapp_channel\".\n- \"confianza_extraccion\": número entre 0 y 1 (1.0 si el estado es explícito, 0.7 si se infiere).\n- \"fecha_reporte\": usa formato ISO 8601. Extrae la fecha del texto (ej: \"11/06/26\" → \"2026-06-11T00:00:00.000Z\"). Si no hay fecha explícita, usa \"{{$json.msg_fecha_iso}}\".\n- \"codigo_fuente\": nombre del complejo en minúsculas con guiones (ej: \"los-libertadores\", \"pino-hachado\", \"agua-negra\", \"san-francisco\", \"pircas-negras\", \"vergara\", \"pehuenche\", \"pichachen\", \"hua-hum\", \"cardenal-samore\", \"jama\", \"colchane\", \"dorotea\", \"casas-viejas\", \"san-sebastian\", \"bellavista\", \"integracion-austral\", \"don-guillermo\", \"carirrine\"). Si no puedes identificarlo con certeza, usa null.\n- Si el mensaje NO contiene información de estado de ningún paso fronterizo, devuelve: {\"items\": []}\n\nFormato exacto de salida:\n{\n  \"items\": [\n    {\n      \"codigo_fuente\": null,\n      \"fecha_reporte\": \"{{$json.msg_fecha_iso}}\",\n      \"estado_general\": \"\",\n      \"fuente\": \"whatsapp_upf\",\n      \"mensaje_original\": \"\",\n      \"confianza_extraccion\": 0.0,\n      \"origen_tipo\": \"whatsapp_channel\"\n    }\n  ]\n}\n\nMensaje a normalizar:\n{{ JSON.stringify($json.messages[0]) }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        1440,
+        848
+      ],
+      "id": "79b776bd-ff4b-4910-b71b-bf93565f0647",
+      "name": "Normalize Whatsapp Messages"
+    }
+  ],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-06-12T08:12:34.348Z",
+      "createdAt": "2026-06-12T08:12:34.348Z",
+      "role": "workflow:owner",
+      "workflowId": "5fNE6Pd43tEjlGcc",
+      "projectId": "0mwVSLULhlB6ku2N"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-06-12T08:59:27.942Z",
+  "versionId": "ca473681-4cbc-49ff-82df-c3057d9406c5"
+}
