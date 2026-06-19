@@ -1,0 +1,2252 @@
+{
+  "active": true,
+  "activeVersion": {
+    "updatedAt": "2026-06-19T15:58:21.000Z",
+    "createdAt": "2026-06-19T12:13:13.310Z",
+    "versionId": "7de5883a-f9f8-4e43-ab66-9a9ebe5aec02",
+    "workflowId": "sUrBCvAZhyMcELm1",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "hours",
+                "hoursInterval": 2
+              }
+            ]
+          }
+        },
+        "id": "2d4c5c05-af4a-4bd6-8ed3-a68d638d4ec8",
+        "name": "Schedule Trigger",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          -4224,
+          -96
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "c1",
+                "name": "user_id",
+                "value": "250110721",
+                "type": "string"
+              },
+              {
+                "id": "c2",
+                "name": "max_results",
+                "value": 5,
+                "type": "number"
+              },
+              {
+                "id": "c3",
+                "name": "strapi_url",
+                "value": "https://strapi.frontieradvice.tech",
+                "type": "string"
+              },
+              {
+                "id": "c4",
+                "name": "source_id",
+                "value": "x_upfronterizos",
+                "type": "string"
+              },
+              {
+                "id": "c5",
+                "name": "source_name",
+                "value": "@UPFronterizos (X)",
+                "type": "string"
+              },
+              {
+                "id": "c6",
+                "name": "captured_at",
+                "value": "={{ $now.toISO() }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "8b0703ff-2222-46f8-a76c-7fda7b1e3a35",
+        "name": "Set Config",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -3984,
+          -96
+        ]
+      },
+      {
+        "parameters": {
+          "url": "=https://api.twitter.com/2/users/{{ $json.user_id }}/tweets",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "httpHeaderAuth",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "max_results",
+                "value": "={{ $json.max_results }}"
+              },
+              {
+                "name": "tweet.fields",
+                "value": "created_at,text,id,public_metrics,entities"
+              },
+              {
+                "name": "expansions",
+                "value": "author_id"
+              },
+              {
+                "name": "exclude",
+                "value": "retweets,replies"
+              },
+              {
+                "name": "start_time",
+                "value": "={{ DateTime.now().minus({hours: 72}).toISO() }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "bf3b0de8-4771-4b9e-b7c8-b1380bed0538",
+        "name": "Obtener Tweets X",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -3744,
+          -96
+        ],
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "xtWUP8YSqKYRNetl",
+            "name": "X API Bearer Token"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "conditions": [
+              {
+                "id": "d1",
+                "leftValue": "={{ ($json.data ?? []).length }}",
+                "rightValue": 0,
+                "operator": {
+                  "type": "number",
+                  "operation": "gt"
+                }
+              }
+            ],
+            "combinator": "and",
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            }
+          },
+          "options": {}
+        },
+        "id": "e524b294-fb11-4398-aca9-aae00c3f1bc5",
+        "name": "IF Hay Tweets",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -3504,
+          -96
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "bc64b7aa-385a-4442-b7dc-33ce5e9456e7",
+        "name": "Log Sin Tweets",
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
+        "position": [
+          -3264,
+          16
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const KEYWORDS = [\n  \"complejo\",\"fronterizo\",\"frontera\",\"habilitado\",\"cerrado\",\"abierto\",\n  \"suspendido\",\"precaución\",\"precaucion\",\"habilitada\",\"cerrada\",\n  \"horario\",\"ingreso\",\"salida\",\"vehículo\",\"vehiculo\",\"paso\",\n  \"hrs\",\"hora\",\"nevada\",\"nieve\",\"tormenta\",\"temporal\",\"viento\",\"lluvia\",\n  \"congelamiento\",\"deslizamiento\",\"alud\",\"ruta\",\n  \"los libertadores\",\"cardenal\",\"pehuenche\",\"pircas negras\",\n  \"jama\",\"colchane\",\"agua negra\",\"vergara\",\"pichachén\",\"pichachen\",\n  \"hua hum\",\"samoré\",\"samore\",\"san francisco\",\"dorotea\",\"casas viejas\",\n  \"san sebastián\",\"san sebastian\",\"bellavista\",\"integración austral\",\n  \"don guillermo\",\"pino hachado\",\"chungará\",\"chungara\",\"chacalluta\",\n  \"ollague\",\"collahuasi\",\"portillo\",\"río blanco\",\"visviri\",\"sico\",\n  \"hito cajón\",\"hito cajon\",\"carirrine\",\"mamuil\",\"perez rosales\",\n  \"atacama\",\"coquimbo\",\"valparaíso\",\"valparaiso\",\"maule\",\n  \"biobío\",\"biobio\",\"araucanía\",\"araucania\",\"aysén\",\"aysen\",\n  \"magallanes\",\"antofagasta\",\"tarapacá\",\"tarapaca\",\"arica\",\"parinacota\"\n];\n\nfunction hasKeyword(text) {\n  const lower = text.toLowerCase();\n  return KEYWORDS.some(kw => lower.includes(kw));\n}\n\nconst rawInput = $input.first().json;\nconst tweets   = rawInput.data ?? [];\nconst config   = $(\"Set Config\").first().json;\n\nconst relevantes = tweets.filter(t => t.text && hasKeyword(t.text));\n\nif (relevantes.length === 0) {\n  return [{ json: { sin_relevantes: true, total: tweets.length } }];\n}\n\nreturn relevantes.map(t => ({ json: {\n  tweet_id:    t.id,\n  tweet_text:  t.text,\n  tweet_date:  t.created_at,\n  tweet_url:   `https://twitter.com/UPFronterizos/status/${t.id}`,\n  source_id:   config.source_id,\n  source_name: config.source_name,\n  captured_at: config.captured_at,\n  strapi_url:  config.strapi_url\n}}));"
+        },
+        "id": "473c15dd-f4e5-407b-97b5-7d6d57c9fb68",
+        "name": "Filtrar y Splitear Tweets",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -3264,
+          -208
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "conditions": [
+              {
+                "id": "e1",
+                "leftValue": "={{ $json.sin_relevantes }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and",
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            }
+          },
+          "options": {}
+        },
+        "id": "3078e45d-72b9-49db-ab59-f1b6aea891ec",
+        "name": "IF Sin Relevantes",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -3008,
+          -208
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "67f23739-e553-4a18-8d7b-6815c5b788db",
+        "name": "Log Sin Relevantes",
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
+        "position": [
+          -2768,
+          -352
+        ]
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "4124ebde-9298-4859-ae48-c9d5e9c0b91b",
+        "name": "Loop Tweet x Tweet",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          -2768,
+          -64
+        ]
+      },
+      {
+        "parameters": {
+          "url": "={{ $('Loop Tweet x Tweet').item.json.strapi_url }}/api/tweet-xes",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "strapiTokenApi",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "filters[tweet_id_x][$eq]",
+                "value": "={{ $('Loop Tweet x Tweet').item.json.tweet_id }}"
+              },
+              {
+                "name": "fields[0]",
+                "value": "id"
+              },
+              {
+                "name": "fields[1]",
+                "value": "procesado"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ $env.STRAPI_API_TOKEN }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d41ae0f5-cfa7-4d09-bfe3-ccf5a41abd63",
+        "name": "Verificar Duplicado",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -2480,
+          -48
+        ],
+        "credentials": {
+          "httpBearerAuth": {
+            "id": "GnIWw1xZZzhXRcXd",
+            "name": "Bearer Auth account"
+          },
+          "strapiTokenApi": {
+            "id": "eUSeEuEvTFDfOYVR",
+            "name": "Strapi FrontierAdvice"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "conditions": [
+              {
+                "id": "f1",
+                "leftValue": "={{ ($json.data ?? []).length }}",
+                "rightValue": 0,
+                "operator": {
+                  "type": "number",
+                  "operation": "gt"
+                }
+              }
+            ],
+            "combinator": "and",
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            }
+          },
+          "options": {}
+        },
+        "id": "9189b49c-d1d6-42aa-bb6c-1f22dae1c58b",
+        "name": "IF Ya Existe",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -2304,
+          -48
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $('Loop Tweet x Tweet').item.json.strapi_url }}/api/tweet-xes",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "strapiTokenApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ $env.STRAPI_API_TOKEN }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify({\n  data: {\n    tweet_id_x:  $('Loop Tweet x Tweet').item.json.tweet_id,\n    tweet_text:  $('Loop Tweet x Tweet').item.json.tweet_text,\n    tweet_date:  $('Loop Tweet x Tweet').item.json.tweet_date,\n    tweet_url:   $('Loop Tweet x Tweet').item.json.tweet_url,\n    fuente:      \"x_upfronterizos\",\n    relevante:   true,\n    procesado:   false,\n  }\n}) }}",
+          "options": {}
+        },
+        "id": "a73c5d02-d41d-485f-85cb-3b08bf2a50c8",
+        "name": "Guardar Tweet Raw",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -2048,
+          -32
+        ],
+        "credentials": {
+          "strapiTokenApi": {
+            "id": "eUSeEuEvTFDfOYVR",
+            "name": "Strapi FrontierAdvice"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "amount": 4
+        },
+        "id": "c5ee04bb-cc4c-4d46-8cab-8941d408d277",
+        "name": "Wait 4s Gemini Rate Limit",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          -1808,
+          -32
+        ],
+        "webhookId": "wait-x-gemini-rl"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Eres un normalizador de tweets oficiales sobre pasos fronterizos de Chile para FrontierAdvice.\n\nEl tweet proviene de la cuenta oficial @UPFronterizos (Unidad de Pasos Fronterizos de Chile).\n\nTu tarea es convertir el tweet en JSON estricto. Devuelve SOLO el JSON, sin markdown ni texto adicional.\n\nReglas:\n- Un tweet puede mencionar UNO o VARIOS pasos. Genera un item por cada paso identificado.\n- \"estado_general\": \"abierto\" | \"cerrado\" | \"abierto_con_precaucion\" | \"suspendido\" | \"desconocido\"\n  • HABILITADO → \"abierto\"\n  • CERRADO / NO HABILITADO / fin temporada → \"cerrado\"\n  • con precaución / temporal / condiciones adversas / nevada → \"abierto_con_precaucion\"\n- \"confianza_extraccion\": 1.0 si el estado es explícito, 0.7 si se infiere, 0.4 si es ambiguo.\n- \"fecha_reporte\": ISO 8601 desde el texto. Si no hay fecha, usa: {{ $('Loop Tweet x Tweet').item.json.tweet_date }}\n- \"codigo_fuente\": nombre en minúsculas con guiones. Ejemplos:\n  los-libertadores | pino-hachado | agua-negra | san-francisco | pircas-negras\n  vergara | pehuenche | pichachen | hua-hum | cardenal-samore | jama | colchane\n  dorotea | casas-viejas | san-sebastian | bellavista | integracion-austral\n  don-guillermo | chungara | chacalluta | ollague | collahuasi | portillo | visviri\n  hito-cajon | sico | carirrine | paso-mamuil | paso-perez-rosales\n  Si no puedes identificarlo con certeza, usa null.\n- \"horario_apertura\" / \"horario_cierre\": string \"HH:MM\" o null.\n- \"tipo_vehiculos\": array de strings (ej: [\"automóvil\",\"bus\",\"camión\"]) o [].\n- \"motivo_estado\": texto breve del motivo o null.\n- \"fecha_vigencia_desde\": fecha y hora desde la que aplica el estado descrito. Si el tweet dice \"mañana\", \"a partir del X\", \"desde el X\", calcula la fecha correcta en ISO 8601 relativa a fecha_tweet. Si el estado es inmediato, usa la misma fecha del tweet.\n\"fecha_vigencia_hasta\": si hay hora de cierre del día (\"hasta las 20:00\"), combínala con fecha_vigencia_desde. Si no hay límite explícito, usa null.\n\"es_programado\": true si fecha_vigencia_desde es posterior a fecha_tweet + 1 hora.\n\n\nSi el tweet NO contiene información de estado de ningún paso, devuelve: {\"items\": []}\n\nFormato de salida:\n{\n  \"items\": [\n    {\n      \"codigo_fuente\": null,\n      \"fecha_reporte\": \"\",\n      \"estado_general\": \"\",\n      \"fuente\": \"x_upfronterizos\",\n      \"mensaje_original\": \"\",\n      \"confianza_extraccion\": 0.0,\n      \"origen_tipo\": \"twitter_account\",\n      \"horario_apertura\": null,\n      \"horario_cierre\": null,\n      \"tipo_vehiculos\": [],\n      \"motivo_estado\": null,\n      \"tweet_url\": \"\"\n    }\n  ]\n}\n\nTweet a normalizar:\n{{ $('Loop Tweet x Tweet').item.json.tweet_text }}",
+          "batching": {}
+        },
+        "id": "7bedf8e6-473c-4e13-8311-bfefbdba593c",
+        "name": "Normalize Tweet Gemini",
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.9,
+        "position": [
+          -1616,
+          -64
+        ],
+        "retryOnFail": true,
+        "waitBetweenTries": 5000
+      },
+      {
+        "parameters": {
+          "jsCode": "// ── Helpers ─────────────────────────────────────────────────────────────────\nfunction safe(v, fallback) {\n  if (v === undefined || v === null) return fallback;\n  const s = String(v);\n  // Eliminar expresiones n8n que Gemini haya colado literalmente\n  if (s.includes(\"{{\") || s.includes(\"}}\")) return fallback;\n  return s;\n}\n\nfunction safeFloat(v, fallback) {\n  const n = parseFloat(v);\n  return isNaN(n) ? fallback : n;\n}\n\n// ── Metadatos del tweet ──────────────────────────────────────────────────────\nlet tweetId = \"\", tweetText = \"\", tweetDate = \"\", tweetUrl = \"\", strapiUrl = \"\";\nlet strapiTweetId = null;\n\ntry { const m = $('Loop Tweet x Tweet').item.json;\n  tweetId   = m?.tweet_id   ?? \"\";\n  tweetText = m?.tweet_text ?? \"\";\n  tweetDate = m?.tweet_date ?? \"\";\n  tweetUrl  = m?.tweet_url  ?? \"\";\n  strapiUrl = m?.strapi_url ?? \"\";\n} catch(_) {}\n\ntry {\n  strapiTweetId = $('Guardar Tweet Raw').item.json?.data?.id ?? null;\n} catch(_) {}\n\n// ── Leer output del LLM ──────────────────────────────────────────────────────\nconst inputJson = $input.first().json;\n\nlet raw = inputJson?.text\n   ?? inputJson?.output\n   ?? inputJson?.content\n   ?? \"\";\n\n// ── Parsear JSON ─────────────────────────────────────────────────────────────\nlet parsed = null;\nlet parseError = null;\n\ntry {\n  let c = String(raw)\n    .replace(/```json\\s*/gi, \"\")\n    .replace(/```\\s*/gi, \"\")\n    .trim();\n\n  // Eliminar expresiones n8n literales que Gemini pueda haber insertado\n  c = c.replace(/\\{\\{[^}]*\\}\\}/g, '\"\"');\n\n  const s = c.indexOf(\"{\");\n  if (s > 0) c = c.substring(s);\n  const e = c.lastIndexOf(\"}\");\n  if (e !== -1 && e < c.length - 1) c = c.substring(0, e + 1);\n\n  parsed = JSON.parse(c);\n} catch(e) {\n  parseError = String(e.message);\n}\n\n// ── Error de parseo ──────────────────────────────────────────────────────────\nif (parseError !== null || parsed === null) {\n  return [{ json: {\n    parse_error:     true,\n    error_msg:       parseError ?? \"null result\",\n    raw_snippet:     String(raw).substring(0, 300),\n    tweet_id:        String(tweetId),\n    strapi_url:      String(strapiUrl),\n    strapi_tweet_id: strapiTweetId\n  }}];\n}\n\n// ── Sin items ────────────────────────────────────────────────────────────────\nconst items = Array.isArray(parsed?.items) ? parsed.items : [];\n\nif (items.length === 0) {\n  return [{ json: {\n    sin_datos:       true,\n    tweet_id:        String(tweetId),\n    strapi_url:      String(strapiUrl),\n    strapi_tweet_id: strapiTweetId\n  }}];\n}\n\n// ── Retornar un item por paso ─────────────────────────────────────────────────\nreturn items.map(item => ({ json: {\n  codigo_fuente:        safe(item.codigo_fuente, null),\n  fecha_reporte:        safe(item.fecha_reporte, null) ?? tweetDate,\n  estado_general:       safe(item.estado_general, \"desconocido\"),\n  fuente:               \"x_upfronterizos\",\n  mensaje_original:     safe(item.mensaje_original, tweetText),\n  confianza_extraccion: safeFloat(item.confianza_extraccion, 0.4),\n  origen_tipo:          \"twitter_account\",\n  horario_apertura:     safe(item.horario_apertura, null),\n  horario_cierre:       safe(item.horario_cierre, null),\n  tipo_vehiculos:       Array.isArray(item.tipo_vehiculos) ? item.tipo_vehiculos : [],\n  motivo_estado:        safe(item.motivo_estado, null),\n  fecha_vigencia_desde: safe(item.fecha_vigencia_desde, null),\n  fecha_vigencia_hasta: safe(item.fecha_vigencia_hasta, null),\n  es_programado:        item.es_programado === true,\n  tweet_id:             String(tweetId),\n  tweet_url:            String(tweetUrl),\n  tweet_date:           String(tweetDate),\n  strapi_url:           String(strapiUrl),\n  strapi_tweet_id:      strapiTweetId\n}}));"
+        },
+        "id": "a26e2525-40f0-4cf2-b33f-92111ac928f2",
+        "name": "Parse Output Gemini",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1296,
+          16
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "conditions": [
+              {
+                "id": "g1",
+                "leftValue": "={{ $json.sin_datos || $json.parse_error }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "notEquals"
+                }
+              }
+            ],
+            "combinator": "and",
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            }
+          },
+          "options": {}
+        },
+        "id": "241756c7-9fce-46c9-ac22-f1d0580fd05b",
+        "name": "IF Tiene Datos",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -720,
+          64
+        ]
+      },
+      {
+        "parameters": {
+          "url": "={{ $json.strapi_url }}/api/paso-fronterizos",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "strapiTokenApi",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "filters[codigo_fuente][$eq]",
+                "value": "={{ $json.codigo_fuente }}"
+              },
+              {
+                "name": "fields[0]",
+                "value": "id"
+              },
+              {
+                "name": "fields[1]",
+                "value": "nombre_oficial"
+              },
+              {
+                "name": "fields[2]",
+                "value": "region"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ $env.STRAPI_API_TOKEN }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "9222fc7e-d080-4c4b-902a-ff6bb07578ad",
+        "name": "Buscar PasoFronterizo",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -480,
+          48
+        ],
+        "credentials": {
+          "strapiTokenApi": {
+            "id": "eUSeEuEvTFDfOYVR",
+            "name": "Strapi FrontierAdvice"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "conditions": [
+              {
+                "id": "h1",
+                "leftValue": "={{ ($json.data ?? []).length }}",
+                "rightValue": 0,
+                "operator": {
+                  "type": "number",
+                  "operation": "gt"
+                }
+              }
+            ],
+            "combinator": "and",
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            }
+          },
+          "options": {}
+        },
+        "id": "857cb698-9169-493f-946c-6d18a40ba6a2",
+        "name": "IF Paso Encontrado",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -240,
+          48
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "f4c3901f-48b9-45dc-be8b-595a09e765e6",
+        "name": "Log Paso No Encontrado",
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
+        "position": [
+          0,
+          112
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const paso = $('Buscar PasoFronterizo').item.json.data[0];\nconst d    = $input.item.json;\n\nreturn [{ json: {\n  payload: {\n    data: {\n      fecha_reporte:        d.fecha_reporte ?? d.tweet_date,\n      estado_general:       d.estado_general ?? \"desconocido\",\n      fuente:               \"x_upfronterizos\",\n      mensaje_original:     d.mensaje_original ?? d.tweet_text,\n      origen_tipo:          \"twitter_account\",\n      confianza_extraccion: parseFloat(d.confianza_extraccion ?? 0.5),\n      id_paso:              paso.id,\n      horario_apertura:     d.horario_apertura ?? null,\n      horario_cierre:       d.horario_cierre   ?? null,\n      motivo_estado:        d.motivo_estado    ?? null,\n      tipo_vehiculos:       d.tipo_vehiculos   ?? [],\n      tweet_url:            d.tweet_url        ?? null,\n      tweet_id_x:           d.tweet_id         ?? null,\n    }\n  },\n  paso_nombre:      paso.nombre_oficial,\n  paso_region:      paso.region,\n  strapi_tweet_id:  d.strapi_tweet_id\n}}];"
+        },
+        "id": "c74af0e7-0791-4b0d-9ce4-74b2c2699048",
+        "name": "Build EstadoDiario",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          0,
+          -48
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $('Build EstadoDiario').item.json.strapi_url }}/api/estado-diarios",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ $env.STRAPI_API_TOKEN }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify($json.payload) }}",
+          "options": {}
+        },
+        "id": "50b66140-0bf6-4d81-81d4-966e0975be2a",
+        "name": "POST EstadoDiario",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          240,
+          -48
+        ]
+      },
+      {
+        "parameters": {
+          "method": "PUT",
+          "url": "={{ $('Build EstadoDiario').item.json.strapi_url }}/api/tweet-xes/{{ $('Build EstadoDiario').item.json.strapi_tweet_id }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ $env.STRAPI_API_TOKEN }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={ \"data\": { \"procesado\": true } }",
+          "options": {}
+        },
+        "id": "e16df758-20ab-4314-8841-58aab471f676",
+        "name": "Marcar Tweet Procesado",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          480,
+          -288
+        ]
+      },
+      {
+        "parameters": {
+          "modelName": "models/gemini-2.5-flash",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+        "typeVersion": 1.1,
+        "position": [
+          -1616,
+          112
+        ],
+        "id": "738c73a3-6399-445e-a301-f1cd2fc145ca",
+        "name": "Google Gemini Chat Model",
+        "credentials": {
+          "googlePalmApi": {
+            "id": "gkGbag9Eoxr0uPjN",
+            "name": "Google Gemini(PaLM) Api account"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "id": "9bd00006-41a6-429f-ae2d-a2e125ed482e",
+        "name": "Loop Finalizado",
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
+        "position": [
+          -2480,
+          -256
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "g1",
+                "leftValue": "={{ !$json.parse_error && !$json.sin_datos }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "1fa33a4e-016a-4b04-9539-5310840f66b3",
+        "name": "IF Parseo Válido",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -1120,
+          16
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "e3fe2cae-ce10-4fe2-9b5d-5365c31b1bc9",
+        "name": "Log Parse Error",
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
+        "position": [
+          -928,
+          128
+        ]
+      }
+    ],
+    "connections": {
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Set Config",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Set Config": {
+        "main": [
+          [
+            {
+              "node": "Obtener Tweets X",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Obtener Tweets X": {
+        "main": [
+          [
+            {
+              "node": "IF Hay Tweets",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF Hay Tweets": {
+        "main": [
+          [
+            {
+              "node": "Filtrar y Splitear Tweets",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Log Sin Tweets",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filtrar y Splitear Tweets": {
+        "main": [
+          [
+            {
+              "node": "IF Sin Relevantes",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF Sin Relevantes": {
+        "main": [
+          [
+            {
+              "node": "Log Sin Relevantes",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Loop Tweet x Tweet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Tweet x Tweet": {
+        "main": [
+          [
+            {
+              "node": "Loop Finalizado",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Verificar Duplicado",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Verificar Duplicado": {
+        "main": [
+          [
+            {
+              "node": "IF Ya Existe",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF Ya Existe": {
+        "main": [
+          [
+            {
+              "node": "Loop Tweet x Tweet",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Guardar Tweet Raw",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Guardar Tweet Raw": {
+        "main": [
+          [
+            {
+              "node": "Wait 4s Gemini Rate Limit",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait 4s Gemini Rate Limit": {
+        "main": [
+          [
+            {
+              "node": "Normalize Tweet Gemini",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Normalize Tweet Gemini": {
+        "main": [
+          [
+            {
+              "node": "Parse Output Gemini",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse Output Gemini": {
+        "main": [
+          [
+            {
+              "node": "IF Parseo Válido",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF Tiene Datos": {
+        "main": [
+          [
+            {
+              "node": "Buscar PasoFronterizo",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Loop Tweet x Tweet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Buscar PasoFronterizo": {
+        "main": [
+          [
+            {
+              "node": "IF Paso Encontrado",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF Paso Encontrado": {
+        "main": [
+          [
+            {
+              "node": "Build EstadoDiario",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Log Paso No Encontrado",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Log Paso No Encontrado": {
+        "main": [
+          [
+            {
+              "node": "Loop Tweet x Tweet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build EstadoDiario": {
+        "main": [
+          [
+            {
+              "node": "POST EstadoDiario",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "POST EstadoDiario": {
+        "main": [
+          [
+            {
+              "node": "Marcar Tweet Procesado",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Marcar Tweet Procesado": {
+        "main": [
+          [
+            {
+              "node": "Loop Tweet x Tweet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Gemini Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Normalize Tweet Gemini",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF Parseo Válido": {
+        "main": [
+          [
+            {
+              "node": "IF Tiene Datos",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Log Parse Error",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Nyxu Infinity",
+    "name": "Version 7de5883a",
+    "description": "",
+    "autosaved": true,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-06-19T15:58:21.724Z",
+        "id": 68,
+        "workflowId": "sUrBCvAZhyMcELm1",
+        "versionId": "7de5883a-f9f8-4e43-ab66-9a9ebe5aec02",
+        "event": "activated",
+        "userId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
+      }
+    ]
+  },
+  "activeVersionId": "7de5883a-f9f8-4e43-ab66-9a9ebe5aec02",
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Config": {
+      "main": [
+        [
+          {
+            "node": "Obtener Tweets X",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener Tweets X": {
+      "main": [
+        [
+          {
+            "node": "IF Hay Tweets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Hay Tweets": {
+      "main": [
+        [
+          {
+            "node": "Filtrar y Splitear Tweets",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Sin Tweets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtrar y Splitear Tweets": {
+      "main": [
+        [
+          {
+            "node": "IF Sin Relevantes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Sin Relevantes": {
+      "main": [
+        [
+          {
+            "node": "Log Sin Relevantes",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Tweet x Tweet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Tweet x Tweet": {
+      "main": [
+        [
+          {
+            "node": "Loop Finalizado",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Verificar Duplicado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar Duplicado": {
+      "main": [
+        [
+          {
+            "node": "IF Ya Existe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Ya Existe": {
+      "main": [
+        [
+          {
+            "node": "Loop Tweet x Tweet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Guardar Tweet Raw",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar Tweet Raw": {
+      "main": [
+        [
+          {
+            "node": "Wait 4s Gemini Rate Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 4s Gemini Rate Limit": {
+      "main": [
+        [
+          {
+            "node": "Normalize Tweet Gemini",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Tweet Gemini": {
+      "main": [
+        [
+          {
+            "node": "Parse Output Gemini",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Output Gemini": {
+      "main": [
+        [
+          {
+            "node": "IF Parseo Válido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Tiene Datos": {
+      "main": [
+        [
+          {
+            "node": "Buscar PasoFronterizo",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Tweet x Tweet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar PasoFronterizo": {
+      "main": [
+        [
+          {
+            "node": "IF Paso Encontrado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Paso Encontrado": {
+      "main": [
+        [
+          {
+            "node": "Build EstadoDiario",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Paso No Encontrado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Paso No Encontrado": {
+      "main": [
+        [
+          {
+            "node": "Loop Tweet x Tweet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build EstadoDiario": {
+      "main": [
+        [
+          {
+            "node": "POST EstadoDiario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST EstadoDiario": {
+      "main": [
+        [
+          {
+            "node": "Marcar Tweet Procesado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Marcar Tweet Procesado": {
+      "main": [
+        [
+          {
+            "node": "Loop Tweet x Tweet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Normalize Tweet Gemini",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Parseo Válido": {
+      "main": [
+        [
+          {
+            "node": "IF Tiene Datos",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Parse Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-06-19T09:32:03.496Z",
+  "description": null,
+  "id": "sUrBCvAZhyMcELm1",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Twitter EX",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 2
+            }
+          ]
+        }
+      },
+      "id": "2d4c5c05-af4a-4bd6-8ed3-a68d638d4ec8",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -4224,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c1",
+              "name": "user_id",
+              "value": "250110721",
+              "type": "string"
+            },
+            {
+              "id": "c2",
+              "name": "max_results",
+              "value": 5,
+              "type": "number"
+            },
+            {
+              "id": "c3",
+              "name": "strapi_url",
+              "value": "https://strapi.frontieradvice.tech",
+              "type": "string"
+            },
+            {
+              "id": "c4",
+              "name": "source_id",
+              "value": "x_upfronterizos",
+              "type": "string"
+            },
+            {
+              "id": "c5",
+              "name": "source_name",
+              "value": "@UPFronterizos (X)",
+              "type": "string"
+            },
+            {
+              "id": "c6",
+              "name": "captured_at",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8b0703ff-2222-46f8-a76c-7fda7b1e3a35",
+      "name": "Set Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3984,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.twitter.com/2/users/{{ $json.user_id }}/tweets",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "max_results",
+              "value": "={{ $json.max_results }}"
+            },
+            {
+              "name": "tweet.fields",
+              "value": "created_at,text,id,public_metrics,entities"
+            },
+            {
+              "name": "expansions",
+              "value": "author_id"
+            },
+            {
+              "name": "exclude",
+              "value": "retweets,replies"
+            },
+            {
+              "name": "start_time",
+              "value": "={{ DateTime.now().minus({hours: 72}).toISO() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bf3b0de8-4771-4b9e-b7c8-b1380bed0538",
+      "name": "Obtener Tweets X",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3744,
+        -96
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "xtWUP8YSqKYRNetl",
+          "name": "X API Bearer Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "d1",
+              "leftValue": "={{ ($json.data ?? []).length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and",
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          }
+        },
+        "options": {}
+      },
+      "id": "e524b294-fb11-4398-aca9-aae00c3f1bc5",
+      "name": "IF Hay Tweets",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -3504,
+        -96
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "bc64b7aa-385a-4442-b7dc-33ce5e9456e7",
+      "name": "Log Sin Tweets",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -3264,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const KEYWORDS = [\n  \"complejo\",\"fronterizo\",\"frontera\",\"habilitado\",\"cerrado\",\"abierto\",\n  \"suspendido\",\"precaución\",\"precaucion\",\"habilitada\",\"cerrada\",\n  \"horario\",\"ingreso\",\"salida\",\"vehículo\",\"vehiculo\",\"paso\",\n  \"hrs\",\"hora\",\"nevada\",\"nieve\",\"tormenta\",\"temporal\",\"viento\",\"lluvia\",\n  \"congelamiento\",\"deslizamiento\",\"alud\",\"ruta\",\n  \"los libertadores\",\"cardenal\",\"pehuenche\",\"pircas negras\",\n  \"jama\",\"colchane\",\"agua negra\",\"vergara\",\"pichachén\",\"pichachen\",\n  \"hua hum\",\"samoré\",\"samore\",\"san francisco\",\"dorotea\",\"casas viejas\",\n  \"san sebastián\",\"san sebastian\",\"bellavista\",\"integración austral\",\n  \"don guillermo\",\"pino hachado\",\"chungará\",\"chungara\",\"chacalluta\",\n  \"ollague\",\"collahuasi\",\"portillo\",\"río blanco\",\"visviri\",\"sico\",\n  \"hito cajón\",\"hito cajon\",\"carirrine\",\"mamuil\",\"perez rosales\",\n  \"atacama\",\"coquimbo\",\"valparaíso\",\"valparaiso\",\"maule\",\n  \"biobío\",\"biobio\",\"araucanía\",\"araucania\",\"aysén\",\"aysen\",\n  \"magallanes\",\"antofagasta\",\"tarapacá\",\"tarapaca\",\"arica\",\"parinacota\"\n];\n\nfunction hasKeyword(text) {\n  const lower = text.toLowerCase();\n  return KEYWORDS.some(kw => lower.includes(kw));\n}\n\nconst rawInput = $input.first().json;\nconst tweets   = rawInput.data ?? [];\nconst config   = $(\"Set Config\").first().json;\n\nconst relevantes = tweets.filter(t => t.text && hasKeyword(t.text));\n\nif (relevantes.length === 0) {\n  return [{ json: { sin_relevantes: true, total: tweets.length } }];\n}\n\nreturn relevantes.map(t => ({ json: {\n  tweet_id:    t.id,\n  tweet_text:  t.text,\n  tweet_date:  t.created_at,\n  tweet_url:   `https://twitter.com/UPFronterizos/status/${t.id}`,\n  source_id:   config.source_id,\n  source_name: config.source_name,\n  captured_at: config.captured_at,\n  strapi_url:  config.strapi_url\n}}));"
+      },
+      "id": "473c15dd-f4e5-407b-97b5-7d6d57c9fb68",
+      "name": "Filtrar y Splitear Tweets",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3264,
+        -208
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "e1",
+              "leftValue": "={{ $json.sin_relevantes }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and",
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          }
+        },
+        "options": {}
+      },
+      "id": "3078e45d-72b9-49db-ab59-f1b6aea891ec",
+      "name": "IF Sin Relevantes",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -3008,
+        -208
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "67f23739-e553-4a18-8d7b-6815c5b788db",
+      "name": "Log Sin Relevantes",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -2768,
+        -352
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "4124ebde-9298-4859-ae48-c9d5e9c0b91b",
+      "name": "Loop Tweet x Tweet",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -2768,
+        -64
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Loop Tweet x Tweet').item.json.strapi_url }}/api/tweet-xes",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filters[tweet_id_x][$eq]",
+              "value": "={{ $('Loop Tweet x Tweet').item.json.tweet_id }}"
+            },
+            {
+              "name": "fields[0]",
+              "value": "id"
+            },
+            {
+              "name": "fields[1]",
+              "value": "procesado"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.STRAPI_API_TOKEN }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d41ae0f5-cfa7-4d09-bfe3-ccf5a41abd63",
+      "name": "Verificar Duplicado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2480,
+        -48
+      ],
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "GnIWw1xZZzhXRcXd",
+          "name": "Bearer Auth account"
+        },
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "f1",
+              "leftValue": "={{ ($json.data ?? []).length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and",
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          }
+        },
+        "options": {}
+      },
+      "id": "9189b49c-d1d6-42aa-bb6c-1f22dae1c58b",
+      "name": "IF Ya Existe",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -2304,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Loop Tweet x Tweet').item.json.strapi_url }}/api/tweet-xes",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.STRAPI_API_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  data: {\n    tweet_id_x:  $('Loop Tweet x Tweet').item.json.tweet_id,\n    tweet_text:  $('Loop Tweet x Tweet').item.json.tweet_text,\n    tweet_date:  $('Loop Tweet x Tweet').item.json.tweet_date,\n    tweet_url:   $('Loop Tweet x Tweet').item.json.tweet_url,\n    fuente:      \"x_upfronterizos\",\n    relevante:   true,\n    procesado:   false,\n  }\n}) }}",
+        "options": {}
+      },
+      "id": "a73c5d02-d41d-485f-85cb-3b08bf2a50c8",
+      "name": "Guardar Tweet Raw",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2048,
+        -32
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 4
+      },
+      "id": "c5ee04bb-cc4c-4d46-8cab-8941d408d277",
+      "name": "Wait 4s Gemini Rate Limit",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1808,
+        -32
+      ],
+      "webhookId": "wait-x-gemini-rl"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Eres un normalizador de tweets oficiales sobre pasos fronterizos de Chile para FrontierAdvice.\n\nEl tweet proviene de la cuenta oficial @UPFronterizos (Unidad de Pasos Fronterizos de Chile).\n\nTu tarea es convertir el tweet en JSON estricto. Devuelve SOLO el JSON, sin markdown ni texto adicional.\n\nReglas:\n- Un tweet puede mencionar UNO o VARIOS pasos. Genera un item por cada paso identificado.\n- \"estado_general\": \"abierto\" | \"cerrado\" | \"abierto_con_precaucion\" | \"suspendido\" | \"desconocido\"\n  • HABILITADO → \"abierto\"\n  • CERRADO / NO HABILITADO / fin temporada → \"cerrado\"\n  • con precaución / temporal / condiciones adversas / nevada → \"abierto_con_precaucion\"\n- \"confianza_extraccion\": 1.0 si el estado es explícito, 0.7 si se infiere, 0.4 si es ambiguo.\n- \"fecha_reporte\": ISO 8601 desde el texto. Si no hay fecha, usa: {{ $('Loop Tweet x Tweet').item.json.tweet_date }}\n- \"codigo_fuente\": nombre en minúsculas con guiones. Ejemplos:\n  los-libertadores | pino-hachado | agua-negra | san-francisco | pircas-negras\n  vergara | pehuenche | pichachen | hua-hum | cardenal-samore | jama | colchane\n  dorotea | casas-viejas | san-sebastian | bellavista | integracion-austral\n  don-guillermo | chungara | chacalluta | ollague | collahuasi | portillo | visviri\n  hito-cajon | sico | carirrine | paso-mamuil | paso-perez-rosales\n  Si no puedes identificarlo con certeza, usa null.\n- \"horario_apertura\" / \"horario_cierre\": string \"HH:MM\" o null.\n- \"tipo_vehiculos\": array de strings (ej: [\"automóvil\",\"bus\",\"camión\"]) o [].\n- \"motivo_estado\": texto breve del motivo o null.\n- \"fecha_vigencia_desde\": fecha y hora desde la que aplica el estado descrito. Si el tweet dice \"mañana\", \"a partir del X\", \"desde el X\", calcula la fecha correcta en ISO 8601 relativa a fecha_tweet. Si el estado es inmediato, usa la misma fecha del tweet.\n\"fecha_vigencia_hasta\": si hay hora de cierre del día (\"hasta las 20:00\"), combínala con fecha_vigencia_desde. Si no hay límite explícito, usa null.\n\"es_programado\": true si fecha_vigencia_desde es posterior a fecha_tweet + 1 hora.\n\n\nSi el tweet NO contiene información de estado de ningún paso, devuelve: {\"items\": []}\n\nFormato de salida:\n{\n  \"items\": [\n    {\n      \"codigo_fuente\": null,\n      \"fecha_reporte\": \"\",\n      \"estado_general\": \"\",\n      \"fuente\": \"x_upfronterizos\",\n      \"mensaje_original\": \"\",\n      \"confianza_extraccion\": 0.0,\n      \"origen_tipo\": \"twitter_account\",\n      \"horario_apertura\": null,\n      \"horario_cierre\": null,\n      \"tipo_vehiculos\": [],\n      \"motivo_estado\": null,\n      \"tweet_url\": \"\"\n    }\n  ]\n}\n\nTweet a normalizar:\n{{ $('Loop Tweet x Tweet').item.json.tweet_text }}",
+        "batching": {}
+      },
+      "id": "7bedf8e6-473c-4e13-8311-bfefbdba593c",
+      "name": "Normalize Tweet Gemini",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -1616,
+        -64
+      ],
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "jsCode": "// ── Helpers ─────────────────────────────────────────────────────────────────\nfunction safe(v, fallback) {\n  if (v === undefined || v === null) return fallback;\n  const s = String(v);\n  // Eliminar expresiones n8n que Gemini haya colado literalmente\n  if (s.includes(\"{{\") || s.includes(\"}}\")) return fallback;\n  return s;\n}\n\nfunction safeFloat(v, fallback) {\n  const n = parseFloat(v);\n  return isNaN(n) ? fallback : n;\n}\n\n// ── Metadatos del tweet ──────────────────────────────────────────────────────\nlet tweetId = \"\", tweetText = \"\", tweetDate = \"\", tweetUrl = \"\", strapiUrl = \"\";\nlet strapiTweetId = null;\n\ntry { const m = $('Loop Tweet x Tweet').item.json;\n  tweetId   = m?.tweet_id   ?? \"\";\n  tweetText = m?.tweet_text ?? \"\";\n  tweetDate = m?.tweet_date ?? \"\";\n  tweetUrl  = m?.tweet_url  ?? \"\";\n  strapiUrl = m?.strapi_url ?? \"\";\n} catch(_) {}\n\ntry {\n  strapiTweetId = $('Guardar Tweet Raw').item.json?.data?.id ?? null;\n} catch(_) {}\n\n// ── Leer output del LLM ──────────────────────────────────────────────────────\nconst inputJson = $input.first().json;\n\nlet raw = inputJson?.text\n   ?? inputJson?.output\n   ?? inputJson?.content\n   ?? \"\";\n\n// ── Parsear JSON ─────────────────────────────────────────────────────────────\nlet parsed = null;\nlet parseError = null;\n\ntry {\n  let c = String(raw)\n    .replace(/```json\\s*/gi, \"\")\n    .replace(/```\\s*/gi, \"\")\n    .trim();\n\n  // Eliminar expresiones n8n literales que Gemini pueda haber insertado\n  c = c.replace(/\\{\\{[^}]*\\}\\}/g, '\"\"');\n\n  const s = c.indexOf(\"{\");\n  if (s > 0) c = c.substring(s);\n  const e = c.lastIndexOf(\"}\");\n  if (e !== -1 && e < c.length - 1) c = c.substring(0, e + 1);\n\n  parsed = JSON.parse(c);\n} catch(e) {\n  parseError = String(e.message);\n}\n\n// ── Error de parseo ──────────────────────────────────────────────────────────\nif (parseError !== null || parsed === null) {\n  return [{ json: {\n    parse_error:     true,\n    error_msg:       parseError ?? \"null result\",\n    raw_snippet:     String(raw).substring(0, 300),\n    tweet_id:        String(tweetId),\n    strapi_url:      String(strapiUrl),\n    strapi_tweet_id: strapiTweetId\n  }}];\n}\n\n// ── Sin items ────────────────────────────────────────────────────────────────\nconst items = Array.isArray(parsed?.items) ? parsed.items : [];\n\nif (items.length === 0) {\n  return [{ json: {\n    sin_datos:       true,\n    tweet_id:        String(tweetId),\n    strapi_url:      String(strapiUrl),\n    strapi_tweet_id: strapiTweetId\n  }}];\n}\n\n// ── Retornar un item por paso ─────────────────────────────────────────────────\nreturn items.map(item => ({ json: {\n  codigo_fuente:        safe(item.codigo_fuente, null),\n  fecha_reporte:        safe(item.fecha_reporte, null) ?? tweetDate,\n  estado_general:       safe(item.estado_general, \"desconocido\"),\n  fuente:               \"x_upfronterizos\",\n  mensaje_original:     safe(item.mensaje_original, tweetText),\n  confianza_extraccion: safeFloat(item.confianza_extraccion, 0.4),\n  origen_tipo:          \"twitter_account\",\n  horario_apertura:     safe(item.horario_apertura, null),\n  horario_cierre:       safe(item.horario_cierre, null),\n  tipo_vehiculos:       Array.isArray(item.tipo_vehiculos) ? item.tipo_vehiculos : [],\n  motivo_estado:        safe(item.motivo_estado, null),\n  fecha_vigencia_desde: safe(item.fecha_vigencia_desde, null),\n  fecha_vigencia_hasta: safe(item.fecha_vigencia_hasta, null),\n  es_programado:        item.es_programado === true,\n  tweet_id:             String(tweetId),\n  tweet_url:            String(tweetUrl),\n  tweet_date:           String(tweetDate),\n  strapi_url:           String(strapiUrl),\n  strapi_tweet_id:      strapiTweetId\n}}));"
+      },
+      "id": "a26e2525-40f0-4cf2-b33f-92111ac928f2",
+      "name": "Parse Output Gemini",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1296,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "g1",
+              "leftValue": "={{ $json.sin_datos || $json.parse_error }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and",
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          }
+        },
+        "options": {}
+      },
+      "id": "241756c7-9fce-46c9-ac22-f1d0580fd05b",
+      "name": "IF Tiene Datos",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -720,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.strapi_url }}/api/paso-fronterizos",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filters[codigo_fuente][$eq]",
+              "value": "={{ $json.codigo_fuente }}"
+            },
+            {
+              "name": "fields[0]",
+              "value": "id"
+            },
+            {
+              "name": "fields[1]",
+              "value": "nombre_oficial"
+            },
+            {
+              "name": "fields[2]",
+              "value": "region"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.STRAPI_API_TOKEN }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9222fc7e-d080-4c4b-902a-ff6bb07578ad",
+      "name": "Buscar PasoFronterizo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -480,
+        48
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "h1",
+              "leftValue": "={{ ($json.data ?? []).length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and",
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          }
+        },
+        "options": {}
+      },
+      "id": "857cb698-9169-493f-946c-6d18a40ba6a2",
+      "name": "IF Paso Encontrado",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        48
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "f4c3901f-48b9-45dc-be8b-595a09e765e6",
+      "name": "Log Paso No Encontrado",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        0,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const paso = $('Buscar PasoFronterizo').item.json.data[0];\nconst d    = $input.item.json;\n\nreturn [{ json: {\n  payload: {\n    data: {\n      fecha_reporte:        d.fecha_reporte ?? d.tweet_date,\n      estado_general:       d.estado_general ?? \"desconocido\",\n      fuente:               \"x_upfronterizos\",\n      mensaje_original:     d.mensaje_original ?? d.tweet_text,\n      origen_tipo:          \"twitter_account\",\n      confianza_extraccion: parseFloat(d.confianza_extraccion ?? 0.5),\n      id_paso:              paso.id,\n      horario_apertura:     d.horario_apertura ?? null,\n      horario_cierre:       d.horario_cierre   ?? null,\n      motivo_estado:        d.motivo_estado    ?? null,\n      tipo_vehiculos:       d.tipo_vehiculos   ?? [],\n      tweet_url:            d.tweet_url        ?? null,\n      tweet_id_x:           d.tweet_id         ?? null,\n    }\n  },\n  paso_nombre:      paso.nombre_oficial,\n  paso_region:      paso.region,\n  strapi_tweet_id:  d.strapi_tweet_id\n}}];"
+      },
+      "id": "c74af0e7-0791-4b0d-9ce4-74b2c2699048",
+      "name": "Build EstadoDiario",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Build EstadoDiario').item.json.strapi_url }}/api/estado-diarios",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.STRAPI_API_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.payload) }}",
+        "options": {}
+      },
+      "id": "50b66140-0bf6-4d81-81d4-966e0975be2a",
+      "name": "POST EstadoDiario",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "={{ $('Build EstadoDiario').item.json.strapi_url }}/api/tweet-xes/{{ $('Build EstadoDiario').item.json.strapi_tweet_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.STRAPI_API_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"data\": { \"procesado\": true } }",
+        "options": {}
+      },
+      "id": "e16df758-20ab-4314-8841-58aab471f676",
+      "name": "Marcar Tweet Procesado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        -288
+      ]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -1616,
+        112
+      ],
+      "id": "738c73a3-6399-445e-a301-f1cd2fc145ca",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "gkGbag9Eoxr0uPjN",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "9bd00006-41a6-429f-ae2d-a2e125ed482e",
+      "name": "Loop Finalizado",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -2480,
+        -256
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "g1",
+              "leftValue": "={{ !$json.parse_error && !$json.sin_datos }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "1fa33a4e-016a-4b04-9539-5310840f66b3",
+      "name": "IF Parseo Válido",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1120,
+        16
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "e3fe2cae-ce10-4fe2-9b5d-5365c31b1bc9",
+      "name": "Log Parse Error",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -928,
+        128
+      ]
+    }
+  ],
+  "pinData": {
+    "Obtener Tweets X": [
+      {
+        "json": {
+          "data": [
+            {
+              "edit_history_tweet_ids": [
+                "2067705051628425608"
+              ],
+              "author_id": "250110721",
+              "entities": {
+                "hashtags": [
+                  {
+                    "start": 147,
+                    "end": 158,
+                    "tag": "UPFinforma"
+                  }
+                ]
+              },
+              "id": "2067705051628425608",
+              "text": "⚠️Información importante:\n\n🔹Complejo Los Libertadores: a partir de mañana 19 de junio se ✅HABILITA ✅el corredor internacional de 8:00 a 20:00 hrs. #UPFinforma",
+              "public_metrics": {
+                "retweet_count": 3,
+                "reply_count": 0,
+                "like_count": 4,
+                "quote_count": 0,
+                "bookmark_count": 1,
+                "impression_count": 1337
+              },
+              "created_at": "2026-06-18T20:24:35.000Z"
+            },
+            {
+              "entities": {
+                "mentions": [
+                  {
+                    "start": 86,
+                    "end": 95,
+                    "username": "DPRMaule",
+                    "id": "2480011309"
+                  }
+                ],
+                "hashtags": [
+                  {
+                    "start": 74,
+                    "end": 85,
+                    "tag": "UPFinforma"
+                  }
+                ]
+              },
+              "edit_history_tweet_ids": [
+                "2067613698772873722"
+              ],
+              "author_id": "250110721",
+              "id": "2067613698772873722",
+              "text": "Complejo Fronterizo Vergara ⛔️CERRADO⛔️ por término de temporada estival. #UPFinforma @DPRMaule",
+              "public_metrics": {
+                "retweet_count": 0,
+                "reply_count": 0,
+                "like_count": 0,
+                "quote_count": 0,
+                "bookmark_count": 0,
+                "impression_count": 1200
+              },
+              "created_at": "2026-06-18T14:21:34.000Z"
+            },
+            {
+              "entities": {
+                "mentions": [
+                  {
+                    "start": 125,
+                    "end": 137,
+                    "username": "DPPLosAndes",
+                    "id": "282705200"
+                  },
+                  {
+                    "start": 138,
+                    "end": 154,
+                    "username": "CFLosLibertador",
+                    "id": "772517376"
+                  }
+                ],
+                "hashtags": [
+                  {
+                    "start": 113,
+                    "end": 124,
+                    "tag": "UPFinforma"
+                  }
+                ]
+              },
+              "edit_history_tweet_ids": [
+                "2067613673720254711"
+              ],
+              "author_id": "250110721",
+              "id": "2067613673720254711",
+              "text": "Complejo fronterizo Los Libertadores ⛔️ CERRADO ⛔️ debido a malas condiciones meteorológicas en la alta montaña. #UPFinforma @DPPLosAndes @CFLosLibertador",
+              "public_metrics": {
+                "retweet_count": 1,
+                "reply_count": 2,
+                "like_count": 3,
+                "quote_count": 0,
+                "bookmark_count": 0,
+                "impression_count": 2045
+              },
+              "created_at": "2026-06-18T14:21:28.000Z"
+            },
+            {
+              "entities": {
+                "mentions": [
+                  {
+                    "start": 71,
+                    "end": 83,
+                    "username": "DPRCoquimbo",
+                    "id": "369066172"
+                  }
+                ],
+                "hashtags": [
+                  {
+                    "start": 84,
+                    "end": 95,
+                    "tag": "UPFinforma"
+                  }
+                ]
+              },
+              "edit_history_tweet_ids": [
+                "2067613646620881130"
+              ],
+              "author_id": "250110721",
+              "id": "2067613646620881130",
+              "text": "Complejo fronterizo Agua Negra ⛔️CERRADO ⛔️ debido a fin de temporada. @DPRCoquimbo #UPFinforma",
+              "public_metrics": {
+                "retweet_count": 0,
+                "reply_count": 0,
+                "like_count": 0,
+                "quote_count": 0,
+                "bookmark_count": 0,
+                "impression_count": 1153
+              },
+              "created_at": "2026-06-18T14:21:22.000Z"
+            },
+            {
+              "edit_history_tweet_ids": [
+                "2067613621908058425"
+              ],
+              "author_id": "250110721",
+              "id": "2067613621908058425",
+              "text": "Complejo Fronterizo San Francisco ⛔️CERRADO ⛔️",
+              "public_metrics": {
+                "retweet_count": 0,
+                "reply_count": 0,
+                "like_count": 1,
+                "quote_count": 0,
+                "bookmark_count": 0,
+                "impression_count": 1347
+              },
+              "created_at": "2026-06-18T14:21:16.000Z"
+            }
+          ],
+          "includes": {
+            "users": [
+              {
+                "id": "250110721",
+                "name": "Pasos Fronterizos",
+                "username": "UPFronterizos"
+              }
+            ]
+          },
+          "meta": {
+            "result_count": 5,
+            "newest_id": "2067705051628425608",
+            "oldest_id": "2067613621908058425",
+            "next_token": "7140dibdnow9c7btwoxij8etah8dj1dvrg5458mbkh4qd"
+          }
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Normalize Tweet Gemini": [
+      {
+        "json": {
+          "text": "```json\n{\n  \"items\": [\n    {\n      \"codigo_fuente\": \"vergara\",\n      \"fecha_reporte\": \"2026-06-18T14:21:34.000Z\",\n      \"estado_general\": \"cerrado\",\n      \"fuente\": \"x_upfronterizos\",\n      \"mensaje_original\": \"Complejo Fronterizo Vergara ⛔️CERRADO⛔️ por término de temporada estival. #UPFinforma @DPRMaule\",\n      \"confianza_extraccion\": 1.0,\n      \"origen_tipo\": \"twitter_account\",\n      \"horario_apertura\": null,\n      \"horario_cierre\": null,\n      \"tipo_vehiculos\": [],\n      \"motivo_estado\": \"por término de temporada estival.\",\n      \"fecha_vigencia_desde\": \"2026-06-18T14:21:34.000Z\",\n      \"fecha_vigencia_hasta\": null,\n      \"es_programado\": false,\n      \"tweet_url\": \"\"\n    }\n  ]\n}\n```"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Verificar Duplicado": [
+      {
+        "json": {
+          "data": [],
+          "meta": {
+            "pagination": {
+              "page": 1,
+              "pageSize": 25,
+              "pageCount": 0,
+              "total": 0
+            }
+          }
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Guardar Tweet Raw": [
+      {
+        "json": {
+          "data": {
+            "id": 46,
+            "documentId": "sghp1jioofq0jzufdu7e4drt",
+            "tweet_id_x": "2067613698772873722",
+            "tweet_text": "Complejo Fronterizo Vergara ⛔️CERRADO⛔️ por término de temporada estival. #UPFinforma @DPRMaule",
+            "tweet_date": "2026-06-18T14:21:34.000Z",
+            "tweet_url": "https://twitter.com/UPFronterizos/status/2067613698772873722",
+            "fuente": "x_upfronterizos",
+            "relevante": true,
+            "procesado": false,
+            "createdAt": "2026-06-19T12:11:07.639Z",
+            "updatedAt": "2026-06-19T12:11:07.639Z",
+            "publishedAt": "2026-06-19T12:11:07.646Z"
+          },
+          "meta": {}
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-06-19T09:32:03.500Z",
+      "createdAt": "2026-06-19T09:32:03.500Z",
+      "role": "workflow:owner",
+      "workflowId": "sUrBCvAZhyMcELm1",
+      "projectId": "0mwVSLULhlB6ku2N",
+      "project": {
+        "updatedAt": "2026-05-08T10:08:26.296Z",
+        "createdAt": "2026-05-08T08:11:46.302Z",
+        "id": "0mwVSLULhlB6ku2N",
+        "name": "Nyxu Infinity <nyxuofficial@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
+      }
+    }
+  ],
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": [
+        12
+      ]
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2026-06-19T12:13:13.309Z",
+  "versionCounter": 142,
+  "versionId": "7de5883a-f9f8-4e43-ab66-9a9ebe5aec02"
+}
