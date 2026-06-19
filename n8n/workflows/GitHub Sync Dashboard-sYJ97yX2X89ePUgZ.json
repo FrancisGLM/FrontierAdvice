@@ -6777,13 +6777,13 @@
       "parameters": {
         "content": "# ⚠️ MOST IMPORTANT NODE\n## Stores global configs\n\n# 1️⃣\n- provide GitHub `repository owner name`, \n- `repository name`\n- `repository subfolder` (recommended)\n\n# 2️⃣\n- `instance_url` - keep .env variables or set up manually\n- `webhook_path` - keep .env variables or set up manually\n- `webhook_actions` - taken from `Webhook-actions` node\n",
         "height": 592,
-        "width": 480,
+        "width": 560,
         "color": 3
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        11328,
-        3840
+        11296,
+        3952
       ],
       "typeVersion": 1,
       "id": "0de15750-3224-40cc-84dc-4eeaaadc4f17",
@@ -7818,12 +7818,12 @@
   "staticData": {
     "node:Schedule Trigger": {
       "recurrenceRules": [
-        6
+        12
       ]
     }
   },
   "tags": [],
   "triggerCount": 3,
-  "updatedAt": "2026-05-12T06:35:05.494Z",
-  "versionId": "25961f1d-8031-4c7e-a5d0-34591865a5d7"
+  "updatedAt": "2026-06-19T15:59:20.622Z",
+  "versionId": "1ea986bf-3b6d-4cab-b5be-117e5e94dd95"
 }
