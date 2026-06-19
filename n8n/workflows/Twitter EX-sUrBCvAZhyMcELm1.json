@@ -985,17 +985,7 @@
     "authors": "Nyxu Infinity",
     "name": "Version 7de5883a",
     "description": "",
-    "autosaved": true,
-    "workflowPublishHistory": [
-      {
-        "createdAt": "2026-06-19T15:58:21.724Z",
-        "id": 68,
-        "workflowId": "sUrBCvAZhyMcELm1",
-        "versionId": "7de5883a-f9f8-4e43-ab66-9a9ebe5aec02",
-        "event": "activated",
-        "userId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
-      }
-    ]
+    "autosaved": true
   },
   "activeVersionId": "7de5883a-f9f8-4e43-ab66-9a9ebe5aec02",
   "connections": {
@@ -1292,7 +1282,6 @@
     }
   },
   "createdAt": "2026-06-19T09:32:03.496Z",
-  "description": null,
   "id": "sUrBCvAZhyMcELm1",
   "isArchived": false,
   "meta": {
@@ -1983,237 +1972,6 @@
       ]
     }
   ],
-  "pinData": {
-    "Obtener Tweets X": [
-      {
-        "json": {
-          "data": [
-            {
-              "edit_history_tweet_ids": [
-                "2067705051628425608"
-              ],
-              "author_id": "250110721",
-              "entities": {
-                "hashtags": [
-                  {
-                    "start": 147,
-                    "end": 158,
-                    "tag": "UPFinforma"
-                  }
-                ]
-              },
-              "id": "2067705051628425608",
-              "text": "⚠️Información importante:\n\n🔹Complejo Los Libertadores: a partir de mañana 19 de junio se ✅HABILITA ✅el corredor internacional de 8:00 a 20:00 hrs. #UPFinforma",
-              "public_metrics": {
-                "retweet_count": 3,
-                "reply_count": 0,
-                "like_count": 4,
-                "quote_count": 0,
-                "bookmark_count": 1,
-                "impression_count": 1337
-              },
-              "created_at": "2026-06-18T20:24:35.000Z"
-            },
-            {
-              "entities": {
-                "mentions": [
-                  {
-                    "start": 86,
-                    "end": 95,
-                    "username": "DPRMaule",
-                    "id": "2480011309"
-                  }
-                ],
-                "hashtags": [
-                  {
-                    "start": 74,
-                    "end": 85,
-                    "tag": "UPFinforma"
-                  }
-                ]
-              },
-              "edit_history_tweet_ids": [
-                "2067613698772873722"
-              ],
-              "author_id": "250110721",
-              "id": "2067613698772873722",
-              "text": "Complejo Fronterizo Vergara ⛔️CERRADO⛔️ por término de temporada estival. #UPFinforma @DPRMaule",
-              "public_metrics": {
-                "retweet_count": 0,
-                "reply_count": 0,
-                "like_count": 0,
-                "quote_count": 0,
-                "bookmark_count": 0,
-                "impression_count": 1200
-              },
-              "created_at": "2026-06-18T14:21:34.000Z"
-            },
-            {
-              "entities": {
-                "mentions": [
-                  {
-                    "start": 125,
-                    "end": 137,
-                    "username": "DPPLosAndes",
-                    "id": "282705200"
-                  },
-                  {
-                    "start": 138,
-                    "end": 154,
-                    "username": "CFLosLibertador",
-                    "id": "772517376"
-                  }
-                ],
-                "hashtags": [
-                  {
-                    "start": 113,
-                    "end": 124,
-                    "tag": "UPFinforma"
-                  }
-                ]
-              },
-              "edit_history_tweet_ids": [
-                "2067613673720254711"
-              ],
-              "author_id": "250110721",
-              "id": "2067613673720254711",
-              "text": "Complejo fronterizo Los Libertadores ⛔️ CERRADO ⛔️ debido a malas condiciones meteorológicas en la alta montaña. #UPFinforma @DPPLosAndes @CFLosLibertador",
-              "public_metrics": {
-                "retweet_count": 1,
-                "reply_count": 2,
-                "like_count": 3,
-                "quote_count": 0,
-                "bookmark_count": 0,
-                "impression_count": 2045
-              },
-              "created_at": "2026-06-18T14:21:28.000Z"
-            },
-            {
-              "entities": {
-                "mentions": [
-                  {
-                    "start": 71,
-                    "end": 83,
-                    "username": "DPRCoquimbo",
-                    "id": "369066172"
-                  }
-                ],
-                "hashtags": [
-                  {
-                    "start": 84,
-                    "end": 95,
-                    "tag": "UPFinforma"
-                  }
-                ]
-              },
-              "edit_history_tweet_ids": [
-                "2067613646620881130"
-              ],
-              "author_id": "250110721",
-              "id": "2067613646620881130",
-              "text": "Complejo fronterizo Agua Negra ⛔️CERRADO ⛔️ debido a fin de temporada. @DPRCoquimbo #UPFinforma",
-              "public_metrics": {
-                "retweet_count": 0,
-                "reply_count": 0,
-                "like_count": 0,
-                "quote_count": 0,
-                "bookmark_count": 0,
-                "impression_count": 1153
-              },
-              "created_at": "2026-06-18T14:21:22.000Z"
-            },
-            {
-              "edit_history_tweet_ids": [
-                "2067613621908058425"
-              ],
-              "author_id": "250110721",
-              "id": "2067613621908058425",
-              "text": "Complejo Fronterizo San Francisco ⛔️CERRADO ⛔️",
-              "public_metrics": {
-                "retweet_count": 0,
-                "reply_count": 0,
-                "like_count": 1,
-                "quote_count": 0,
-                "bookmark_count": 0,
-                "impression_count": 1347
-              },
-              "created_at": "2026-06-18T14:21:16.000Z"
-            }
-          ],
-          "includes": {
-            "users": [
-              {
-                "id": "250110721",
-                "name": "Pasos Fronterizos",
-                "username": "UPFronterizos"
-              }
-            ]
-          },
-          "meta": {
-            "result_count": 5,
-            "newest_id": "2067705051628425608",
-            "oldest_id": "2067613621908058425",
-            "next_token": "7140dibdnow9c7btwoxij8etah8dj1dvrg5458mbkh4qd"
-          }
-        },
-        "pairedItem": {
-          "item": 0
-        }
-      }
-    ],
-    "Normalize Tweet Gemini": [
-      {
-        "json": {
-          "text": "```json\n{\n  \"items\": [\n    {\n      \"codigo_fuente\": \"vergara\",\n      \"fecha_reporte\": \"2026-06-18T14:21:34.000Z\",\n      \"estado_general\": \"cerrado\",\n      \"fuente\": \"x_upfronterizos\",\n      \"mensaje_original\": \"Complejo Fronterizo Vergara ⛔️CERRADO⛔️ por término de temporada estival. #UPFinforma @DPRMaule\",\n      \"confianza_extraccion\": 1.0,\n      \"origen_tipo\": \"twitter_account\",\n      \"horario_apertura\": null,\n      \"horario_cierre\": null,\n      \"tipo_vehiculos\": [],\n      \"motivo_estado\": \"por término de temporada estival.\",\n      \"fecha_vigencia_desde\": \"2026-06-18T14:21:34.000Z\",\n      \"fecha_vigencia_hasta\": null,\n      \"es_programado\": false,\n      \"tweet_url\": \"\"\n    }\n  ]\n}\n```"
-        },
-        "pairedItem": {
-          "item": 0
-        }
-      }
-    ],
-    "Verificar Duplicado": [
-      {
-        "json": {
-          "data": [],
-          "meta": {
-            "pagination": {
-              "page": 1,
-              "pageSize": 25,
-              "pageCount": 0,
-              "total": 0
-            }
-          }
-        },
-        "pairedItem": {
-          "item": 0
-        }
-      }
-    ],
-    "Guardar Tweet Raw": [
-      {
-        "json": {
-          "data": {
-            "id": 46,
-            "documentId": "sghp1jioofq0jzufdu7e4drt",
-            "tweet_id_x": "2067613698772873722",
-            "tweet_text": "Complejo Fronterizo Vergara ⛔️CERRADO⛔️ por término de temporada estival. #UPFinforma @DPRMaule",
-            "tweet_date": "2026-06-18T14:21:34.000Z",
-            "tweet_url": "https://twitter.com/UPFronterizos/status/2067613698772873722",
-            "fuente": "x_upfronterizos",
-            "relevante": true,
-            "procesado": false,
-            "createdAt": "2026-06-19T12:11:07.639Z",
-            "updatedAt": "2026-06-19T12:11:07.639Z",
-            "publishedAt": "2026-06-19T12:11:07.646Z"
-          },
-          "meta": {}
-        },
-        "pairedItem": {
-          "item": 0
-        }
-      }
-    ]
-  },
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
@@ -2224,17 +1982,7 @@
       "createdAt": "2026-06-19T09:32:03.500Z",
       "role": "workflow:owner",
       "workflowId": "sUrBCvAZhyMcELm1",
-      "projectId": "0mwVSLULhlB6ku2N",
-      "project": {
-        "updatedAt": "2026-05-08T10:08:26.296Z",
-        "createdAt": "2026-05-08T08:11:46.302Z",
-        "id": "0mwVSLULhlB6ku2N",
-        "name": "Nyxu Infinity <nyxuofficial@gmail.com>",
-        "type": "personal",
-        "icon": null,
-        "description": null,
-        "creatorId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
-      }
+      "projectId": "0mwVSLULhlB6ku2N"
     }
   ],
   "staticData": {
@@ -2247,6 +1995,5 @@
   "tags": [],
   "triggerCount": 1,
   "updatedAt": "2026-06-19T12:13:13.309Z",
-  "versionCounter": 142,
   "versionId": "7de5883a-f9f8-4e43-ab66-9a9ebe5aec02"
 }
