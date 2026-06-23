@@ -31,11 +31,53 @@
       "relation": "oneToOne",
       "target": "api::paso-fronterizo.paso-fronterizo"
     },
-    "confianza_extraccion": {
-      "type": "string"
-    },
     "origen_tipo": {
       "type": "string"
+    },
+    "horario_apertura": {
+      "type": "string"
+    },
+    "horario_cierre": {
+      "type": "string"
+    },
+    "dias_operacion": {
+      "type": "json"
+    },
+    "motivo_estado": {
+      "type": "string"
+    },
+    "nivel_riesgo_calc": {
+      "type": "enumeration",
+      "enum": [
+        "alto",
+        "medio",
+        "bajo",
+        "null"
+      ]
+    },
+    "tipo_vehiculos": {
+      "type": "json"
+    },
+    "msg_timestamp": {
+      "type": "biginteger"
+    },
+    "msg_id_waha": {
+      "type": "string"
+    },
+    "msg_server_id": {
+      "type": "integer"
+    },
+    "confianza_extraccion": {
+      "type": "decimal"
+    },
+    "fecha_vigencia_desde": {
+      "type": "datetime"
+    },
+    "fecha_vigencia_hasta": {
+      "type": "datetime"
+    },
+    "es_programado": {
+      "type": "boolean"
     }
   }
 }

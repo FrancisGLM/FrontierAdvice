@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "tweet_xes",
+  "info": {
+    "singularName": "tweet-x",
+    "pluralName": "tweet-xes",
+    "displayName": "tweet-x"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "tweet_id_x": {
+      "type": "string",
+      "required": true
+    },
+    "tweet_text": {
+      "type": "text"
+    },
+    "tweet_date": {
+      "type": "datetime"
+    },
+    "tweet_url": {
+      "type": "string"
+    },
+    "fuente": {
+      "type": "string"
+    },
+    "relevante": {
+      "type": "boolean"
+    },
+    "procesado": {
+      "type": "boolean"
+    }
+  }
+}

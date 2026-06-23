@@ -32,6 +32,12 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::paso-fronterizo.paso-fronterizo"
+    },
+    "tipo_evento": {
+      "type": "string"
+    },
+    "datos_entrada": {
+      "type": "json"
     }
   }
 }
