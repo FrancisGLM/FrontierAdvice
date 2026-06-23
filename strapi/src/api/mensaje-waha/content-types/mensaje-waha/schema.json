@@ -1,0 +1,50 @@
+{
+  "kind": "collectionType",
+  "collectionName": "mensaje_wahas",
+  "info": {
+    "singularName": "mensaje-waha",
+    "pluralName": "mensaje-wahas",
+    "displayName": "MensajeWAHA"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "msg_id_waha": {
+      "type": "string",
+      "unique": true
+    },
+    "msg_body": {
+      "type": "biginteger"
+    },
+    "msg_timestamp": {
+      "type": "biginteger"
+    },
+    "msg_fecha_iso": {
+      "type": "datetime"
+    },
+    "msg_server_id": {
+      "type": "integer"
+    },
+    "msg_row_id": {
+      "type": "integer"
+    },
+    "procesado": {
+      "type": "boolean",
+      "default": false
+    },
+    "relevante": {
+      "type": "boolean"
+    },
+    "fuente": {
+      "type": "string",
+      "default": "whatsapp_upf"
+    },
+    "id_estado": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::estado-diario.estado-diario"
+    }
+  }
+}

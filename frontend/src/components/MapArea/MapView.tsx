@@ -82,12 +82,25 @@ export default function MapView({ pasos, onSelectPaso, selectedPasoId }: MapView
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
 
+    // Chile spans from ~-17.6 (Visviri) to ~-52.3 (Bellavista), longitude ~-66 to -75
+    const chileBounds: L.LatLngBoundsExpression = [
+      [-54.5, -76.0], // SW — sur de Magallanes + margen
+      [-17.0, -64.5], // NE — norte de Arica + margen
+    ];
+
     const map = L.map(containerRef.current, {
-      center: [-35.0, -70.0],
-      zoom: 5,
+      center: [-36.0, -70.5],
+      zoom: 4,
+      minZoom: 3,
+      maxZoom: 18,
       zoomControl: false,
       attributionControl: true,
+      maxBounds: [[-60.0, -82.0], [-14.0, -60.0]], // restringe el paneo a la zona Chile-Argentina
+      maxBoundsViscosity: 0.8,
     });
+
+    // Ajustar para que Chile quede perfectamente encuadrado al inicio
+    map.fitBounds(chileBounds, { padding: [20, 20] });
 
     // Zoom buttons in the bottom right corner
     L.control.zoom({ position: 'bottomright' }).addTo(map);

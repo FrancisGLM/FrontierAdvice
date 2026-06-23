@@ -525,14 +525,20 @@ export interface ApiEstadoDiarioEstadoDiario
     draftAndPublish: true;
   };
   attributes: {
-    confianza_extraccion: Schema.Attribute.String;
+    confianza_extraccion: Schema.Attribute.Decimal;
     creado_en: Schema.Attribute.DateTime;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    dias_operacion: Schema.Attribute.JSON;
+    es_programado: Schema.Attribute.Boolean;
     estado_general: Schema.Attribute.String;
     fecha_reporte: Schema.Attribute.DateTime;
+    fecha_vigencia_desde: Schema.Attribute.DateTime;
+    fecha_vigencia_hasta: Schema.Attribute.DateTime;
     fuente: Schema.Attribute.String;
+    horario_apertura: Schema.Attribute.String;
+    horario_cierre: Schema.Attribute.String;
     id_paso: Schema.Attribute.Relation<
       'oneToOne',
       'api::paso-fronterizo.paso-fronterizo'
@@ -544,8 +550,57 @@ export interface ApiEstadoDiarioEstadoDiario
     > &
       Schema.Attribute.Private;
     mensaje_original: Schema.Attribute.Text;
+    motivo_estado: Schema.Attribute.String;
+    msg_id_waha: Schema.Attribute.String;
+    msg_server_id: Schema.Attribute.Integer;
+    msg_timestamp: Schema.Attribute.BigInteger;
+    nivel_riesgo_calc: Schema.Attribute.Enumeration<
+      ['alto', 'medio', 'bajo', 'null']
+    >;
     origen_tipo: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    tipo_vehiculos: Schema.Attribute.JSON;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiMensajeWahaMensajeWaha extends Struct.CollectionTypeSchema {
+  collectionName: 'mensaje_wahas';
+  info: {
+    displayName: 'MensajeWAHA';
+    pluralName: 'mensaje-wahas';
+    singularName: 'mensaje-waha';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    fuente: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'whatsapp_upf'>;
+    id_estado: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::estado-diario.estado-diario'
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::mensaje-waha.mensaje-waha'
+    > &
+      Schema.Attribute.Private;
+    msg_body: Schema.Attribute.BigInteger;
+    msg_fecha_iso: Schema.Attribute.DateTime;
+    msg_id_waha: Schema.Attribute.String & Schema.Attribute.Unique;
+    msg_row_id: Schema.Attribute.Integer;
+    msg_server_id: Schema.Attribute.Integer;
+    msg_timestamp: Schema.Attribute.BigInteger;
+    procesado: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    publishedAt: Schema.Attribute.DateTime;
+    relevante: Schema.Attribute.Boolean;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -564,21 +619,26 @@ export interface ApiPasoFronterizoPasoFronterizo
     draftAndPublish: true;
   };
   attributes: {
+    activo: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    altitud_msnm: Schema.Attribute.Integer;
     codigo_fuente: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     habilitado_para: Schema.Attribute.JSON;
+    latitud: Schema.Attribute.Decimal;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::paso-fronterizo.paso-fronterizo'
     > &
       Schema.Attribute.Private;
+    longitud: Schema.Attribute.Decimal;
     nombre_oficial: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     region: Schema.Attribute.String;
     tipo_complejo: Schema.Attribute.String;
+    ultima_actualizacion: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -633,6 +693,7 @@ export interface ApiSenalPredictivaSenalPredictiva
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    datos_entrada: Schema.Attribute.JSON;
     fecha_calculo: Schema.Attribute.DateTime;
     horizonte_horas: Schema.Attribute.Integer;
     id_paso: Schema.Attribute.Relation<
@@ -648,6 +709,41 @@ export interface ApiSenalPredictivaSenalPredictiva
     motivo_resumen: Schema.Attribute.Text;
     nivel_riesgo: Schema.Attribute.Enumeration<['Alto', 'Medio', 'Bajo']>;
     publishedAt: Schema.Attribute.DateTime;
+    tipo_evento: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiTweetXTweetX extends Struct.CollectionTypeSchema {
+  collectionName: 'tweet_xes';
+  info: {
+    displayName: 'tweet-x';
+    pluralName: 'tweet-xes';
+    singularName: 'tweet-x';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    fuente: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::tweet-x.tweet-x'
+    > &
+      Schema.Attribute.Private;
+    procesado: Schema.Attribute.Boolean;
+    publishedAt: Schema.Attribute.DateTime;
+    relevante: Schema.Attribute.Boolean;
+    tweet_date: Schema.Attribute.DateTime;
+    tweet_id_x: Schema.Attribute.String & Schema.Attribute.Required;
+    tweet_text: Schema.Attribute.Text;
+    tweet_url: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1168,9 +1264,11 @@ declare module '@strapi/strapi' {
       'admin::user': AdminUser;
       'api::alerta-evento.alerta-evento': ApiAlertaEventoAlertaEvento;
       'api::estado-diario.estado-diario': ApiEstadoDiarioEstadoDiario;
+      'api::mensaje-waha.mensaje-waha': ApiMensajeWahaMensajeWaha;
       'api::paso-fronterizo.paso-fronterizo': ApiPasoFronterizoPasoFronterizo;
       'api::restriccion.restriccion': ApiRestriccionRestriccion;
       'api::senal-predictiva.senal-predictiva': ApiSenalPredictivaSenalPredictiva;
+      'api::tweet-x.tweet-x': ApiTweetXTweetX;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;
