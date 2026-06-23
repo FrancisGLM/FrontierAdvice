@@ -1,9 +1,9 @@
 {
   "active": true,
   "activeVersion": {
-    "updatedAt": "2026-06-19T15:58:21.000Z",
-    "createdAt": "2026-06-19T12:13:13.310Z",
-    "versionId": "7de5883a-f9f8-4e43-ab66-9a9ebe5aec02",
+    "updatedAt": "2026-06-23T22:07:06.000Z",
+    "createdAt": "2026-06-23T22:07:05.075Z",
+    "versionId": "ee213d63-e36d-4a55-9ddf-5c655ae91adf",
     "workflowId": "sUrBCvAZhyMcELm1",
     "nodes": [
       {
@@ -22,8 +22,8 @@
         "type": "n8n-nodes-base.scheduleTrigger",
         "typeVersion": 1.2,
         "position": [
-          -4224,
-          -96
+          -4336,
+          -224
         ]
       },
       {
@@ -692,13 +692,7 @@
     "connections": {
       "Schedule Trigger": {
         "main": [
-          [
-            {
-              "node": "Set Config",
-              "type": "main",
-              "index": 0
-            }
-          ]
+          []
         ]
       },
       "Set Config": {
@@ -983,21 +977,15 @@
       }
     },
     "authors": "Nyxu Infinity",
-    "name": "Version 7de5883a",
+    "name": "Version ee213d63",
     "description": "",
-    "autosaved": true
+    "autosaved": false
   },
-  "activeVersionId": "7de5883a-f9f8-4e43-ab66-9a9ebe5aec02",
+  "activeVersionId": "ee213d63-e36d-4a55-9ddf-5c655ae91adf",
   "connections": {
     "Schedule Trigger": {
       "main": [
-        [
-          {
-            "node": "Set Config",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Set Config": {
@@ -1305,8 +1293,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -4224,
-        -96
+        -4336,
+        -224
       ]
     },
     {
@@ -1988,12 +1976,12 @@
   "staticData": {
     "node:Schedule Trigger": {
       "recurrenceRules": [
-        12
+        18
       ]
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2026-06-19T12:13:13.309Z",
-  "versionId": "7de5883a-f9f8-4e43-ab66-9a9ebe5aec02"
+  "updatedAt": "2026-06-23T22:07:05.071Z",
+  "versionId": "ee213d63-e36d-4a55-9ddf-5c655ae91adf"
 }
