@@ -220,7 +220,6 @@
     }
   },
   "createdAt": "2026-06-12T08:12:34.344Z",
-  "description": null,
   "id": "5fNE6Pd43tEjlGcc",
   "isArchived": false,
   "meta": {
@@ -776,7 +775,6 @@
       "name": "Normalize Whatsapp Messages"
     }
   ],
-  "pinData": {},
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
@@ -787,23 +785,12 @@
       "createdAt": "2026-06-12T08:12:34.348Z",
       "role": "workflow:owner",
       "workflowId": "5fNE6Pd43tEjlGcc",
-      "projectId": "0mwVSLULhlB6ku2N",
-      "project": {
-        "updatedAt": "2026-05-08T10:08:26.296Z",
-        "createdAt": "2026-05-08T08:11:46.302Z",
-        "id": "0mwVSLULhlB6ku2N",
-        "name": "Nyxu Infinity <nyxuofficial@gmail.com>",
-        "type": "personal",
-        "icon": null,
-        "description": null,
-        "creatorId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
-      }
+      "projectId": "0mwVSLULhlB6ku2N"
     }
   ],
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
   "updatedAt": "2026-06-12T08:59:27.942Z",
-  "versionCounter": 24,
   "versionId": "ca473681-4cbc-49ff-82df-c3057d9406c5"
 }
