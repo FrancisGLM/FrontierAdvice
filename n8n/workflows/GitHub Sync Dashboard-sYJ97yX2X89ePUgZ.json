@@ -5061,8 +5061,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        11360,
-        4272
+        11344,
+        4320
       ],
       "id": "20913a2a-ea1b-41d4-9933-1b6bf56d5df6",
       "name": "Globals"
@@ -6783,7 +6783,7 @@
       "type": "n8n-nodes-base.stickyNote",
       "position": [
         11296,
-        3952
+        3888
       ],
       "typeVersion": 1,
       "id": "0de15750-3224-40cc-84dc-4eeaaadc4f17",
@@ -7818,12 +7818,12 @@
   "staticData": {
     "node:Schedule Trigger": {
       "recurrenceRules": [
-        0
+        18
       ]
     }
   },
   "tags": [],
   "triggerCount": 3,
-  "updatedAt": "2026-06-19T15:59:20.622Z",
-  "versionId": "1ea986bf-3b6d-4cab-b5be-117e5e94dd95"
+  "updatedAt": "2026-06-24T05:58:44.619Z",
+  "versionId": "4bcb5cb8-f968-47aa-8aed-afc6bf84e8ac"
 }
