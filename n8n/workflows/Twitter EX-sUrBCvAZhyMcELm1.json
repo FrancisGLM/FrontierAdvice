@@ -1,9 +1,9 @@
 {
   "active": true,
   "activeVersion": {
-    "updatedAt": "2026-06-23T22:07:06.000Z",
-    "createdAt": "2026-06-23T22:07:05.075Z",
-    "versionId": "ee213d63-e36d-4a55-9ddf-5c655ae91adf",
+    "updatedAt": "2026-06-23T22:59:46.000Z",
+    "createdAt": "2026-06-23T22:59:44.852Z",
+    "versionId": "590e6edd-40f3-4d1b-9500-211a87e9137f",
     "workflowId": "sUrBCvAZhyMcELm1",
     "nodes": [
       {
@@ -22,8 +22,8 @@
         "type": "n8n-nodes-base.scheduleTrigger",
         "typeVersion": 1.2,
         "position": [
-          -4336,
-          -224
+          -4304,
+          -144
         ]
       },
       {
@@ -977,11 +977,11 @@
       }
     },
     "authors": "Nyxu Infinity",
-    "name": "Version ee213d63",
+    "name": "Version 590e6edd",
     "description": "",
-    "autosaved": false
+    "autosaved": true
   },
-  "activeVersionId": "ee213d63-e36d-4a55-9ddf-5c655ae91adf",
+  "activeVersionId": "590e6edd-40f3-4d1b-9500-211a87e9137f",
   "connections": {
     "Schedule Trigger": {
       "main": [
@@ -1293,8 +1293,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -4336,
-        -224
+        -4304,
+        -144
       ]
     },
     {
@@ -1976,12 +1976,12 @@
   "staticData": {
     "node:Schedule Trigger": {
       "recurrenceRules": [
-        18
+        0
       ]
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2026-06-23T22:07:05.071Z",
-  "versionId": "ee213d63-e36d-4a55-9ddf-5c655ae91adf"
+  "updatedAt": "2026-06-23T22:59:44.850Z",
+  "versionId": "590e6edd-40f3-4d1b-9500-211a87e9137f"
 }
