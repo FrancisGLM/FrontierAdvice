@@ -1,0 +1,53 @@
+{
+  "kind": "collectionType",
+  "collectionName": "clima_actuals",
+  "info": {
+    "singularName": "clima-actual",
+    "pluralName": "clima-actuals",
+    "displayName": "ClimaActual"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "paso_fronterizo": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::paso-fronterizo.paso-fronterizo",
+      "inversedBy": "clima_actuals"
+    },
+    "temperatura_actual": {
+      "type": "decimal"
+    },
+    "humedad_actual": {
+      "type": "integer"
+    },
+    "viento_actual": {
+      "type": "decimal"
+    },
+    "precipitacion_actual": {
+      "type": "decimal"
+    },
+    "weathercode": {
+      "type": "integer"
+    },
+    "descripcion_actual": {
+      "type": "string"
+    },
+    "nivel_riesgo_actual": {
+      "type": "enumeration",
+      "enum": [
+        "Bajo",
+        "Medio",
+        "Alto"
+      ]
+    },
+    "pronostico_3dias": {
+      "type": "json"
+    },
+    "capturado_en": {
+      "type": "datetime"
+    }
+  }
+}

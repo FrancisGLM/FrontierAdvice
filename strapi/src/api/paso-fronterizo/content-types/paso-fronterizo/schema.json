@@ -17,9 +17,6 @@
     "region": {
       "type": "string"
     },
-    "tipo_complejo": {
-      "type": "string"
-    },
     "habilitado_para": {
       "type": "json"
     },
@@ -27,20 +24,23 @@
       "type": "string"
     },
     "latitud": {
-      "type": "decimal"
+      "type": "float"
     },
     "longitud": {
-      "type": "decimal"
+      "type": "float"
     },
-    "altitud_msnm": {
+    "altitud": {
       "type": "integer"
     },
     "activo": {
       "type": "boolean",
       "default": true
     },
-    "ultima_actualizacion": {
-      "type": "datetime"
+    "clima_actuals": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::clima-actual.clima-actual",
+      "mappedBy": "paso_fronterizo"
     }
   }
 }

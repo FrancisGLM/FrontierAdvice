@@ -513,6 +513,48 @@ export interface ApiAlertaEventoAlertaEvento
   };
 }
 
+export interface ApiClimaActualClimaActual extends Struct.CollectionTypeSchema {
+  collectionName: 'clima_actuals';
+  info: {
+    displayName: 'ClimaActual';
+    pluralName: 'clima-actuals';
+    singularName: 'clima-actual';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    capturado_en: Schema.Attribute.DateTime;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    descripcion_actual: Schema.Attribute.String;
+    humedad_actual: Schema.Attribute.Integer;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::clima-actual.clima-actual'
+    > &
+      Schema.Attribute.Private;
+    nivel_riesgo_actual: Schema.Attribute.Enumeration<
+      ['Bajo', 'Medio', 'Alto']
+    >;
+    paso_fronterizo: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::paso-fronterizo.paso-fronterizo'
+    >;
+    precipitacion_actual: Schema.Attribute.Decimal;
+    pronostico_3dias: Schema.Attribute.JSON;
+    publishedAt: Schema.Attribute.DateTime;
+    temperatura_actual: Schema.Attribute.Decimal;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    viento_actual: Schema.Attribute.Decimal;
+    weathercode: Schema.Attribute.Integer;
+  };
+}
+
 export interface ApiEstadoDiarioEstadoDiario
   extends Struct.CollectionTypeSchema {
   collectionName: 'estado_diarios';
@@ -620,25 +662,27 @@ export interface ApiPasoFronterizoPasoFronterizo
   };
   attributes: {
     activo: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
-    altitud_msnm: Schema.Attribute.Integer;
+    altitud: Schema.Attribute.Integer;
+    clima_actuals: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::clima-actual.clima-actual'
+    >;
     codigo_fuente: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     habilitado_para: Schema.Attribute.JSON;
-    latitud: Schema.Attribute.Decimal;
+    latitud: Schema.Attribute.Float;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::paso-fronterizo.paso-fronterizo'
     > &
       Schema.Attribute.Private;
-    longitud: Schema.Attribute.Decimal;
+    longitud: Schema.Attribute.Float;
     nombre_oficial: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     region: Schema.Attribute.String;
-    tipo_complejo: Schema.Attribute.String;
-    ultima_actualizacion: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1263,6 +1307,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::alerta-evento.alerta-evento': ApiAlertaEventoAlertaEvento;
+      'api::clima-actual.clima-actual': ApiClimaActualClimaActual;
       'api::estado-diario.estado-diario': ApiEstadoDiarioEstadoDiario;
       'api::mensaje-waha.mensaje-waha': ApiMensajeWahaMensajeWaha;
       'api::paso-fronterizo.paso-fronterizo': ApiPasoFronterizoPasoFronterizo;

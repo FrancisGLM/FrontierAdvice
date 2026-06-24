@@ -1,9 +1,8 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { PasoFronterizo, FiltrosMapa } from '@/lib/types';
-import { pasosFronterizos } from '@/lib/mockData';
 import FilterSidebar from '../FilterSidebar/FilterSidebar';
 import MapLegend from './MapLegend';
 import PasoInfoPanel from '../PasoInfo/PasoInfoPanel';
@@ -23,6 +22,10 @@ const MapView = dynamic(() => import('./MapView'), {
 });
 
 export default function MapDashboard() {
+  const [pasosData, setPasosData] = useState<PasoFronterizo[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [selectedPaso, setSelectedPaso] = useState<PasoFronterizo | null>(null);
   const [filtros, setFiltros] = useState<FiltrosMapa>({
     estado: 'todos',
@@ -30,8 +33,81 @@ export default function MapDashboard() {
     busqueda: '',
   });
 
+  useEffect(() => {
+    async function fetchPasos() {
+      try {
+        const res = await fetch('http://localhost:1337/api/paso-fronterizos?pagination[limit]=100&populate=*');
+        if (!res.ok) {
+          throw new Error('Error al obtener datos de Strapi (Verifica que el rol Public tenga permiso "find" en PasoFronterizo)');
+        }
+        const json = await res.json();
+        
+        function mapWeatherCodeToIcon(code: number): any {
+          if (code === 0) return 'sol';
+          if (code >= 1 && code <= 3) return 'nublado';
+          if (code >= 45 && code <= 48) return 'nublado';
+          if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return 'lluvia';
+          if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) return 'nieve';
+          if (code >= 95 && code <= 99) return 'tormenta';
+          return 'sol';
+        }
+
+        // Mapear respuesta de Strapi v5 a tipo frontend PasoFronterizo
+        const mapeados: PasoFronterizo[] = json.data.map((item: any) => {
+          const climaData = item.clima_actuals && item.clima_actuals.length > 0 ? item.clima_actuals[0] : null;
+          
+          let climaActual = undefined;
+          let pronostico = [];
+
+          if (climaData) {
+            climaActual = {
+              temperatura: climaData.temperatura_actual,
+              sensacionTermica: climaData.temperatura_actual, // Approximation
+              descripcion: climaData.descripcion_actual,
+              icono: mapWeatherCodeToIcon(climaData.weathercode),
+              viento: climaData.viento_actual,
+              humedad: climaData.humedad_actual,
+              visibilidad: 10, // Default 
+              presion: 1013, // Default
+            };
+
+            if (climaData.pronostico_3dias && Array.isArray(climaData.pronostico_3dias)) {
+              pronostico = climaData.pronostico_3dias.map((p: any) => ({
+                dia: new Date(p.fecha + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'short' }),
+                icono: mapWeatherCodeToIcon(p.weathercode),
+                riesgo: p.nivel_riesgo ? p.nivel_riesgo.toLowerCase() : 'bajo',
+                alerta: p.descripcion
+              }));
+            }
+          }
+
+          return {
+            id: String(item.id),
+            nombre: item.nombre_oficial,
+            subtitulo: item.codigo_fuente,
+            lat: item.latitud,
+            lng: item.longitud,
+            estado: item.activo ? 'abierto' : 'cerrado',
+            region: item.region,
+            ultimaActualizacion: new Date(item.updatedAt || Date.now()).toLocaleDateString(),
+            altitud: item.altitud || undefined,
+            pronostico: pronostico,
+            climaActual: climaActual
+          };
+        });
+        
+        setPasosData(mapeados);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchPasos();
+  }, []);
+
   const pasosFiltrados = useMemo(() => {
-    return pasosFronterizos.filter((p) => {
+    return pasosData.filter((p) => {
       if (filtros.estado === 'abiertos' && p.estado !== 'abierto') return false;
       if (filtros.region !== 'todas' && p.region !== filtros.region) return false;
       if (filtros.busqueda) {
@@ -41,14 +117,14 @@ export default function MapDashboard() {
       }
       return true;
     });
-  }, [filtros]);
+  }, [filtros, pasosData]);
 
   const handleSelectPaso = (paso: PasoFronterizo) => {
     setSelectedPaso((prev) => (prev?.id === paso.id ? null : paso));
   };
 
   return (
-    <>
+    <div className="flex flex-1 w-full h-full relative overflow-hidden">
       <FilterSidebar
         filtros={filtros}
         onFiltros={(partial) => setFiltros((prev) => ({ ...prev, ...partial }))}
@@ -57,19 +133,35 @@ export default function MapDashboard() {
         selectedPasoId={selectedPaso?.id}
       />
 
-      <div className={styles.mapArea}>
+      <div className={`${styles.mapArea} flex-1 relative w-full h-full bg-[var(--bg-base)]`}>
         <MapLegend />
-        <MapView
-          pasos={pasosFiltrados}
-          onSelectPaso={handleSelectPaso}
-          selectedPasoId={selectedPaso?.id}
-        />
+        
+        {loading ? (
+          <div className="absolute inset-0 z-[2000] flex flex-col items-center justify-center bg-[var(--bg-base)] w-full h-full">
+            <div className={styles.spinner} />
+            <p className="mt-4 text-sm font-medium text-slate-400">Cargando puntos de Strapi...</p>
+          </div>
+        ) : error ? (
+          <div className="absolute inset-0 z-[2000] flex w-full h-full items-center justify-center bg-[var(--bg-base)]">
+            <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-6 rounded-2xl border border-red-200 dark:border-red-900/30 max-w-md text-center">
+              <span className="text-4xl mb-4 block">⚠️</span>
+              <h2 className="text-xl font-bold mb-2">Error de Conexión</h2>
+              <p>{error}</p>
+            </div>
+          </div>
+        ) : (
+          <MapView
+            pasos={pasosFiltrados}
+            onSelectPaso={handleSelectPaso}
+            selectedPasoId={selectedPaso?.id}
+          />
+        )}
       </div>
 
       <PasoInfoPanel 
         paso={selectedPaso} 
         onClose={() => setSelectedPaso(null)} 
       />
-    </>
+    </div>
   );
 }
