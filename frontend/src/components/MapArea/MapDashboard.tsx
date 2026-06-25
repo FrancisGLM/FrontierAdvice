@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { PasoFronterizo, FiltrosMapa } from '@/lib/types';
+import { PasoFronterizo, FiltrosMapa, IconoClima, SenalPredictiva } from '@/lib/types';
 import FilterSidebar from '../FilterSidebar/FilterSidebar';
 import MapLegend from './MapLegend';
 import PasoInfoPanel from '../PasoInfo/PasoInfoPanel';
@@ -36,12 +36,42 @@ export default function MapDashboard() {
   useEffect(() => {
     async function fetchPasos() {
       try {
-        const res = await fetch('http://localhost:1337/api/paso-fronterizos?pagination[limit]=100&populate=*');
-        if (!res.ok) {
+        const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
+
+        // Fetch en paralelo: pasos + señales predictivas
+        const [resPasos, resSenales] = await Promise.all([
+          fetch(`${STRAPI_URL}/api/paso-fronterizos?pagination[limit]=100&populate=*`),
+          fetch(`${STRAPI_URL}/api/senal-predictivas?pagination[limit]=500&populate[id_paso][fields][0]=id&sort=fecha_calculo:desc`),
+        ]);
+
+        if (!resPasos.ok) {
           throw new Error('Error al obtener datos de Strapi (Verifica que el rol Public tenga permiso "find" en PasoFronterizo)');
         }
-        const json = await res.json();
-        
+        const json = await resPasos.json();
+
+        // Construir mapa pasoId → SenalPredictiva[]
+        const senalMap = new Map<string, SenalPredictiva[]>();
+        if (resSenales.ok) {
+          const jsonSenales = await resSenales.json();
+          for (const s of (jsonSenales.data ?? [])) {
+            const pasoId = String(s.id_paso?.id ?? s.id_paso);
+            if (pasoId) {
+              const currentList = senalMap.get(pasoId) || [];
+              // Tomamos la más reciente de cada horizonte de horas
+              if (!currentList.some((existing) => existing.horizonteHoras === s.horizonte_horas)) {
+                currentList.push({
+                  nivelRiesgo: s.nivel_riesgo as SenalPredictiva['nivelRiesgo'],
+                  horizonteHoras: s.horizonte_horas,
+                  motivoResumen: s.motivo_resumen ?? '',
+                  tipoEvento: s.tipo_evento ?? '',
+                  fechaCalculo: s.fecha_calculo,
+                });
+                senalMap.set(pasoId, currentList);
+              }
+            }
+          }
+        }
+
         function mapWeatherCodeToIcon(code: number): IconoClima {
           if (code === 0) return 'sol';
           if (code >= 1 && code <= 3) return 'nublado';
@@ -112,7 +142,8 @@ export default function MapDashboard() {
             ultimaActualizacion: new Date(item.updatedAt || Date.now()).toLocaleDateString(),
             altitud: item.altitud || undefined,
             pronostico: pronostico,
-            climaActual: climaActual
+            climaActual: climaActual,
+            senalPredictivas: senalMap.get(String(item.id))?.sort((a, b) => a.horizonteHoras - b.horizonteHoras),
           };
         });
         

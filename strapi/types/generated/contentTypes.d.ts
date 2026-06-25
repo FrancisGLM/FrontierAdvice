@@ -738,6 +738,7 @@ export interface ApiSenalPredictivaSenalPredictiva
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     datos_entrada: Schema.Attribute.JSON;
+    estado_predicho: Schema.Attribute.String;
     fecha_calculo: Schema.Attribute.DateTime;
     horizonte_horas: Schema.Attribute.Integer;
     id_paso: Schema.Attribute.Relation<
@@ -750,13 +751,17 @@ export interface ApiSenalPredictivaSenalPredictiva
       'api::senal-predictiva.senal-predictiva'
     > &
       Schema.Attribute.Private;
+    modelo_version: Schema.Attribute.String;
     motivo_resumen: Schema.Attribute.Text;
     nivel_riesgo: Schema.Attribute.Enumeration<['Alto', 'Medio', 'Bajo']>;
+    probabilidad: Schema.Attribute.Decimal;
     publishedAt: Schema.Attribute.DateTime;
     tipo_evento: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    valido_desde: Schema.Attribute.DateTime;
+    valido_hasta: Schema.Attribute.DateTime;
   };
 }
 

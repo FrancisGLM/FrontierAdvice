@@ -38,6 +38,21 @@
     },
     "datos_entrada": {
       "type": "json"
+    },
+    "probabilidad": {
+      "type": "decimal"
+    },
+    "estado_predicho": {
+      "type": "string"
+    },
+    "modelo_version": {
+      "type": "string"
+    },
+    "valido_desde": {
+      "type": "datetime"
+    },
+    "valido_hasta": {
+      "type": "datetime"
     }
   }
 }

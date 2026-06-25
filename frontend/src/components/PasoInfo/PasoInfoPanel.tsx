@@ -4,6 +4,7 @@ import { X, Clock, Mountain, MapPin } from 'lucide-react';
 import { PasoFronterizo } from '@/lib/types';
 import WeatherForecast from './WeatherForecast';
 import CurrentWeather from './CurrentWeather';
+import PredictionBadge from './PredictionBadge';
 import styles from './PasoInfo.module.css';
 
 interface PasoInfoPanelProps {
@@ -18,6 +19,51 @@ const estadoConfig = {
 };
 
 import { useState, useEffect } from 'react';
+
+function getBorderCountry(nombre: string): 'AR' | 'BO' | 'PE' {
+  const n = nombre.toLowerCase();
+  if (n.includes('chacalluta')) return 'PE';
+  if (n.includes('chungar') || n.includes('visviri') || n.includes('colchane') || n.includes('ollagüe') || n.includes('hito cajón')) return 'BO';
+  return 'AR';
+}
+
+function CountryFlag({ country }: { country: 'CL' | 'AR' | 'BO' | 'PE' }) {
+  if (country === 'CL') {
+    return (
+      <svg width="24" height="16" viewBox="0 0 3 2" className="rounded-sm shadow-sm">
+        <rect width="3" height="2" fill="#d52b1e"/>
+        <rect width="3" height="1" fill="#fff"/>
+        <rect width="1" height="1" fill="#0039a6"/>
+        <polygon points="0.5,0.1 0.6,0.4 0.9,0.4 0.65,0.6 0.75,0.9 0.5,0.7 0.25,0.9 0.35,0.6 0.1,0.4 0.4,0.4" fill="#fff"/>
+      </svg>
+    );
+  }
+  if (country === 'PE') {
+    return (
+      <svg width="24" height="16" viewBox="0 0 3 2" className="rounded-sm shadow-sm">
+        <rect width="1" height="2" fill="#D91023"/>
+        <rect width="1" height="2" x="1" fill="#fff"/>
+        <rect width="1" height="2" x="2" fill="#D91023"/>
+      </svg>
+    );
+  }
+  if (country === 'BO') {
+    return (
+      <svg width="24" height="16" viewBox="0 0 3 3" className="rounded-sm shadow-sm">
+        <rect width="3" height="1" fill="#D52B1E"/>
+        <rect width="3" height="1" y="1" fill="#F9E000"/>
+        <rect width="3" height="1" y="2" fill="#007934"/>
+      </svg>
+    );
+  }
+  return (
+    <svg width="24" height="16" viewBox="0 0 3 2" className="rounded-sm shadow-sm">
+      <rect width="3" height="2" fill="#74acdf"/>
+      <rect width="3" height="0.66" y="0.66" fill="#fff"/>
+      <circle cx="1.5" cy="1" r="0.25" fill="#f6b40e"/>
+    </svg>
+  );
+}
 
 export default function PasoInfoPanel({ paso, onClose }: PasoInfoPanelProps) {
   const [activePaso, setActivePaso] = useState<PasoFronterizo | null>(paso);
@@ -64,8 +110,8 @@ export default function PasoInfoPanel({ paso, onClose }: PasoInfoPanelProps) {
               )}
             </div>
             <div className={styles.flags}>
-              <span>🇨🇱</span>
-              <span>🇦🇷</span>
+              <CountryFlag country="CL" />
+              <CountryFlag country={getBorderCountry(displayPaso.nombre)} />
             </div>
           </div>
 
@@ -98,12 +144,15 @@ export default function PasoInfoPanel({ paso, onClose }: PasoInfoPanelProps) {
             </div>
           </div>
 
+          {/* Predicción IA */}
+          {displayPaso.senalPredictivas && displayPaso.senalPredictivas.length > 0 && (
+            <PredictionBadge senales={displayPaso.senalPredictivas} />
+          )}
+
           {/* Current Weather */}
           {displayPaso.climaActual && (
             <CurrentWeather clima={displayPaso.climaActual} />
           )}
-
-          <div className={styles.divider} />
 
           {/* Forecast */}
           <WeatherForecast pronostico={displayPaso.pronostico} />

@@ -29,6 +29,14 @@ export interface ClimaActual {
   presion: number; // hPa
 }
 
+export interface SenalPredictiva {
+  nivelRiesgo: 'Alto' | 'Medio' | 'Bajo';
+  horizonteHoras: number;
+  motivoResumen: string;
+  tipoEvento: string;
+  fechaCalculo: string;
+}
+
 export interface PronosticoDia {
   dia: string;
   icono: IconoClima;
@@ -48,6 +56,7 @@ export interface PasoFronterizo {
   altitud?: number;
   pronostico: PronosticoDia[];
   climaActual?: ClimaActual;
+  senalPredictivas?: SenalPredictiva[];
 }
 
 export interface FiltrosMapa {
