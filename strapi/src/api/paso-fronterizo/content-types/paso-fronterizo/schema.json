@@ -25,6 +25,22 @@
     },
     "codigo_fuente": {
       "type": "string"
+    },
+    "latitud": {
+      "type": "decimal"
+    },
+    "longitud": {
+      "type": "decimal"
+    },
+    "altitud_msnm": {
+      "type": "integer"
+    },
+    "activo": {
+      "type": "boolean",
+      "default": true
+    },
+    "ultima_actualizacion": {
+      "type": "datetime"
     }
   }
 }
