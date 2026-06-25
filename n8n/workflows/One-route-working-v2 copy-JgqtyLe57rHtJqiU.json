@@ -1,0 +1,2084 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "GPS Pickup": {
+      "main": [
+        [
+          {
+            "node": "Save Pickup GPS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GPS Delivery": {
+      "main": [
+        [
+          {
+            "node": "Save Delivery GPS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent Parser",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent Reply": {
+      "main": [
+        [
+          {
+            "node": "Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent Parser": {
+      "main": [
+        [
+          {
+            "node": "Collect Coordinates",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Collect Addresses",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Collect Shipment Information",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Record Email Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Pickup GPS": {
+      "main": [
+        [
+          {
+            "node": "5 sec",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collect Addresses": {
+      "main": [
+        [
+          {
+            "node": "Query Open Route API Pickup",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Query Open Route API Delivery",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent Reply",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collect Coordinates": {
+      "main": [
+        [
+          {
+            "node": "Request Open Route API",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Request Open Route API BUS GEOJSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Request Open Route API": {
+      "main": [
+        [
+          {
+            "node": "Driving Time & Distance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Driving Time & Distance": {
+      "main": [
+        [
+          {
+            "node": "Save Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent Parser",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Open Route API Pickup": {
+      "main": [
+        [
+          {
+            "node": "GPS Pickup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collect Shipment Information": {
+      "main": [
+        [
+          {
+            "node": "AI Agent Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Open Route API Delivery": {
+      "main": [
+        [
+          {
+            "node": "GPS Delivery",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        []
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Open Route API Pickup1": {
+      "main": [
+        [
+          {
+            "node": "GPS Pickup1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Query Open Route API Pickup1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Query Open Route API Delivery1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GPS Pickup1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Open Route API Delivery1": {
+      "main": [
+        [
+          {
+            "node": "GPS Delivery1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Request Open Route API BUS GEOJSON1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GPS Delivery1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Request Open Route API BUS GEOJSON1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-06-25T01:16:37.433Z",
+  "id": "JgqtyLe57rHtJqiU",
+  "isArchived": true,
+  "meta": null,
+  "name": "One-route-working-v2 copy",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {},
+        "options": {
+          "downloadAttachments": false
+        }
+      },
+      "id": "23852fd9-4537-42b1-9bbb-ee73287b2455",
+      "name": "Gmail Trigger",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "position": [
+        -976,
+        224
+      ],
+      "notesInFlow": true,
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"shipment_number\": \"15487-PLO\",\n  \"pickup_location\": \"Centre de Distribution Leclerc\",\n  \"pickup_address\": \"77 Rue Albert Garry, 94450 Limeil-Brévannes\",\n  \"expected_pickup_time\": \"24-09-2024, 09:00:00\",\n  \"temperature_control\": \"Chilled\",\n  \"quantity\": \"12 pallets\",\n  \"destination_store_name\": \"E.Leclerc Store 124\",\n  \"destination_address\": \"43-45 Quai Jules Guesde, 94405 Vitry-sur-Seine\",\n  \"expected_delivery_time\": \"24-09-2024, 18:00:00\",\n  \"sender_name\":\"Jacques Chirac\",\n  \"sender_company\": \"RPR\"\n}\n\n"
+      },
+      "id": "2414ac74-a37f-4185-af8e-e93c3982d3ef",
+      "name": "Structured Output Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "position": [
+        -448,
+        256
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Here is an email from a customer requesting a shipment:\n\nSubject: {{ $json.subject }}\nBody: {{ $json.text }}\n\nPlease extract all the structured logistics data based on the format provided.",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are a logistics assistant for a transportation company. \n\nYour job is to extract all structured data from shipping request emails sent by customers (typically retail chains like E.Leclerc). These emails contain information about the sender, shipment pickup and delivery details.\n\nReturn the result as a JSON object with the following fields:\n\n{\n  \"shipment_number\": \"\",\n  \"pickup_location\": \"\",\n  \"pickup_address\": \"\",\n  \"expected_pickup_time\": \"\",\n  \"temperature_control\": \"\",\n  \"quantity\": \"\",\n  \"destination_store_name\": \"\",\n  \"destination_address\": \"\",\n  \"expected_delivery_time\": \"\",\n  \"sender_name\": \"\",\n  \"sender_company\": \"\"\n}\n\nOnly include values mentioned explicitly in the email. Do not infer or guess. If a field is missing, set its value to `null`.\n"
+        }
+      },
+      "id": "8f39a186-5a08-413a-9538-bcd985c72a83",
+      "name": "AI Agent Parser",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        -624,
+        80
+      ],
+      "typeVersion": 1.9
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "documentId": {
+          "__rl": true,
+          "value": "1Nrg6FWiqnPQ5sIHRYwsDhwG-nTSZej1Zg6S1gtQkc2s",
+          "mode": "list",
+          "cachedResultName": "Transportation Orders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nrg6FWiqnPQ5sIHRYwsDhwG-nTSZej1Zg6S1gtQkc2s/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 32124056,
+          "mode": "list",
+          "cachedResultName": "Orders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nrg6FWiqnPQ5sIHRYwsDhwG-nTSZej1Zg6S1gtQkc2s/edit#gid=32124056"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "shipment_number",
+              "lookupValue": "={{ $json.output.shipment_number }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "382df516-34a2-4af7-8de0-96f2dae20cd1",
+      "name": "Collect Addresses",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        -128,
+        224
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.6
+    },
+    {
+      "parameters": {},
+      "id": "c10f442c-78eb-45ae-8a9f-91a23925096d",
+      "name": "5 sec",
+      "type": "n8n-nodes-base.wait",
+      "position": [
+        784,
+        208
+      ],
+      "webhookId": "c3498720-91db-436a-b3a4-6abbdb74e942",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "url": "https://api.openrouteservice.org/geocode/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "api_key",
+              "value": "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImE1M2MzYjMwY2UwYTQ1MDdhNGM1OWMwMmQwODQwMjc3IiwiaCI6Im11cm11cjY0In0="
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.pickup_address }}"
+            },
+            {
+              "name": "boundary.country",
+              "value": "=FR"
+            },
+            {
+              "name": "sources",
+              "value": "openstreetmap"
+            },
+            {
+              "name": "size",
+              "value": "1"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fcf78645-2489-4f7e-8c8f-3256020013b0",
+      "name": "Query Open Route API Pickup",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        80,
+        224
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1Nrg6FWiqnPQ5sIHRYwsDhwG-nTSZej1Zg6S1gtQkc2s",
+          "mode": "list",
+          "cachedResultName": "Transportation Orders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nrg6FWiqnPQ5sIHRYwsDhwG-nTSZej1Zg6S1gtQkc2s/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 32124056,
+          "mode": "list",
+          "cachedResultName": "Orders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nrg6FWiqnPQ5sIHRYwsDhwG-nTSZej1Zg6S1gtQkc2s/edit#gid=32124056"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "pickup_longitude": "={{ $json.longitude }}",
+            "pickup_latitude": "={{ $json.latitude }}",
+            "shipment_number": "={{ $('AI Agent Parser').item.json.output.shipment_number }}"
+          },
+          "matchingColumns": [
+            "shipment_number"
+          ],
+          "schema": [
+            {
+              "id": "shipment_number",
+              "displayName": "shipment_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "pickup_location",
+              "displayName": "pickup_location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "pickup_address",
+              "displayName": "pickup_address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "pickup_longitude",
+              "displayName": "pickup_longitude",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "pickup_latitude",
+              "displayName": "pickup_latitude",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "expected_pickup_time",
+              "displayName": "expected_pickup_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "temperature_control",
+              "displayName": "temperature_control",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "destination_store_name",
+              "displayName": "destination_store_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "destination_address",
+              "displayName": "destination_address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "destination_longitude",
+              "displayName": "destination_longitude",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "destination_latitude",
+              "displayName": "destination_latitude",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "expected_delivery_time",
+              "displayName": "expected_delivery_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "driving_distance",
+              "displayName": "driving_distance",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "driving_time",
+              "displayName": "driving_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "06de446b-78bf-4ad5-9d8c-8b39743516b3",
+      "name": "Save Pickup GPS",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        544,
+        208
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.6
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e4c92077-f294-4e49-8276-20d1441c0c2c",
+              "name": "longitude",
+              "type": "string",
+              "value": "={{ $json.features[0].geometry.coordinates[0] }}"
+            },
+            {
+              "id": "899e5304-e7a1-4ce1-bf9a-f403d74934fb",
+              "name": "latitude",
+              "type": "string",
+              "value": "={{ $json.features[0].geometry.coordinates[1] }}"
+            },
+            {
+              "id": "5b35642b-dda4-42b8-b7bb-1275616bfb59",
+              "name": "borough",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.borough }}"
+            },
+            {
+              "id": "aa74bd9a-f543-48e1-a69b-0e6472bda053",
+              "name": "neighbourhood",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.neighbourhood }}"
+            },
+            {
+              "id": "7f303dc8-4e28-4d46-8e3e-9db00dbcac3a",
+              "name": "localadmin",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.localadmin }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "325aa5de-e740-4d7d-969b-77f20f0a98ab",
+      "name": "GPS Pickup",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        320,
+        208
+      ],
+      "notesInFlow": true,
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "url": "https://api.openrouteservice.org/geocode/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "api_key",
+              "value": "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImE1M2MzYjMwY2UwYTQ1MDdhNGM1OWMwMmQwODQwMjc3IiwiaCI6Im11cm11cjY0In0="
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.destination_address }}"
+            },
+            {
+              "name": "boundary.country",
+              "value": "=FR"
+            },
+            {
+              "name": "sources",
+              "value": "openstreetmap"
+            },
+            {
+              "name": "size",
+              "value": "1"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "485a1af3-97b1-4970-a30e-83b0212e1a74",
+      "name": "Query Open Route API Delivery",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        96,
+        432
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e4c92077-f294-4e49-8276-20d1441c0c2c",
+              "name": "longitude",
+              "type": "string",
+              "value": "={{ $json.features[0].geometry.coordinates[0] }}"
+            },
+            {
+              "id": "899e5304-e7a1-4ce1-bf9a-f403d74934fb",
+              "name": "latitude",
+              "type": "string",
+              "value": "={{ $json.features[0].geometry.coordinates[1] }}"
+            },
+            {
+              "id": "5b35642b-dda4-42b8-b7bb-1275616bfb59",
+              "name": "borough",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.borough }}"
+            },
+            {
+              "id": "aa74bd9a-f543-48e1-a69b-0e6472bda053",
+              "name": "neighbourhood",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.neighbourhood }}"
+            },
+            {
+              "id": "7f303dc8-4e28-4d46-8e3e-9db00dbcac3a",
+              "name": "localadmin",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.localadmin }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c7fb61d7-ca98-4d47-b7d7-114d324a9fe3",
+      "name": "GPS Delivery",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        320,
+        432
+      ],
+      "notesInFlow": true,
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1Nrg6FWiqnPQ5sIHRYwsDhwG-nTSZej1Zg6S1gtQkc2s",
+          "mode": "list",
+          "cachedResultName": "Transportation Orders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nrg6FWiqnPQ5sIHRYwsDhwG-nTSZej1Zg6S1gtQkc2s/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 32124056,
+          "mode": "list",
+          "cachedResultName": "Orders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nrg6FWiqnPQ5sIHRYwsDhwG-nTSZej1Zg6S1gtQkc2s/edit#gid=32124056"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "shipment_number": "={{ $('AI Agent Parser').item.json.output.shipment_number }}",
+            "destination_longitude": "={{ $json.longitude }}",
+            "destination_latitude": "={{ $json.latitude }}"
+          },
+          "matchingColumns": [
+            "shipment_number"
+          ],
+          "schema": [
+            {
+              "id": "shipment_number",
+              "displayName": "shipment_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "pickup_location",
+              "displayName": "pickup_location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "pickup_address",
+              "displayName": "pickup_address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "pickup_longitude",
+              "displayName": "pickup_longitude",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "pickup_latitude",
+              "displayName": "pickup_latitude",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "expected_pickup_time",
+              "displayName": "expected_pickup_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "temperature_control",
+              "displayName": "temperature_control",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "destination_store_name",
+              "displayName": "destination_store_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "destination_address",
+              "displayName": "destination_address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "destination_longitude",
+              "displayName": "destination_longitude",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "destination_latitude",
+              "displayName": "destination_latitude",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "expected_delivery_time",
+              "displayName": "expected_delivery_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "driving_distance",
+              "displayName": "driving_distance",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "driving_time",
+              "displayName": "driving_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "f64ec8c6-e9d1-4e23-8a1d-a4383945fb91",
+      "name": "Save Delivery GPS",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        544,
+        432
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.6
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "documentId": {
+          "__rl": true,
+          "value": "1Nrg6FWiqnPQ5sIHRYwsDhwG-nTSZej1Zg6S1gtQkc2s",
+          "mode": "list",
+          "cachedResultName": "Transportation Orders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nrg6FWiqnPQ5sIHRYwsDhwG-nTSZej1Zg6S1gtQkc2s/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 32124056,
+          "mode": "list",
+          "cachedResultName": "Orders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nrg6FWiqnPQ5sIHRYwsDhwG-nTSZej1Zg6S1gtQkc2s/edit#gid=32124056"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "shipment_number",
+              "lookupValue": "={{ $json.output.shipment_number }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0f2c9085-2371-488f-b31e-dbad0d4ae4e5",
+      "name": "Collect Coordinates",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        -112,
+        624
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.6
+    },
+    {
+      "parameters": {
+        "url": "https://api.openrouteservice.org/v2/directions/driving-hgv",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "api_key",
+              "value": "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImE1M2MzYjMwY2UwYTQ1MDdhNGM1OWMwMmQwODQwMjc3IiwiaCI6Im11cm11cjY0In0="
+            },
+            {
+              "name": "start",
+              "value": "={{ $json.pickup_longitude }}, {{ $json.pickup_latitude }}"
+            },
+            {
+              "name": "end",
+              "value": "={{ $json.destination_longitude }}, {{ $json.destination_latitude }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "4af08825-c26d-4b6a-a324-f2dc63064220",
+      "name": "Request Open Route API",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        96,
+        624
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1Nrg6FWiqnPQ5sIHRYwsDhwG-nTSZej1Zg6S1gtQkc2s",
+          "mode": "list",
+          "cachedResultName": "Transportation Orders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nrg6FWiqnPQ5sIHRYwsDhwG-nTSZej1Zg6S1gtQkc2s/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 32124056,
+          "mode": "list",
+          "cachedResultName": "Orders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nrg6FWiqnPQ5sIHRYwsDhwG-nTSZej1Zg6S1gtQkc2s/edit#gid=32124056"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "shipment_number": "={{ $('AI Agent Parser').item.json.output.shipment_number }}",
+            "driving_distance": "={{ $json.distance }}",
+            "driving_time": "={{ $json.duration }}"
+          },
+          "matchingColumns": [
+            "shipment_number"
+          ],
+          "schema": [
+            {
+              "id": "shipment_number",
+              "displayName": "shipment_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "pickup_location",
+              "displayName": "pickup_location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "pickup_address",
+              "displayName": "pickup_address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "pickup_longitude",
+              "displayName": "pickup_longitude",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "pickup_latitude",
+              "displayName": "pickup_latitude",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "expected_pickup_time",
+              "displayName": "expected_pickup_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "temperature_control",
+              "displayName": "temperature_control",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "destination_store_name",
+              "displayName": "destination_store_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "destination_address",
+              "displayName": "destination_address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "destination_longitude",
+              "displayName": "destination_longitude",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "destination_latitude",
+              "displayName": "destination_latitude",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "expected_delivery_time",
+              "displayName": "expected_delivery_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "driving_distance",
+              "displayName": "driving_distance",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "driving_time",
+              "displayName": "driving_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "cd61340c-b02d-451e-9f6b-7414b397cfaf",
+      "name": "Save Results",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        544,
+        624
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.6
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "documentId": {
+          "__rl": true,
+          "value": "1Nrg6FWiqnPQ5sIHRYwsDhwG-nTSZej1Zg6S1gtQkc2s",
+          "mode": "list",
+          "cachedResultName": "Transportation Orders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nrg6FWiqnPQ5sIHRYwsDhwG-nTSZej1Zg6S1gtQkc2s/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 32124056,
+          "mode": "list",
+          "cachedResultName": "Orders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nrg6FWiqnPQ5sIHRYwsDhwG-nTSZej1Zg6S1gtQkc2s/edit#gid=32124056"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "shipment_number",
+              "lookupValue": "={{ $json.output.shipment_number }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "63135a01-e86f-48b8-afce-f92895d1f127",
+      "name": "Collect Shipment Information",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        192,
+        1120
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.6
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4d0acd1a-c049-4353-9fb7-8eb08c138b9c",
+              "name": "distance",
+              "type": "string",
+              "value": "={{ ($json.features[0].properties.segments[0].distance.round()/1000).toFixed(2) }}"
+            },
+            {
+              "id": "2a6ff46a-f620-4dad-a60a-018b8add76d5",
+              "name": "duration",
+              "type": "string",
+              "value": "={{ ($json.features[0].properties.segments[0].duration/60).toFixed(2) }}"
+            },
+            {
+              "id": "de20932f-4eb5-4372-ad6d-64679df104cb",
+              "name": "n_steps",
+              "type": "number",
+              "value": "={{ $json.features[0].properties.segments[0].steps.length }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e740fe56-4e54-46d4-9ea8-e09b35a60a3e",
+      "name": "Driving Time & Distance",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        320,
+        624
+      ],
+      "notesInFlow": true,
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "id": "55c19d69-605a-4136-8eb5-afb31491a82f",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        400,
+        1344
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Here is the output:\n\n- Shipment Number: {{ $json.shipment_number }}\n- Pickup Location: {{ $json.pickup_location }}\n- Pickup Address: {{ $json.pickup_address }}  \n- Expected Pickup Time: {{ $json.expected_pickup_time }}  \n- Temperature Control: {{ $json.temperature_control }}  \n- Destination: {{ $json.destination_store_name }} \n- Destination Address: {{ $json.destination_address }}\n- Expected Delivery Time: {{ $json.expected_delivery_time }} \n- Driving Distance: {{ $json.driving_distance }} km\n- Estimated Transit Time: {{ $json.driving_time }} min\n- Contact Name: {{ $('AI Agent Parser').item.json.output.sender_name }}\n- Contact Company: {{ $('AI Agent Parser').item.json.output.sender_company }}\n",
+        "options": {
+          "systemMessage": "=You are a logistics assistant working for a transportation company. Your job is to write polite and professional response confirming shipment planification to retail customers.\n\nYour tone should be clear, efficient, and customer-friendly. Keep it concise and formal.\n\nThe confirmation must repeat the key shipment details to avoid confusion and should reassure the customer that the transport has been scheduled.\n\nDo not invent details — only use the provided data. The email must be in **English**.\n\n⚠️ Always format the result in **HTML**, not plain text or Markdown. Use proper HTML tags like `<p>`, `<strong>`, `<br>`, and `<ul><li>` where needed.\n\nYou do not need to add a subject, just the body.\n\nAbout you\n[Name]: LogiGreen Bot\n[Position]: Transportation Planner\n[Company]: LogiGreen Transportation\n[Contact]: logigreenbot@gmail.com\n\n"
+        }
+      },
+      "id": "01cab6f4-557a-4ce6-bf13-c1e250cdd162",
+      "name": "AI Agent Reply",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        400,
+        1120
+      ],
+      "typeVersion": 1.9
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "message": "={{ $json.output }}",
+        "options": {}
+      },
+      "id": "befb11d4-ebfc-449b-aef7-1a86fc907ea3",
+      "name": "Reply",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        736,
+        1120
+      ],
+      "webhookId": "e50a5bcd-4eae-427a-883a-16e09a0d9727",
+      "notesInFlow": true,
+      "typeVersion": 2.1
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "id": "2e08f909-fa57-4fee-997d-60f2d6d15193",
+      "name": "OpenAI Chat Model2",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        -624,
+        304
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-lite",
+        "options": {
+          "maxOutputTokens": 2048
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -816,
+        416
+      ],
+      "id": "6ce90d32-9d4a-4138-8b52-dda29aff6a8a",
+      "name": "Google Gemini Chat Model"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1920,
+        800
+      ],
+      "id": "8e8f7b2f-b776-4a82-9aa5-13390039339b",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      subject: \"Pickup Request - Delivery to E.Leclerc Store 124 on 24/09\",\n      text: `Bonjour,\n\nPlease arrange the pickup and delivery for the following shipment:\n\n. Shipment Number: 15487-PLO\n\n. Pickup Location: Centre de Distribution Leclerc\n\n. Pickup Address: 77 Rue Albert Garry, 94450 Limeil-Brevannes\n\n. Expected Pickup Time: 24-09-2024, 09:00:00\n\n. Temperature Control: Chilled\n\n. Quantity: 12 pallets\n\nDestination:\n\n. Store Name: E.Leclerc Store 124\n\n. Destination Address: 43-45 Quai Jules Guesde, 94405 Vitry-sur-Seine\n\n. Expected Delivery Date: 24-09-2024, 18:00:00\n\nLet us know once the transport is scheduled.\n\nBest regards,\nNathalie Durand\nLogistics Coordinator\nE.Leclerc - Île-de-France`\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1536,
+        624
+      ],
+      "id": "58bde9e1-97ae-42d0-947a-4f141de5b0a0",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Nrg6FWiqnPQ5sIHRYwsDhwG-nTSZej1Zg6S1gtQkc2s",
+          "mode": "list",
+          "cachedResultName": "Transportation Orders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nrg6FWiqnPQ5sIHRYwsDhwG-nTSZej1Zg6S1gtQkc2s/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 32124056,
+          "mode": "list",
+          "cachedResultName": "Orders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nrg6FWiqnPQ5sIHRYwsDhwG-nTSZej1Zg6S1gtQkc2s/edit#gid=32124056"
+        },
+        "columns": {
+          "value": {
+            "pickup_address": "={{ $json.output.pickup_address }}",
+            "pickup_location": "={{ $json.output.pickup_location }}",
+            "shipment_number": "={{ $json.output.shipment_number }}",
+            "destination_address": "={{ $json.output.destination_address }}",
+            "temperature_control": "={{ $json.output.temperature_control }}",
+            "expected_pickup_time": "={{ $json.output.expected_pickup_time }}",
+            "destination_store_name": "={{ $json.output.destination_store_name }}",
+            "expected_delivery_time": "={{ $json.output.expected_delivery_time}}"
+          },
+          "schema": [
+            {
+              "id": "shipment_number",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "shipment_number",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "pickup_location",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "pickup_location",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "pickup_address",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "pickup_address",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "pickup_longitude",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "pickup_longitude",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "pickup_latitude",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "pickup_latitude",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "expected_pickup_time",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "expected_pickup_time",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "temperature_control",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "temperature_control",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "destination_store_name",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "destination_store_name",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "destination_address",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "destination_address",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "destination_longitude",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "destination_longitude",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "destination_latitude",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "destination_latitude",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "expected_delivery_time",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "expected_delivery_time",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "driving_distance",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "driving_distance",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "driving_time",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "driving_time",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            }
+          ],
+          "mappingMode": "defineBelow",
+          "matchingColumns": [
+            "shipment_number"
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "ef14464b-fe62-49fe-9a78-ae1970e0675d",
+      "name": "Record Email Content",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        -112,
+        48
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.6
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openrouteservice.org/v2/directions/driving-hgv/geojson",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8"
+            },
+            {
+              "name": "Authorization",
+              "value": "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImE1M2MzYjMwY2UwYTQ1MDdhNGM1OWMwMmQwODQwMjc3IiwiaCI6Im11cm11cjY0In0="
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "coordinates",
+              "value": "={{ [\n  [$json.pickup_longitude, $json.pickup_latitude],\n  [$json.destination_longitude, $json.destination_latitude]\n] }}"
+            },
+            {
+              "name": "options",
+              "value": "={{ {   vehicle_type: \"bus\" } }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "b8e8862f-6e5c-46cd-8ba6-e7fa72efa0e9",
+      "name": "Request Open Route API BUS GEOJSON",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        96,
+        848
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "calcular-ruta",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1744,
+        1024
+      ],
+      "id": "fefb1fce-6378-423d-bc4c-3fd884b89c23",
+      "name": "Webhook",
+      "webhookId": "5ca3c1fe-134e-4775-a28a-0d35ec3d41be"
+    },
+    {
+      "parameters": {
+        "url": "https://api.openrouteservice.org/geocode/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "api_key",
+              "value": "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImE1M2MzYjMwY2UwYTQ1MDdhNGM1OWMwMmQwODQwMjc3IiwiaCI6Im11cm11cjY0In0="
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.pickup_address }}"
+            },
+            {
+              "name": "boundary.country",
+              "value": "={{ $json.pickup_acountryCode }}"
+            },
+            {
+              "name": "sources",
+              "value": "openstreetmap"
+            },
+            {
+              "name": "size",
+              "value": "1"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7d94b0a6-a3e9-4d74-ba8c-04d23160ae5a",
+      "name": "Query Open Route API Pickup1",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -1312,
+        896
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "url": "https://api.openrouteservice.org/geocode/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "api_key",
+              "value": "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImE1M2MzYjMwY2UwYTQ1MDdhNGM1OWMwMmQwODQwMjc3IiwiaCI6Im11cm11cjY0In0="
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.destination_address }}"
+            },
+            {
+              "name": "boundary.country",
+              "value": "={{ $json.destination_countryCode }}"
+            },
+            {
+              "name": "sources",
+              "value": "openstreetmap"
+            },
+            {
+              "name": "size",
+              "value": "1"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a6d8a39a-ecd8-4365-a561-6f64ea365d2e",
+      "name": "Query Open Route API Delivery1",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -1312,
+        1088
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openrouteservice.org/v2/directions/driving-hgv/geojson",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8"
+            },
+            {
+              "name": "Authorization",
+              "value": "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImE1M2MzYjMwY2UwYTQ1MDdhNGM1OWMwMmQwODQwMjc3IiwiaCI6Im11cm11cjY0In0="
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "coordinates",
+              "value": "={{ [\n  [$json.pickup_longitude, $json.pickup_latitude],\n  [$json.destination_longitude, $json.destination_latitude]\n] }}"
+            },
+            {
+              "name": "options",
+              "value": "={{ {   vehicle_type: \"bus\" } }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "f8aad3a2-c830-4e79-a539-d2aaf56d6181",
+      "name": "Request Open Route API BUS GEOJSON1",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -512,
+        992
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0a544486-f47a-4547-b742-7dcfe6a98d6e",
+              "name": "pickup_address",
+              "value": "Pasaje 5 Poniente C 1130, Talca, Chile",
+              "type": "string"
+            },
+            {
+              "id": "cbd90df4-b167-4843-a24a-dff8e9e20dc6",
+              "name": "destination_address",
+              "value": "Av. Corrientes 3247, C1193 Cdad. Autónoma de Buenos Aires, Argentina",
+              "type": "string"
+            },
+            {
+              "id": "4b9cf30b-68bf-4c05-8f9e-262cd685bd98",
+              "name": "pickup_acountryCode",
+              "value": "CL",
+              "type": "string"
+            },
+            {
+              "id": "6173220f-d27a-4441-b388-cc89ac2b872f",
+              "name": "destination_countryCode",
+              "value": "AR",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1552,
+        1024
+      ],
+      "id": "6d12b7eb-c3c8-4c0d-a4b8-dc631ba0e52e",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e4c92077-f294-4e49-8276-20d1441c0c2c",
+              "name": "p_longitude",
+              "type": "string",
+              "value": "={{ $json.features[0].geometry.coordinates[0] }}"
+            },
+            {
+              "id": "899e5304-e7a1-4ce1-bf9a-f403d74934fb",
+              "name": "p_latitude",
+              "type": "string",
+              "value": "={{ $json.features[0].geometry.coordinates[1] }}"
+            },
+            {
+              "id": "5b35642b-dda4-42b8-b7bb-1275616bfb59",
+              "name": "borough",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.borough }}"
+            },
+            {
+              "id": "aa74bd9a-f543-48e1-a69b-0e6472bda053",
+              "name": "neighbourhood",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.neighbourhood }}"
+            },
+            {
+              "id": "7f303dc8-4e28-4d46-8e3e-9db00dbcac3a",
+              "name": "localadmin",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.localadmin }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "03491a0d-2e7e-40b2-9d0e-5a6edbcf227b",
+      "name": "GPS Pickup1",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -1072,
+        896
+      ],
+      "notesInFlow": true,
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e4c92077-f294-4e49-8276-20d1441c0c2c",
+              "name": "d_longitude",
+              "type": "string",
+              "value": "={{ $json.features[0].geometry.coordinates[0] }}"
+            },
+            {
+              "id": "899e5304-e7a1-4ce1-bf9a-f403d74934fb",
+              "name": "d_latitude",
+              "type": "string",
+              "value": "={{ $json.features[0].geometry.coordinates[1] }}"
+            },
+            {
+              "id": "5b35642b-dda4-42b8-b7bb-1275616bfb59",
+              "name": "borough",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.borough }}"
+            },
+            {
+              "id": "aa74bd9a-f543-48e1-a69b-0e6472bda053",
+              "name": "neighbourhood",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.neighbourhood }}"
+            },
+            {
+              "id": "7f303dc8-4e28-4d46-8e3e-9db00dbcac3a",
+              "name": "localadmin",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.localadmin }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c321a10f-e7e3-4e69-b697-12859a6021a5",
+      "name": "GPS Delivery1",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -1072,
+        1088
+      ],
+      "notesInFlow": true,
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "jsCode": "const itemsIn = $input.all();\n\nif (itemsIn.length < 2) {\n  throw new Error('Se esperaban al menos 2 items: origen y destino');\n}\n\nconst pickup = itemsIn[0].json;\nconst destination = itemsIn[1].json;\n\nreturn [\n  {\n    json: {\n      pickup_longitude: pickup.p_longitude ?? null,\n      pickup_latitude: pickup.p_latitude ?? null,\n      destination_longitude: destination.d_longitude ?? null,\n      destination_latitude: destination.d_latitude ?? null,\n      borough: pickup.borough ?? destination.borough ?? null,\n      neighborhood: pickup.neighborhood ?? destination.neighborhood ?? null,\n      locationmin: pickup.locationmin ?? destination.locationmin ?? null,\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -704,
+        992
+      ],
+      "id": "4fccc685-38fd-4070-8947-1209bbd84e15",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -864,
+        992
+      ],
+      "id": "6b4b206c-c9cc-4c99-97ec-ce1c39e012d1",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -288,
+        992
+      ],
+      "id": "6d2a3310-78bf-421a-af87-239d5e5dccf0",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-06-25T01:16:37.442Z",
+      "createdAt": "2026-06-25T01:16:37.442Z",
+      "role": "workflow:owner",
+      "workflowId": "JgqtyLe57rHtJqiU",
+      "projectId": "0mwVSLULhlB6ku2N"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-06-25T01:27:35.000Z",
+  "versionId": "132ac0f6-646f-403d-8a34-74211c34074b"
+}
