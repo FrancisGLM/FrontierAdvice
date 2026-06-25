@@ -1,0 +1,481 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "Cada 6h": {
+      "main": [
+        [
+          {
+            "node": "GET Pasos Activos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET Pasos Activos": {
+      "main": [
+        [
+          {
+            "node": "Preparar Pasos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Pasos": {
+      "main": [
+        [
+          {
+            "node": "Loop Pasos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Pasos": {
+      "main": [
+        [
+          {
+            "node": "done",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "GET Clima Actual Paso",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "GET Estados Recientes",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "GET Alertas Vigentes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET Clima Actual Paso": {
+      "main": [
+        [
+          {
+            "node": "Combinar Datos Paso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET Estados Recientes": {
+      "main": [
+        [
+          {
+            "node": "Combinar Datos Paso",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Combinar Datos Paso": {
+      "main": [
+        [
+          {
+            "node": "Combinar Datos Paso1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calcular Prediccion v1": {
+      "main": [
+        [
+          {
+            "node": "POST Senal Predictiva",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET Alertas Vigentes": {
+      "main": [
+        [
+          {
+            "node": "Combinar Datos Paso1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Combinar Datos Paso1": {
+      "main": [
+        [
+          {
+            "node": "Calcular Prediccion v1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST Senal Predictiva": {
+      "main": [
+        [
+          {
+            "node": "Loop Pasos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-06-25T03:46:28.707Z",
+  "id": "3fmTyfolgmC4D7sP",
+  "isArchived": false,
+  "meta": null,
+  "name": "Prediccion-Pasos-Fronterizos-v1",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "id": "aec0fbf1-6a84-4dee-9178-ae45be5c6d4f",
+      "name": "Cada 6h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -864,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://strapi.frontieradvice.tech/api/paso-fronterizos",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filters[activo][$eq]",
+              "value": "true"
+            },
+            {
+              "name": "pagination[pageSize]",
+              "value": "100"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer b4748a0ff4611d007369a5119c5d70450595cdee7e6f9431a3891b5c2a16c58d5fcdbfef2cb5c1dafc30c244f43a0769bf9aab2e3daf64d98bed68e33100e22cae1a03147cd754469246db07962c0a75becb3a187b6dcd4ac413921e822b96f0f6789c2749a4e77d82dbc88ccf10a7437b29c87c7dd4f9b6875627c62c3d03e2"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c6b56829-b621-4733-9286-1576407876cf",
+      "name": "GET Pasos Activos",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -656,
+        160
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $json.data || [];\nreturn rows.map((p) => ({\n  json: {\n    paso_id: p.id,\n    paso_documentId: p.documentId,\n    nombre_oficial: p.nombre_oficial,\n    codigo_fuente: p.codigo_fuente,\n    region: p.region,\n    latitud: p.latitud,\n    longitud: p.longitud,\n    altitud: p.altitud\n  }\n}));"
+      },
+      "id": "1de6a158-904e-451c-9140-9950024b17dc",
+      "name": "Preparar Pasos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -432,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "f7f6d3de-0a05-4e10-a979-b979992f32bd",
+      "name": "Loop Pasos",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -208,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://strapi.frontieradvice.tech/api/clima-actuals",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filters[paso_fronterizo][documentId][$eq]",
+              "value": "={{ $('Loop Pasos').item.json.paso_documentId }}"
+            },
+            {
+              "name": "sort[0]",
+              "value": "capturado_en:desc"
+            },
+            {
+              "name": "pagination[pageSize]",
+              "value": "1"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer b4748a0ff4611d007369a5119c5d70450595cdee7e6f9431a3891b5c2a16c58d5fcdbfef2cb5c1dafc30c244f43a0769bf9aab2e3daf64d98bed68e33100e22cae1a03147cd754469246db07962c0a75becb3a187b6dcd4ac413921e822b96f0f6789c2749a4e77d82dbc88ccf10a7437b29c87c7dd4f9b6875627c62c3d03e2"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7fee216f-a18f-4e40-bd3e-ae5941f84a58",
+      "name": "GET Clima Actual Paso",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        48,
+        -112
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://strapi.frontieradvice.tech/api/estado-diarios",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filters[id_paso][documentId][$eq]",
+              "value": "={{ $('Loop Pasos').item.json.paso_documentId }}"
+            },
+            {
+              "name": "sort[0]",
+              "value": "fecha_reporte:desc"
+            },
+            {
+              "name": "pagination[pageSize]",
+              "value": "30"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer b4748a0ff4611d007369a5119c5d70450595cdee7e6f9431a3891b5c2a16c58d5fcdbfef2cb5c1dafc30c244f43a0769bf9aab2e3daf64d98bed68e33100e22cae1a03147cd754469246db07962c0a75becb3a187b6dcd4ac413921e822b96f0f6789c2749a4e77d82dbc88ccf10a7437b29c87c7dd4f9b6875627c62c3d03e2"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0cb6e8a5-2527-426d-ac27-ed94e7d329b5",
+      "name": "GET Estados Recientes",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        48,
+        32
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://strapi.frontieradvice.tech/api/alerta-eventos",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filters[idpaso][documentId][$eq]",
+              "value": "={{ $('Loop Pasos').item.json.paso_documentId }}"
+            },
+            {
+              "name": "sort[0]",
+              "value": "fecha_evento:desc"
+            },
+            {
+              "name": "pagination[pageSize]",
+              "value": "5"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer b4748a0ff4611d007369a5119c5d70450595cdee7e6f9431a3891b5c2a16c58d5fcdbfef2cb5c1dafc30c244f43a0769bf9aab2e3daf64d98bed68e33100e22cae1a03147cd754469246db07962c0a75becb3a187b6dcd4ac413921e822b96f0f6789c2749a4e77d82dbc88ccf10a7437b29c87c7dd4f9b6875627c62c3d03e2"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f6b642df-e459-4fb6-9806-a554194b48e6",
+      "name": "GET Alertas Vigentes",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        48,
+        176
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "id": "c7c0da79-380c-4124-9562-b8d3e9dab1d2",
+      "name": "Combinar Datos Paso",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        288,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const paso = $('Loop Pasos').item.json;\nconst climaResp = $('GET Clima Actual Paso').item.json;\nconst estadosResp = $('GET Estados Recientes').item.json;\nconst alertasResp = $('GET Alertas Vigentes').item.json;\n\nconst clima = climaResp.data?.[0] || null;\nconst estados = estadosResp.data || [];\nconst alertas = alertasResp.data || [];\n\nfunction normEstado(e) {\n  const raw = (e?.estado_normalizado || e?.estado_general || '').toString().toLowerCase();\n  if (raw.includes('cerr')) return 'cerrado';\n  if (raw.includes('precau') || raw.includes('habilitado con precauc')) return 'precaucion';\n  if (raw.includes('hab') || raw.includes('abierto')) return 'habilitado';\n  if (raw.includes('suspend')) return 'suspendido';\n  return 'desconocido';\n}\n\nfunction riskLabel(prob) {\n  if (prob >= 0.66) return 'Alto';\n  if (prob >= 0.36) return 'Medio';\n  return 'Bajo';\n}\n\nfunction predictedState(prob) {\n  if (prob >= 0.75) return 'Cerrado';\n  if (prob >= 0.45) return 'Precaucion';\n  return 'Normal';\n}\n\nfunction clamp(n, min, max) {\n  return Math.max(min, Math.min(max, n));\n}\n\nconst hist = estados.map(e => ({\n  estado: normEstado(e),\n  motivo: (e.motivo_normalizado || e.motivo_estado || '').toString().toLowerCase(),\n  fecha: e.fecha_reporte\n}));\n\nconst cierres7d = hist.slice(0, 7).filter(x => x.estado === 'cerrado' || x.estado === 'suspendido').length;\nconst prec7d = hist.slice(0, 7).filter(x => x.estado === 'precaucion').length;\nconst ultimoEstado = hist[0]?.estado || 'desconocido';\nconst alertaVigente = alertas.length > 0;\n\nconst forecast = clima?.pronostico_3dias || {};\nconst dias = [\n  { h: 24, d: forecast.d1 || null },\n  { h: 48, d: forecast.d2 || null },\n  { h: 72, d: forecast.d3 || null },\n];\n\nconst out = [];\n\nfor (const item of dias) {\n  const d = item.d || {};\n\n  const tempMin = Number(d.temp_min ?? clima?.temperatura_actual ?? 0);\n  const precip = Number(d.precipitacion_total ?? clima?.precipitacion_actual ?? 0);\n  const viento = Number(d.viento_max ?? clima?.viento_actual ?? 0);\n  const weathercode = Number(d.weathercode_dominante ?? clima?.weathercode ?? 0);\n\n  let score = 0;\n  const motivos = [];\n\n  if ([71,73,75,77,85,86].includes(weathercode)) {\n    score += 25;\n    motivos.push('nieve pronosticada');\n  }\n\n  if ([95,96,99].includes(weathercode)) {\n    score += 20;\n    motivos.push('tormenta pronosticada');\n  }\n\n  if (precip >= 10) {\n    score += 15;\n    motivos.push('precipitacion alta');\n  } else if (precip >= 4) {\n    score += 8;\n    motivos.push('precipitacion moderada');\n  }\n\n  if (viento >= 60) {\n    score += 15;\n    motivos.push('viento fuerte');\n  } else if (viento >= 40) {\n    score += 8;\n    motivos.push('viento moderado');\n  }\n\n  if (tempMin <= -5) {\n    score += 12;\n    motivos.push('temperatura minima muy baja');\n  } else if (tempMin <= 0) {\n    score += 6;\n    motivos.push('temperatura bajo cero');\n  }\n\n  if (Number(paso.altitud || 0) >= 2500) {\n    score += 8;\n    motivos.push('paso de alta montana');\n  }\n\n  if (ultimoEstado === 'cerrado' || ultimoEstado === 'suspendido') {\n    score += 18;\n    motivos.push('ultimo estado desfavorable');\n  } else if (ultimoEstado === 'precaucion') {\n    score += 10;\n    motivos.push('ultimo estado con precaucion');\n  }\n\n  if (cierres7d >= 3) {\n    score += 15;\n    motivos.push('historial reciente de cierres');\n  } else if (cierres7d >= 1) {\n    score += 8;\n    motivos.push('cierres recientes');\n  }\n\n  if (prec7d >= 2) {\n    score += 8;\n    motivos.push('antecedentes recientes de precaucion');\n  }\n\n  if (alertaVigente) {\n    score += 10;\n    motivos.push('alerta vigente');\n  }\n\n  score = clamp(score, 0, 100);\n  const prob = clamp(score / 100, 0.05, 0.95);\n\n  out.push({\n    json: {\n      paso_id: paso.paso_id,\n      paso_documentId: paso.paso_documentId,\n      nombre_oficial: paso.nombre_oficial,\n      horizonte_horas: item.h,\n      probabilidad: Number(prob.toFixed(2)),\n      nivel_riesgo: riskLabel(prob),\n      estado_predicho: predictedState(prob),\n      motivo_resumen: motivos.slice(0, 4).join(', ') || 'sin senales relevantes',\n      fecha_calculo: new Date().toISOString(),\n      valido_desde: new Date().toISOString(),\n      valido_hasta: new Date(Date.now() + item.h * 60 * 60 * 1000).toISOString(),\n      modelo_version: 'risk-v1-rules',\n      tipo_evento: 'prediccion_operativa',\n      datos_entrada: {\n        altitud: paso.altitud,\n        ultimo_estado: ultimoEstado,\n        cierres_7d: cierres7d,\n        precaucion_7d: prec7d,\n        alerta_vigente: alertaVigente,\n        weathercode,\n        temp_min: tempMin,\n        precipitacion_total: precip,\n        viento_max: viento\n      }\n    }\n  });\n}\n\nreturn out;"
+      },
+      "id": "5ff64741-eab2-47d9-916d-39af15d47cce",
+      "name": "Calcular Prediccion v1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        736,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://strapi.frontieradvice.tech/api/senal-predictivas",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer b4748a0ff4611d007369a5119c5d70450595cdee7e6f9431a3891b5c2a16c58d5fcdbfef2cb5c1dafc30c244f43a0769bf9aab2e3daf64d98bed68e33100e22cae1a03147cd754469246db07962c0a75becb3a187b6dcd4ac413921e822b96f0f6789c2749a4e77d82dbc88ccf10a7437b29c87c7dd4f9b6875627c62c3d03e2"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  data: {\n    id_paso: {\n      connect: [\n        { documentId: $json.paso_documentId }\n      ]\n    },\n    horizonte_horas: $json.horizonte_horas,\n    nivel_riesgo: $json.nivel_riesgo,\n    motivo_resumen: $json.motivo_resumen,\n    fecha_calculo: $json.fecha_calculo,\n    tipo_evento: $json.tipo_evento,\n    datos_entrada: $json.datos_entrada,\n    probabilidad: $json.probabilidad,\n    estado_predicho: $json.estado_predicho,\n    modelo_version: $json.modelo_version,\n    valido_desde: $json.valido_desde,\n    valido_hasta: $json.valido_hasta\n  }\n} }}",
+        "options": {}
+      },
+      "id": "fe754423-7b48-43b4-9fcf-71d2b4a67762",
+      "name": "POST Senal Predictiva",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        944,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "id": "0cb7e469-2fd8-4ead-89c9-3f4dd23fa3f6",
+      "name": "Combinar Datos Paso1",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        496,
+        160
+      ]
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        48,
+        -256
+      ],
+      "id": "6cc85932-1c6e-4c00-9dda-450899944263",
+      "name": "done"
+    }
+  ],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-06-25T03:46:28.711Z",
+      "createdAt": "2026-06-25T03:46:28.711Z",
+      "role": "workflow:owner",
+      "workflowId": "3fmTyfolgmC4D7sP",
+      "projectId": "0mwVSLULhlB6ku2N"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-06-25T04:15:03.595Z",
+  "versionId": "a4ba4f6b-465a-4a6d-a794-6b9a3d2b73ce"
+}
