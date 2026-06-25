@@ -1,0 +1,486 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Request Open Route API BUS GEOJSON1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GPS Delivery1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "GPS Pickup1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Query Open Route API Delivery1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Query Open Route API Pickup1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Request Open Route API BUS GEOJSON1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Open Route API Delivery1": {
+      "main": [
+        [
+          {
+            "node": "GPS Delivery1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Open Route API Pickup1": {
+      "main": [
+        [
+          {
+            "node": "GPS Pickup1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-06-25T01:26:50.993Z",
+  "id": "u9pxbEJnLiUBydHW",
+  "isArchived": true,
+  "meta": null,
+  "name": "ORS Route",
+  "nodes": [
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1024,
+        96
+      ],
+      "id": "e7fd2f42-7d04-4c0c-ba15-6125f6fa0682",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        448,
+        96
+      ],
+      "id": "93c50eca-f9d6-4a35-893c-f615b6eaee3c",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "const itemsIn = $input.all();\n\nif (itemsIn.length < 2) {\n  throw new Error('Se esperaban al menos 2 items: origen y destino');\n}\n\nconst pickup = itemsIn[0].json;\nconst destination = itemsIn[1].json;\n\nreturn [\n  {\n    json: {\n      pickup_longitude: pickup.p_longitude ?? null,\n      pickup_latitude: pickup.p_latitude ?? null,\n      destination_longitude: destination.d_longitude ?? null,\n      destination_latitude: destination.d_latitude ?? null,\n      borough: pickup.borough ?? destination.borough ?? null,\n      neighborhood: pickup.neighborhood ?? destination.neighborhood ?? null,\n      locationmin: pickup.locationmin ?? destination.locationmin ?? null,\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        608,
+        96
+      ],
+      "id": "ad61f3fe-6749-42ba-84a5-6baa6fbaa7f7",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e4c92077-f294-4e49-8276-20d1441c0c2c",
+              "name": "d_longitude",
+              "type": "string",
+              "value": "={{ $json.features[0].geometry.coordinates[0] }}"
+            },
+            {
+              "id": "899e5304-e7a1-4ce1-bf9a-f403d74934fb",
+              "name": "d_latitude",
+              "type": "string",
+              "value": "={{ $json.features[0].geometry.coordinates[1] }}"
+            },
+            {
+              "id": "5b35642b-dda4-42b8-b7bb-1275616bfb59",
+              "name": "borough",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.borough }}"
+            },
+            {
+              "id": "aa74bd9a-f543-48e1-a69b-0e6472bda053",
+              "name": "neighbourhood",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.neighbourhood }}"
+            },
+            {
+              "id": "7f303dc8-4e28-4d46-8e3e-9db00dbcac3a",
+              "name": "localadmin",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.localadmin }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bc7729b9-2dea-49a2-a2de-1209cc6743c3",
+      "name": "GPS Delivery1",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        240,
+        192
+      ],
+      "notesInFlow": true,
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e4c92077-f294-4e49-8276-20d1441c0c2c",
+              "name": "p_longitude",
+              "type": "string",
+              "value": "={{ $json.features[0].geometry.coordinates[0] }}"
+            },
+            {
+              "id": "899e5304-e7a1-4ce1-bf9a-f403d74934fb",
+              "name": "p_latitude",
+              "type": "string",
+              "value": "={{ $json.features[0].geometry.coordinates[1] }}"
+            },
+            {
+              "id": "5b35642b-dda4-42b8-b7bb-1275616bfb59",
+              "name": "borough",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.borough }}"
+            },
+            {
+              "id": "aa74bd9a-f543-48e1-a69b-0e6472bda053",
+              "name": "neighbourhood",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.neighbourhood }}"
+            },
+            {
+              "id": "7f303dc8-4e28-4d46-8e3e-9db00dbcac3a",
+              "name": "localadmin",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.localadmin }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ff812770-6b01-43dd-a410-8f03c9200213",
+      "name": "GPS Pickup1",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        240,
+        0
+      ],
+      "notesInFlow": true,
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0a544486-f47a-4547-b742-7dcfe6a98d6e",
+              "name": "pickup_address",
+              "value": "Pasaje 5 Poniente C 1130, Talca, Chile",
+              "type": "string"
+            },
+            {
+              "id": "cbd90df4-b167-4843-a24a-dff8e9e20dc6",
+              "name": "destination_address",
+              "value": "Av. Corrientes 3247, C1193 Cdad. Autónoma de Buenos Aires, Argentina",
+              "type": "string"
+            },
+            {
+              "id": "4b9cf30b-68bf-4c05-8f9e-262cd685bd98",
+              "name": "pickup_acountryCode",
+              "value": "CL",
+              "type": "string"
+            },
+            {
+              "id": "6173220f-d27a-4441-b388-cc89ac2b872f",
+              "name": "destination_countryCode",
+              "value": "AR",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -240,
+        128
+      ],
+      "id": "6d50c7b6-d959-47fd-b046-ff9ada229064",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openrouteservice.org/v2/directions/driving-hgv/geojson",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8"
+            },
+            {
+              "name": "Authorization",
+              "value": "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImE1M2MzYjMwY2UwYTQ1MDdhNGM1OWMwMmQwODQwMjc3IiwiaCI6Im11cm11cjY0In0="
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "coordinates",
+              "value": "={{ [\n  [$json.pickup_longitude, $json.pickup_latitude],\n  [$json.destination_longitude, $json.destination_latitude]\n] }}"
+            },
+            {
+              "name": "options",
+              "value": "={{ {   vehicle_type: \"bus\" } }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "b98dccf8-757e-45e5-90f0-b97af8586a19",
+      "name": "Request Open Route API BUS GEOJSON1",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        800,
+        96
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "url": "https://api.openrouteservice.org/geocode/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "api_key",
+              "value": "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImE1M2MzYjMwY2UwYTQ1MDdhNGM1OWMwMmQwODQwMjc3IiwiaCI6Im11cm11cjY0In0="
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.destination_address }}"
+            },
+            {
+              "name": "boundary.country",
+              "value": "={{ $json.destination_countryCode }}"
+            },
+            {
+              "name": "sources",
+              "value": "openstreetmap"
+            },
+            {
+              "name": "size",
+              "value": "1"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "64ae4ab3-1829-4f27-9ef3-4223206e8f5b",
+      "name": "Query Open Route API Delivery1",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        0,
+        192
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "url": "https://api.openrouteservice.org/geocode/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "api_key",
+              "value": "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImE1M2MzYjMwY2UwYTQ1MDdhNGM1OWMwMmQwODQwMjc3IiwiaCI6Im11cm11cjY0In0="
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.pickup_address }}"
+            },
+            {
+              "name": "boundary.country",
+              "value": "={{ $json.pickup_acountryCode }}"
+            },
+            {
+              "name": "sources",
+              "value": "openstreetmap"
+            },
+            {
+              "name": "size",
+              "value": "1"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "65fa0315-facf-4527-a22c-0c9e2537aafc",
+      "name": "Query Open Route API Pickup1",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        0,
+        0
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "calcular-ruta",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -432,
+        128
+      ],
+      "id": "cec0319e-4d87-4e28-bc4e-6f52960d6ad5",
+      "name": "Webhook",
+      "webhookId": "5ca3c1fe-134e-4775-a28a-0d35ec3d41be"
+    }
+  ],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-06-25T01:26:50.996Z",
+      "createdAt": "2026-06-25T01:26:50.996Z",
+      "role": "workflow:owner",
+      "workflowId": "u9pxbEJnLiUBydHW",
+      "projectId": "0mwVSLULhlB6ku2N"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-06-25T01:28:02.000Z",
+  "versionId": "51fe920b-308f-43df-8fc4-155cbedf3748"
+}
