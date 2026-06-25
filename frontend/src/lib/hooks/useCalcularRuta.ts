@@ -31,23 +31,23 @@ interface UseCalcularRutaReturn {
 
 export function useCalcularRuta(): UseCalcularRutaReturn {
   const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState<string | null>(null);
-  const [ruta, setRuta]       = useState<OrsResponse | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [ruta, setRuta] = useState<OrsResponse | null>(null);
 
   const calcular = useCallback(async (params: RutaParams) => {
     setLoading(true);
     setError(null);
     setRuta(null);
 
-    const webhookUrl =
-      process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL ??
-      'http://localhost:5678/webhook/calcular-ruta';
+    // Siempre llamamos al proxy interno de Next.js (mismo origen → sin CORS).
+    // El proxy en /api/calcular-ruta es quien llama a n8n usando N8N_WEBHOOK_URL (server-side).
+    const webhookUrl = '/api/calcular-ruta';
 
     try {
       const res = await fetch(webhookUrl, {
-        method:  'POST',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify(params),
+        body: JSON.stringify(params),
       });
 
       if (!res.ok) {
