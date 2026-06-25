@@ -1,18 +1,18 @@
 import { IconoClima, NivelRiesgo } from '@/lib/types';
 import styles from './PasoInfo.module.css';
+import WeatherIcon from './WeatherIcon';
 
-const climaEmoji: Record<IconoClima, string> = {
-  sol: '☀️',
-  nublado: '⛅',
-  lluvia: '🌧️',
-  nieve: '🌨️',
-  tormenta: '⛈️',
+// Color de fondo del card según riesgo
+const riesgoCardClass: Record<NivelRiesgo, string> = {
+  bajo:  styles.forecastCardBajo,
+  medio: styles.forecastCardMedio,
+  alto:  styles.forecastCardAlto,
 };
 
-const riesgoStyle: Record<NivelRiesgo, { color: string; label: string }> = {
-  bajo: { color: 'var(--status-open)', label: 'Riesgo Bajo' },
-  medio: { color: 'var(--status-caution)', label: 'Riesgo Medio' },
-  alto: { color: 'var(--status-closed)', label: 'Riesgo Alto' },
+const riesgoLabel: Record<NivelRiesgo, string> = {
+  bajo:  'Riesgo Bajo',
+  medio: 'Riesgo Medio',
+  alto:  'Riesgo Alto',
 };
 
 interface PronosticoProps {
@@ -24,21 +24,21 @@ export default function WeatherForecast({ pronostico }: PronosticoProps) {
     <div>
       <h3 className={styles.sectionTitle}>Pronóstico próximos 3 días</h3>
       <div className={styles.forecastGrid}>
-        {pronostico.map((d) => {
-          const rs = riesgoStyle[d.riesgo];
-          return (
-            <div key={d.dia} className={styles.forecastCard}>
-              <p className={styles.forecastDay}>{d.dia}</p>
-              <span className={styles.forecastEmoji}>{climaEmoji[d.icono]}</span>
-              <p className={styles.forecastRisk} style={{ color: rs.color }}>
-                {rs.label}
-              </p>
-              {d.alerta && (
-                <p className={styles.forecastAlert}>{d.alerta}</p>
-              )}
-            </div>
-          );
-        })}
+        {pronostico.map((d) => (
+          <div
+            key={d.dia}
+            className={`${styles.forecastCard} ${riesgoCardClass[d.riesgo]}`}
+          >
+            <p className={styles.forecastDay}>{d.dia}</p>
+            <WeatherIcon icono={d.icono} size={48} />
+            <p className={styles.forecastRisk}>
+              {riesgoLabel[d.riesgo]}
+            </p>
+            {d.alerta && (
+              <p className={styles.forecastAlert}>{d.alerta}</p>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -1,14 +1,7 @@
-import { ClimaActual, IconoClima } from '@/lib/types';
+import { ClimaActual } from '@/lib/types';
 import { Wind, Droplets, Eye, Gauge } from 'lucide-react';
 import styles from './PasoInfo.module.css';
-
-const climaEmoji: Record<IconoClima, string> = {
-  sol: '☀️',
-  nublado: '⛅',
-  lluvia: '🌧️',
-  nieve: '🌨️',
-  tormenta: '⛈️',
-};
+import WeatherIcon from './WeatherIcon';
 
 interface CurrentWeatherProps {
   clima: ClimaActual;
@@ -21,7 +14,9 @@ export default function CurrentWeather({ clima }: CurrentWeatherProps) {
 
       {/* Main temp row */}
       <div className={styles.cwMainRow}>
-        <span className={styles.cwEmoji}>{climaEmoji[clima.icono]}</span>
+        <div className={styles.cwIconWrapper}>
+          <WeatherIcon icono={clima.icono} size={64} />
+        </div>
         <div className={styles.cwTempBlock}>
           <span className={styles.cwTemp}>{clima.temperatura}°C</span>
           <span className={styles.cwDesc}>{clima.descripcion}</span>

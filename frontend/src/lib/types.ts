@@ -1,6 +1,6 @@
 export type EstadoPaso = 'abierto' | 'precaucion' | 'cerrado';
 export type NivelRiesgo = 'bajo' | 'medio' | 'alto';
-export type IconoClima = 'sol' | 'nublado' | 'lluvia' | 'nieve' | 'tormenta';
+export type IconoClima = 'sol' | 'nublado' | 'lluvia' | 'lluvia_intensa' | 'nieve' | 'tormenta';
 export type Region =
   | 'Arica y Parinacota'
   | 'Tarapacá'

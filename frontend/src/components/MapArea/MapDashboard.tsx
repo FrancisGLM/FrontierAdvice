@@ -42,14 +42,34 @@ export default function MapDashboard() {
         }
         const json = await res.json();
         
-        function mapWeatherCodeToIcon(code: number): any {
+        function mapWeatherCodeToIcon(code: number): IconoClima {
           if (code === 0) return 'sol';
           if (code >= 1 && code <= 3) return 'nublado';
           if (code >= 45 && code <= 48) return 'nublado';
-          if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return 'lluvia';
+          if (code >= 55 && code <= 57) return 'lluvia_intensa'; // Drizzle intensa
+          if (code >= 63 && code <= 67) return 'lluvia_intensa'; // Lluvia moderada/intensa
+          if ((code >= 51 && code <= 54) || (code >= 58 && code <= 62) || (code >= 80 && code <= 82)) return 'lluvia';
+          if (code === 82 || code === 83 || code === 84) return 'lluvia_intensa'; // Chubascos intensos
           if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) return 'nieve';
           if (code >= 95 && code <= 99) return 'tormenta';
           return 'sol';
+        }
+
+        /**
+         * Mapea el texto de la descripción al icono correspondiente.
+         * Tiene PRIORIDAD sobre el weathercode para evitar discrepancias.
+         */
+        function mapDescripcionToIcon(descripcion: string): IconoClima | null {
+          if (!descripcion) return null;
+          const d = descripcion.toLowerCase();
+          if (d.includes('tormenta') || d.includes('granizo') || d.includes('thunder')) return 'tormenta';
+          if (d.includes('lluvia intensa') || d.includes('lluvia fuerte') || d.includes('chubascos fuertes') || d.includes('heavy rain')) return 'lluvia_intensa';
+          if (d.includes('lluvia') || d.includes('llovizna') || d.includes('precipitaci')) return 'lluvia';
+          if (d.includes('nieve') || d.includes('nevada') || d.includes('copo') || d.includes('snow')) return 'nieve';
+          if (d.includes('parcialmente') || d.includes('parcial') || d.includes('partly')) return 'nublado';
+          if (d.includes('nublado') || d.includes('nuboso') || d.includes('nubes') || d.includes('cloudy')) return 'nublado';
+          if (d.includes('despejado') || d.includes('soleado') || d.includes('clear') || d.includes('sunny')) return 'sol';
+          return null;
         }
 
         // Mapear respuesta de Strapi v5 a tipo frontend PasoFronterizo
@@ -64,17 +84,18 @@ export default function MapDashboard() {
               temperatura: climaData.temperatura_actual,
               sensacionTermica: climaData.temperatura_actual, // Approximation
               descripcion: climaData.descripcion_actual,
-              icono: mapWeatherCodeToIcon(climaData.weathercode),
+              icono: mapDescripcionToIcon(climaData.descripcion_actual) ?? mapWeatherCodeToIcon(climaData.weathercode),
               viento: climaData.viento_actual,
               humedad: climaData.humedad_actual,
-              visibilidad: 10, // Default 
+              visibilidad: 10, // Default
               presion: 1013, // Default
             };
 
             if (climaData.pronostico_3dias && Array.isArray(climaData.pronostico_3dias)) {
               pronostico = climaData.pronostico_3dias.map((p: any) => ({
                 dia: new Date(p.fecha + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'short' }),
-                icono: mapWeatherCodeToIcon(p.weathercode),
+                // La descripción tiene prioridad sobre el weathercode para evitar discrepancias
+                icono: mapDescripcionToIcon(p.descripcion) ?? mapWeatherCodeToIcon(p.weathercode),
                 riesgo: p.nivel_riesgo ? p.nivel_riesgo.toLowerCase() : 'bajo',
                 alerta: p.descripcion
               }));
@@ -84,7 +105,6 @@ export default function MapDashboard() {
           return {
             id: String(item.id),
             nombre: item.nombre_oficial,
-            subtitulo: item.codigo_fuente,
             lat: item.latitud,
             lng: item.longitud,
             estado: item.activo ? 'abierto' : 'cerrado',
