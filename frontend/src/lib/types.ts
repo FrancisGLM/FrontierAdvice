@@ -55,3 +55,65 @@ export interface FiltrosMapa {
   region: string;
   busqueda: string;
 }
+
+// ── OpenRouteService ────────────────────────────────────────────────────────
+
+export interface OrsSegmentStep {
+  distance: number;      // metres
+  duration: number;      // seconds
+  type: number;          // maneuver type code
+  instruction: string;
+  name: string;
+  way_points: [number, number];
+  exit_number?: number;
+}
+
+export interface OrsSegment {
+  distance: number;
+  duration: number;
+  steps: OrsSegmentStep[];
+}
+
+export interface OrsRouteSummary {
+  distance: number;      // metres
+  duration: number;      // seconds
+}
+
+export interface OrsFeatureProperties {
+  segments: OrsSegment[];
+  way_points: [number, number];
+  summary: OrsRouteSummary;
+}
+
+export interface OrsFeature {
+  type: 'Feature';
+  bbox: [number, number, number, number];
+  properties: OrsFeatureProperties;
+  geometry: {
+    type: 'LineString';
+    coordinates: [number, number][];  // [lng, lat] pairs (GeoJSON standard)
+  };
+}
+
+export interface OrsResponse {
+  type: 'FeatureCollection';
+  bbox: [number, number, number, number];
+  features: OrsFeature[];
+  metadata: {
+    attribution: string;
+    service: string;
+    timestamp: number;
+    query: {
+      coordinates: [number, number][];
+      profile: string;
+      profileName: string;
+      format: string;
+    };
+    engine: {
+      version: string;
+      build_date: string;
+      graph_date: string;
+      osm_date: string;
+    };
+  };
+}

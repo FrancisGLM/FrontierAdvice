@@ -4,13 +4,14 @@ import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useTheme } from 'next-themes';
-import { PasoFronterizo, EstadoPaso } from '@/lib/types';
+import { PasoFronterizo, EstadoPaso, OrsResponse } from '@/lib/types';
 import styles from './MapArea.module.css';
 
 interface MapViewProps {
   pasos: PasoFronterizo[];
   onSelectPaso: (paso: PasoFronterizo) => void;
   selectedPasoId?: string;
+  ruta?: OrsResponse | null;   // GeoJSON de OpenRouteService (opcional)
 }
 
 const STATUS_COLORS: Record<EstadoPaso, string> = {
@@ -65,10 +66,11 @@ function createPopupContent(paso: PasoFronterizo, isDark: boolean): string {
   </div>`;
 }
 
-export default function MapView({ pasos, onSelectPaso, selectedPasoId }: MapViewProps) {
+export default function MapView({ pasos, onSelectPaso, selectedPasoId, ruta }: MapViewProps) {
   const mapRef       = useRef<L.Map | null>(null);
   const markersRef   = useRef<Map<string, MarkerEntry>>(new Map());
   const pulseRef     = useRef<L.Marker | null>(null);
+  const routeLayerRef = useRef<L.LayerGroup | null>(null);
   const tileRef      = useRef<L.TileLayer | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const { resolvedTheme } = useTheme();
@@ -115,6 +117,93 @@ export default function MapView({ pasos, onSelectPaso, selectedPasoId }: MapView
     if (!tileRef.current) return;
     tileRef.current.setUrl(isDark ? darkTile : lightTile);
   }, [isDark, darkTile, lightTile]);
+
+  // ── Ruta ORS ────────────────────────────────────────────────────────────
+  // ORS devuelve coordenadas en orden GeoJSON [lng, lat]; Leaflet espera
+  // [lat, lng], así que hacemos el swap al construir la capa.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    // Limpiar capa anterior
+    if (routeLayerRef.current) {
+      routeLayerRef.current.remove();
+      routeLayerRef.current = null;
+    }
+
+    if (!ruta || ruta.features.length === 0) return;
+
+    const routeColor = isDark ? '#60a5fa' : '#2563eb'; // azul adaptado al tema
+    const casingColor = isDark ? 'rgba(15,23,42,0.6)' : 'rgba(255,255,255,0.6)';
+
+    // Convertir de GeoJSON [lng, lat] → Leaflet [lat, lng]
+    const feature = ruta.features[0];
+    const latlngs: L.LatLngExpression[] = feature.geometry.coordinates.map(
+      ([lng, lat]) => [lat, lng]
+    );
+
+    // Casing (borde exterior blanco/oscuro) para que la línea destaque
+    // sobre cualquier fondo de mapa
+    const casing = L.polyline(latlngs, {
+      color:   casingColor,
+      weight:  10,
+      opacity: 1,
+      lineCap: 'round',
+      lineJoin: 'round',
+    });
+
+    // Línea principal
+    const line = L.polyline(latlngs, {
+      color:   routeColor,
+      weight:  5,
+      opacity: 0.9,
+      lineCap: 'round',
+      lineJoin: 'round',
+    });
+
+    // Tooltip con el resumen de la ruta
+    const { summary } = feature.properties;
+    const km  = (summary.distance / 1000).toFixed(1);
+    const min = Math.round(summary.duration / 60);
+    const hrs = Math.floor(min / 60);
+    const rem = min % 60;
+    const durStr = hrs > 0 ? `${hrs}h ${rem}min` : `${min} min`;
+
+    const tooltipBg  = isDark ? 'rgba(15,23,42,0.95)' : 'rgba(255,255,255,0.95)';
+    const tooltipTxt = isDark ? '#f8fafc' : '#0f172a';
+    const tooltipBdr = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.08)';
+
+    line.bindTooltip(
+      `<div style="
+        background:${tooltipBg};
+        backdrop-filter:blur(8px);
+        color:${tooltipTxt};
+        border:1px solid ${tooltipBdr};
+        padding:8px 14px;
+        border-radius:24px;
+        font-size:13px;
+        font-weight:600;
+        font-family:system-ui,-apple-system,sans-serif;
+        white-space:nowrap;
+        box-shadow:0 4px 16px rgba(0,0,0,0.12);
+        pointer-events:none;
+      ">🛣 ${km} km &nbsp;·&nbsp; ⏱ ${durStr}</div>`,
+      { sticky: true, className: 'leaflet-tooltip-custom', opacity: 1 }
+    );
+
+    // Casteamos L.LayerGroup para gestión unificada (remove al actualizar)
+    const layerGroup = L.layerGroup([casing, line]).addTo(map);
+    routeLayerRef.current = layerGroup;
+
+    // Ajustar vista al bounding box de la ruta (sin animación brusca)
+    const bounds = L.latLngBounds(latlngs);
+    map.fitBounds(bounds, { padding: [48, 48], maxZoom: 14, animate: true });
+
+    return () => {
+      layerGroup.remove();
+      routeLayerRef.current = null;
+    };
+  }, [ruta, isDark]);
 
   // Pulse ring for selected marker
   useEffect(() => {

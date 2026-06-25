@@ -14,19 +14,25 @@ import {
   Moon,
   Mountain,
   Bug,
+  Route,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import styles from './NavRail.module.css';
 import IncidenteModal from '@/components/IncidenteModal/IncidenteModal';
 
+interface NavRailProps {
+  rutaOpen?: boolean;
+  onRutaToggle?: () => void;
+}
+
 const navItems = [
-  { href: '/mapa', icon: Map, label: 'Mapa' },
-  { href: '/historial', icon: History, label: 'Historial' },
-  { href: '/riesgo', icon: TriangleAlert, label: 'Riesgo' },
-  { href: '/configuracion', icon: Settings, label: 'Configuración' },
+  { href: '/mapa',          icon: Map,           label: 'Mapa' },
+  { href: '/historial',     icon: History,       label: 'Historial' },
+  { href: '/riesgo',        icon: TriangleAlert, label: 'Riesgo' },
+  { href: '/configuracion', icon: Settings,      label: 'Configuración' },
 ];
 
-export default function NavRail() {
+export default function NavRail({ rutaOpen = false, onRutaToggle }: NavRailProps) {
   const pathname = usePathname();
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -59,6 +65,19 @@ export default function NavRail() {
               </Link>
             );
           })}
+
+          {/* Botón Ruta — abre panel lateral en /mapa sin navegar */}
+          {pathname.startsWith('/mapa') && (
+            <button
+              id="nav-ruta"
+              onClick={onRutaToggle}
+              className={`${styles.navButton} ${rutaOpen ? styles.active : ''}`}
+              title="Calcular ruta"
+            >
+              <Route className="w-5 h-5" />
+              <span className={styles.tooltip}>Ruta</span>
+            </button>
+          )}
         </div>
 
         {/* Bottom actions */}
