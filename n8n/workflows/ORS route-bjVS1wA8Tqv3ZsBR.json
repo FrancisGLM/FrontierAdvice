@@ -1,0 +1,575 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Normalización",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GPS Delivery1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "GPS Pickup1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Request Open Route API BUS GEOJSON1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Request Open Route API BUS GEOJSON1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalización": {
+      "main": [
+        [
+          {
+            "node": "Query Open Route API Pickup1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Query Open Route API Delivery1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Open Route API Pickup1": {
+      "main": [
+        [
+          {
+            "node": "GPS Pickup1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Open Route API Delivery1": {
+      "main": [
+        [
+          {
+            "node": "GPS Delivery1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-06-25T01:28:12.340Z",
+  "id": "bjVS1wA8Tqv3ZsBR",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "ORS route",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "calcular-ruta",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1888,
+        976
+      ],
+      "id": "ad10a68a-ef39-409f-adb2-3968403ed912",
+      "name": "Webhook",
+      "webhookId": "ddd86fef-3582-4128-b35b-00734e45bfab"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.openrouteservice.org/v2/directions/driving-{{ $json.vehiculo }}/geojson ",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8"
+            },
+            {
+              "name": "Authorization",
+              "value": "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImE1M2MzYjMwY2UwYTQ1MDdhNGM1OWMwMmQwODQwMjc3IiwiaCI6Im11cm11cjY0In0="
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "coordinates",
+              "value": "={{ [\n  [$json.pickup_longitude, $json.pickup_latitude],\n  [$json.destination_longitude, $json.destination_latitude]\n] }}"
+            },
+            {
+              "name": "options",
+              "value": "={{ {   vehicle_type: $json.subtipo_camion } }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "fea1b43a-4cde-45a8-95aa-595a0a895668",
+      "name": "Request Open Route API BUS GEOJSON1",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -400,
+        944
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0a544486-f47a-4547-b742-7dcfe6a98d6e",
+              "name": "pickup_address",
+              "value": "={{ $json.body.origen }}",
+              "type": "string"
+            },
+            {
+              "id": "cbd90df4-b167-4843-a24a-dff8e9e20dc6",
+              "name": "destination_address",
+              "value": "={{ $json.body.destino }}",
+              "type": "string"
+            },
+            {
+              "id": "4b9cf30b-68bf-4c05-8f9e-262cd685bd98",
+              "name": "pickup_acountryCode",
+              "value": "={{ $json.body.paisOrigen }}",
+              "type": "string"
+            },
+            {
+              "id": "6173220f-d27a-4441-b388-cc89ac2b872f",
+              "name": "destination_countryCode",
+              "value": "={{ $json.body.paisDestino }}",
+              "type": "string"
+            },
+            {
+              "id": "8670a191-be03-4f94-9d7f-1d28e5a0b56f",
+              "name": "vehiculo",
+              "value": "={{ $json.body.tipoVehiculo }}",
+              "type": "string"
+            },
+            {
+              "id": "d1a76e08-fcc4-4677-b3fd-9471d8799a97",
+              "name": "subtipo_camion",
+              "value": "={{ $json.body.subtipoCamion }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1696,
+        976
+      ],
+      "id": "208a35ec-bd51-41f5-8338-8bc31e218d77",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e4c92077-f294-4e49-8276-20d1441c0c2c",
+              "name": "p_longitude",
+              "type": "string",
+              "value": "={{ $json.features[0].geometry.coordinates[0] }}"
+            },
+            {
+              "id": "899e5304-e7a1-4ce1-bf9a-f403d74934fb",
+              "name": "p_latitude",
+              "type": "string",
+              "value": "={{ $json.features[0].geometry.coordinates[1] }}"
+            },
+            {
+              "id": "5b35642b-dda4-42b8-b7bb-1275616bfb59",
+              "name": "borough",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.borough }}"
+            },
+            {
+              "id": "aa74bd9a-f543-48e1-a69b-0e6472bda053",
+              "name": "neighbourhood",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.neighbourhood }}"
+            },
+            {
+              "id": "7f303dc8-4e28-4d46-8e3e-9db00dbcac3a",
+              "name": "localadmin",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.localadmin }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "076fbb70-dd8c-41ba-81c1-5af882ca6ff7",
+      "name": "GPS Pickup1",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -960,
+        848
+      ],
+      "notesInFlow": true,
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e4c92077-f294-4e49-8276-20d1441c0c2c",
+              "name": "d_longitude",
+              "type": "string",
+              "value": "={{ $json.features[0].geometry.coordinates[0] }}"
+            },
+            {
+              "id": "899e5304-e7a1-4ce1-bf9a-f403d74934fb",
+              "name": "d_latitude",
+              "type": "string",
+              "value": "={{ $json.features[0].geometry.coordinates[1] }}"
+            },
+            {
+              "id": "5b35642b-dda4-42b8-b7bb-1275616bfb59",
+              "name": "borough",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.borough }}"
+            },
+            {
+              "id": "aa74bd9a-f543-48e1-a69b-0e6472bda053",
+              "name": "neighbourhood",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.neighbourhood }}"
+            },
+            {
+              "id": "7f303dc8-4e28-4d46-8e3e-9db00dbcac3a",
+              "name": "localadmin",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.localadmin }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d47d6089-e468-4724-bcf0-d4a6958d1669",
+      "name": "GPS Delivery1",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -960,
+        1040
+      ],
+      "notesInFlow": true,
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "jsCode": "const itemsIn = $input.all();\n\nif (itemsIn.length < 2) {\n  throw new Error('Se esperaban al menos 2 items: origen y destino');\n}\n\nconst pickup = itemsIn[0].json;\nconst destination = itemsIn[1].json;\n\n// Traer datos del nodo \"Normalización\"\nconst normalizacionItem = $items('Normalización', 0, 0)?.[0]?.json ?? {};\n\nreturn [\n  {\n    json: {\n      pickup_longitude: pickup.p_longitude ?? null,\n      pickup_latitude: pickup.p_latitude ?? null,\n      destination_longitude: destination.d_longitude ?? null,\n      destination_latitude: destination.d_latitude ?? null,\n      vehiculo: normalizacionItem.vehiculo ?? null,\n      subtipo_camion: normalizacionItem.subtipo_camion ?? null,\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -592,
+        944
+      ],
+      "id": "4afbec95-d739-40ca-a4ca-22c75c0baa52",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -752,
+        944
+      ],
+      "id": "17390aff-fc91-48a9-92af-428cdc080036",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -176,
+        944
+      ],
+      "id": "795b01df-d793-44a5-b607-3e4c11380d58",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "const countryMap = {\n  chile: 'CL',\n  argentina: 'AR',\n  bolivia: 'BO',\n  'peru': 'PE',\n  'perú': 'PE',\n};\n\nconst vehicleMap = {\n  camion: 'hgv',\n  'camión': 'hgv',\n  coche: 'car',\n};\n\nconst truckSubtypeMap = {\n  general: '',\n  autobus: 'bus',\n  'autobús': 'bus',\n  'agrícola': 'agricultural',\n  agricola: 'agricultural',\n  forestal: 'forestry',\n  reparto: 'delivery',\n  mercancía: 'goods',\n  mercancia: 'goods',\n};\n\nfunction normalizeText(value) {\n  return String(value || '').trim().toLowerCase();\n}\n\nfunction detectCountryFromAddress(address) {\n  const text = normalizeText(address);\n\n  if (text.includes('chile')) return 'CL';\n  if (text.includes('argentina')) return 'AR';\n  if (text.includes('bolivia')) return 'BO';\n  if (text.includes('peru') || text.includes('perú')) return 'PE';\n\n  return null;\n}\n\nreturn items.map(item => {\n  const data = item.json;\n\n  const pickupCountry =\n    countryMap[normalizeText(data.pickup_acountryCode)] ||\n    detectCountryFromAddress(data.pickup_address);\n\n  const destinationCountry =\n    countryMap[normalizeText(data.destination_countryCode)] ||\n    detectCountryFromAddress(data.destination_address);\n\n  const vehiculo =\n    vehicleMap[normalizeText(data.vehiculo)] || data.vehiculo;\n\n  const subtipoNormalizado = normalizeText(data.subtipo_camion);\n  const subtipoCamion =\n    subtipoNormalizado === 'general'\n      ? ''\n      : (truckSubtypeMap[subtipoNormalizado] || data.subtipo_camion);\n\n  return {\n    json: {\n      ...data,\n      pickup_acountryCode: pickupCountry,\n      destination_countryCode: destinationCountry,\n      vehiculo,\n      subtipo_camion: subtipoCamion,\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1488,
+        976
+      ],
+      "id": "73d738ec-3c51-4461-ad31-5c3c26f19fc5",
+      "name": "Normalización"
+    },
+    {
+      "parameters": {
+        "url": "https://api.openrouteservice.org/geocode/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "api_key",
+              "value": "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImE1M2MzYjMwY2UwYTQ1MDdhNGM1OWMwMmQwODQwMjc3IiwiaCI6Im11cm11cjY0In0="
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.pickup_address }}"
+            },
+            {
+              "name": "boundary.country",
+              "value": "={{ $json.pickup_acountryCode }}"
+            },
+            {
+              "name": "sources",
+              "value": "openstreetmap"
+            },
+            {
+              "name": "size",
+              "value": "1"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f9450c50-41a6-44d2-affd-3716951fdc90",
+      "name": "Query Open Route API Pickup1",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -1200,
+        848
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "url": "https://api.openrouteservice.org/geocode/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "api_key",
+              "value": "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImE1M2MzYjMwY2UwYTQ1MDdhNGM1OWMwMmQwODQwMjc3IiwiaCI6Im11cm11cjY0In0="
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.destination_address }}"
+            },
+            {
+              "name": "boundary.country",
+              "value": "={{ $json.destination_countryCode }}"
+            },
+            {
+              "name": "sources",
+              "value": "openstreetmap"
+            },
+            {
+              "name": "size",
+              "value": "1"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7497d8a7-72f8-4258-91af-ea1487bb49c7",
+      "name": "Query Open Route API Delivery1",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -1200,
+        1040
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "url": "=https://strapi.frontieradvice.tech/api/paso-fronterizos",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer b4748a0ff4611d007369a5119c5d70450595cdee7e6f9431a3891b5c2a16c58d5fcdbfef2cb5c1dafc30c244f43a0769bf9aab2e3daf64d98bed68e33100e22cae1a03147cd754469246db07962c0a75becb3a187b6dcd4ac413921e822b96f0f6789c2749a4e77d82dbc88ccf10a7437b29c87c7dd4f9b6875627c62c3d03e2"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=",
+        "options": {}
+      },
+      "id": "d891598b-ad31-4320-817b-f49410ae1427",
+      "name": "Get Pasos_Fronterizos",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1104,
+        1376
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1344,
+        1376
+      ],
+      "id": "58421ba1-0a8f-4098-aec7-0b4f4467524e",
+      "name": "Haversive"
+    }
+  ],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-06-25T01:28:12.342Z",
+      "createdAt": "2026-06-25T01:28:12.342Z",
+      "role": "workflow:owner",
+      "workflowId": "bjVS1wA8Tqv3ZsBR",
+      "projectId": "0mwVSLULhlB6ku2N"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-06-25T03:06:03.831Z",
+  "versionId": "8e81068e-ae32-46a6-979e-79f703d51dfb"
+}
