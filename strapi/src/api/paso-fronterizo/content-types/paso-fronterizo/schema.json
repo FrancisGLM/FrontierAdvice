@@ -41,6 +41,12 @@
       "relation": "oneToMany",
       "target": "api::clima-actual.clima-actual",
       "mappedBy": "paso_fronterizo"
+    },
+    "reporte_incidentes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::reporte-incidente.reporte-incidente",
+      "mappedBy": "id_paso"
     }
   }
 }

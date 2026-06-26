@@ -33,5 +33,5 @@ frontend/.next/
 n8n/*.log
 strapi/*.log
 *.log
-
-
+n8n/workflows/*.json
+n8n/.env

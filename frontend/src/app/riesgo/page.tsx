@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { TriangleAlert, Zap, TrendingDown, AlertCircle, CheckCircle2, Search } from 'lucide-react';
+import { STRAPI_URL } from '@/lib/config';
 
 type NivelRiesgo = 'bajo' | 'medio' | 'alto';
 
@@ -93,7 +94,7 @@ export default function RiesgoPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
+
         
         const [resPasos, resSenales] = await Promise.all([
           fetch(`${STRAPI_URL}/api/paso-fronterizos?pagination[limit]=100`),

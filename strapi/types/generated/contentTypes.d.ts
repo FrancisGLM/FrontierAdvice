@@ -477,6 +477,43 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiAdminLogAdminLog extends Struct.CollectionTypeSchema {
+  collectionName: 'admin_logs';
+  info: {
+    displayName: 'AdminLog';
+    pluralName: 'admin-logs';
+    singularName: 'admin-log';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    accion: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    estado_anterior: Schema.Attribute.String;
+    estado_nuevo: Schema.Attribute.String;
+    fecha_evento: Schema.Attribute.DateTime;
+    ip: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::admin-log.admin-log'
+    > &
+      Schema.Attribute.Private;
+    motivo: Schema.Attribute.Text;
+    paso_documentId: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    resultado: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    user_agent: Schema.Attribute.Text;
+    usuario_email: Schema.Attribute.Email;
+  };
+}
+
 export interface ApiAlertaEventoAlertaEvento
   extends Struct.CollectionTypeSchema {
   collectionName: 'alerta_eventos';
@@ -683,9 +720,58 @@ export interface ApiPasoFronterizoPasoFronterizo
     nombre_oficial: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     region: Schema.Attribute.String;
+    reporte_incidentes: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::reporte-incidente.reporte-incidente'
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+  };
+}
+
+export interface ApiReporteIncidenteReporteIncidente
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'reporte_incidentes';
+  info: {
+    displayName: 'ReporteIncidente';
+    pluralName: 'reporte-incidentes';
+    singularName: 'reporte-incidente';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    descripcion: Schema.Attribute.Text & Schema.Attribute.Required;
+    email_contacto: Schema.Attribute.Email;
+    estado_revision: Schema.Attribute.Enumeration<
+      ['pendiente', 'en_revision', 'resuelto', 'descartado']
+    >;
+    fecha_reporte: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    fecha_revision: Schema.Attribute.DateTime;
+    fuente_reporte: Schema.Attribute.String;
+    id_paso: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::paso-fronterizo.paso-fronterizo'
+    >;
+    ip_origen: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::reporte-incidente.reporte-incidente'
+    > &
+      Schema.Attribute.Private;
+    observacion_admin: Schema.Attribute.Text;
+    publishedAt: Schema.Attribute.DateTime;
+    revisado_por_email: Schema.Attribute.String;
+    tipo_incidente: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    user_agent: Schema.Attribute.Text;
   };
 }
 
@@ -1311,11 +1397,13 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::admin-log.admin-log': ApiAdminLogAdminLog;
       'api::alerta-evento.alerta-evento': ApiAlertaEventoAlertaEvento;
       'api::clima-actual.clima-actual': ApiClimaActualClimaActual;
       'api::estado-diario.estado-diario': ApiEstadoDiarioEstadoDiario;
       'api::mensaje-waha.mensaje-waha': ApiMensajeWahaMensajeWaha;
       'api::paso-fronterizo.paso-fronterizo': ApiPasoFronterizoPasoFronterizo;
+      'api::reporte-incidente.reporte-incidente': ApiReporteIncidenteReporteIncidente;
       'api::restriccion.restriccion': ApiRestriccionRestriccion;
       'api::senal-predictiva.senal-predictiva': ApiSenalPredictivaSenalPredictiva;
       'api::tweet-x.tweet-x': ApiTweetXTweetX;

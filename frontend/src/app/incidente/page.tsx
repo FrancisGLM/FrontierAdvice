@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Bug, MapPin, ChevronDown, CheckCircle2, AlertCircle, Send, X } from 'lucide-react';
-import { pasosFronterizos } from '@/lib/mockData';
+import { STRAPI_URL, N8N_WEBHOOK_URL } from '@/lib/config';
 
 const tiposIncidente = [
   'Paso cerrado sin actualización oficial',
@@ -23,12 +23,42 @@ export default function ReportarIncidentePage() {
   const [contacto, setContacto] = useState('');
   const [formState, setFormState] = useState<FormState>('idle');
 
+  const [pasosOptions, setPasosOptions] = useState<{id: string, nombre: string}[]>([]);
+
+  useEffect(() => {
+    async function fetchPasos() {
+      try {
+        const res = await fetch(`${STRAPI_URL}/api/paso-fronterizos?pagination[limit]=100`);
+        const data = await res.json();
+        setPasosOptions(data.data.map((p: any) => ({ id: p.documentId, nombre: p.nombre_oficial })));
+      } catch (err) {
+        console.error('Error fetching pasos:', err);
+      }
+    }
+    fetchPasos();
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!paso || !tipo || !descripcion) return;
     setFormState('sending');
-    await new Promise(r => setTimeout(r, 1500));
-    setFormState('success');
+    try {
+      const response = await fetch(`${N8N_WEBHOOK_URL}/public/reportar-incidente`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          paso_documentId: paso,
+          tipo_incidente: tipo,
+          descripcion,
+          email_contacto: contacto,
+        }),
+      });
+      if (!response.ok) throw new Error('Error al enviar el reporte');
+      setFormState('success');
+    } catch (err) {
+      console.error(err);
+      setFormState('error');
+    }
   };
 
   const handleReset = () => {
@@ -110,6 +140,11 @@ export default function ReportarIncidentePage() {
           ) : (
             /* Form */
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {formState === 'error' && (
+                <div style={{ backgroundColor: 'var(--status-closed-bg)', color: 'var(--status-closed)', padding: '1rem', borderRadius: '0.75rem', fontSize: '0.875rem', border: '1px solid var(--status-closed)' }}>
+                  Ocurrió un error al enviar el reporte. Por favor, verifica tu conexión e intenta nuevamente.
+                </div>
+              )}
 
               {/* Info banner */}
               <div style={{
@@ -158,7 +193,7 @@ export default function ReportarIncidentePage() {
                     }}
                   >
                     <option value="">Seleccionar paso...</option>
-                    {pasosFronterizos.map(p => (
+                    {pasosOptions.map(p => (
                       <option key={p.id} value={p.id}>{p.nombre}</option>
                     ))}
                   </select>

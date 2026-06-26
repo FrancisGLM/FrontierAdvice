@@ -1,0 +1,45 @@
+{
+  "kind": "collectionType",
+  "collectionName": "admin_logs",
+  "info": {
+    "singularName": "admin-log",
+    "pluralName": "admin-logs",
+    "displayName": "AdminLog"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "accion": {
+      "type": "string"
+    },
+    "paso_documentId": {
+      "type": "string"
+    },
+    "estado_anterior": {
+      "type": "string"
+    },
+    "estado_nuevo": {
+      "type": "string"
+    },
+    "motivo": {
+      "type": "text"
+    },
+    "usuario_email": {
+      "type": "email"
+    },
+    "ip": {
+      "type": "string"
+    },
+    "user_agent": {
+      "type": "text"
+    },
+    "fecha_evento": {
+      "type": "datetime"
+    },
+    "resultado": {
+      "type": "string"
+    }
+  }
+}

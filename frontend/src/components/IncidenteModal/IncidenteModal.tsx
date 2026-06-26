@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Bug, MapPin, ChevronDown, CheckCircle2, AlertCircle, Send, TriangleAlert } from 'lucide-react';
-import { pasosFronterizos } from '@/lib/mockData';
+import { STRAPI_URL, N8N_WEBHOOK_URL } from '@/lib/config';
 import styles from './IncidenteModal.module.css';
 
 const tiposIncidente = [
@@ -31,6 +31,20 @@ export default function IncidenteModal({ open, onClose }: Props) {
   const [formState, setFormState] = useState<FormState>('idle');
   const [mounted, setMounted] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
+  const [pasosOptions, setPasosOptions] = useState<{id: string, nombre: string}[]>([]);
+
+  useEffect(() => {
+    async function fetchPasos() {
+      try {
+        const res = await fetch(`${STRAPI_URL}/api/paso-fronterizos?pagination[limit]=100`);
+        const data = await res.json();
+        setPasosOptions(data.data.map((p: any) => ({ id: p.documentId, nombre: p.nombre_oficial })));
+      } catch (err) {
+        console.error('Error fetching pasos:', err);
+      }
+    }
+    fetchPasos();
+  }, []);
 
   useEffect(() => setMounted(true), []);
 
@@ -66,8 +80,24 @@ export default function IncidenteModal({ open, onClose }: Props) {
     e.preventDefault();
     if (!canSubmit) return;
     setFormState('sending');
-    await new Promise(r => setTimeout(r, 1600));
-    setFormState('success');
+    try {
+      const response = await fetch(`${N8N_WEBHOOK_URL}/public/reportar-incidente`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          paso_documentId: paso,
+          tipo_incidente: tipo,
+          descripcion,
+          email_contacto: contacto,
+        }),
+      });
+      if (!response.ok) throw new Error('Error al enviar el reporte');
+      setFormState('success');
+    } catch (err) {
+      console.error(err);
+      alert('Error al enviar el reporte. Por favor, intenta nuevamente.');
+      setFormState('idle');
+    }
   };
 
   const canSubmit = paso && tipo && descripcion.length >= 15;
@@ -159,7 +189,7 @@ export default function IncidenteModal({ open, onClose }: Props) {
                     style={{ color: paso ? 'var(--text-primary)' : 'var(--text-secondary)' }}
                   >
                     <option value="">Seleccionar paso...</option>
-                    {pasosFronterizos.map(p => (
+                    {pasosOptions.map(p => (
                       <option key={p.id} value={p.id}>{p.nombre}</option>
                     ))}
                   </select>

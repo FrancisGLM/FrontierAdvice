@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Settings, Bell, Map, Globe, Palette, Shield, ChevronRight } from 'lucide-react';
+import { Settings, Bell, Map, Globe, Shield, Lock, LogOut } from 'lucide-react';
+import LoginModal from '@/components/LoginModal/LoginModal';
+import { useAuth } from '@/lib/AuthContext';
 
 interface ToggleProps {
   id: string;
@@ -78,6 +80,8 @@ export default function ConfiguracionPage() {
   const [mostrarRegion, setMostrarRegion] = useState(true);
   const [idioma, setIdioma] = useState('es');
   const [actualizacion, setActualizacion] = useState('2');
+  const [loginOpen, setLoginOpen] = useState(false);
+  const { isAdmin, logout } = useAuth();
 
   return (
     <div style={{
@@ -206,8 +210,49 @@ export default function ConfiguracionPage() {
           <p style={{ textAlign: 'center', fontSize: '0.75rem', color: 'var(--text-secondary)', opacity: 0.5, marginTop: '0.5rem' }}>
             Las preferencias se guardarán localmente — próximamente sincronización de cuenta
           </p>
+
+          {/* Administración */}
+          <Section icon={Lock} title="Administración" color="#6366f1">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+              <div>
+                <p style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary)' }}>Acceso a Panel</p>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.125rem' }}>
+                  {isAdmin ? 'Sesión iniciada como administrador' : 'Inicia sesión para opciones avanzadas'}
+                </p>
+              </div>
+              {isAdmin ? (
+                <button 
+                  onClick={logout}
+                  style={{
+                    padding: '0.5rem 1rem', borderRadius: '0.5rem', backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                    color: '#ef4444', fontSize: '0.875rem', fontWeight: 600, border: '1px solid rgba(239, 68, 68, 0.2)',
+                    cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem'
+                  }}
+                >
+                  <LogOut size={16} /> Cerrar Sesión
+                </button>
+              ) : (
+                <button 
+                  onClick={() => setLoginOpen(true)}
+                  style={{
+                    padding: '0.5rem 1rem', borderRadius: '0.5rem', backgroundColor: 'var(--bg-base)',
+                    color: 'var(--text-primary)', fontSize: '0.875rem', fontWeight: 600, border: '1px solid var(--border-strong)',
+                    cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem'
+                  }}
+                >
+                  <Lock size={16} /> Acceder
+                </button>
+              )}
+            </div>
+          </Section>
+
         </div>
       </div>
+
+      <LoginModal 
+        open={loginOpen} 
+        onClose={() => setLoginOpen(false)} 
+      />
     </div>
   );
 }

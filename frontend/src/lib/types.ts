@@ -44,8 +44,22 @@ export interface PronosticoDia {
   alerta?: string;
 }
 
+export interface EstadoDiario {
+  id: number | string;
+  documentId: string;
+  fecha_reporte: string;
+  estado_general: string;
+  fuente: string;
+  mensaje_original: string;
+  horario_apertura: string | null;
+  horario_cierre: string | null;
+  tipo_vehiculos: string[] | null;
+  motivo_estado: string | null;
+}
+
 export interface PasoFronterizo {
   id: string;
+  documentId?: string;
   nombre: string;
   subtitulo?: string;
   lat: number;
@@ -57,6 +71,7 @@ export interface PasoFronterizo {
   pronostico: PronosticoDia[];
   climaActual?: ClimaActual;
   senalPredictivas?: SenalPredictiva[];
+  estado_diarios?: EstadoDiario;
 }
 
 export interface FiltrosMapa {

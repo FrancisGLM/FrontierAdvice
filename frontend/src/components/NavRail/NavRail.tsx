@@ -9,15 +9,16 @@ import {
   TriangleAlert,
   Settings,
   HelpCircle,
-  LogOut,
   Sun,
   Moon,
   Mountain,
   Bug,
+  Shield,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import styles from './NavRail.module.css';
 import IncidenteModal from '@/components/IncidenteModal/IncidenteModal';
+import { useAuth } from '@/lib/AuthContext';
 
 const navItems = [
   { href: '/mapa', icon: Map, label: 'Mapa' },
@@ -29,10 +30,15 @@ const navItems = [
 export default function NavRail() {
   const pathname = usePathname();
   const { resolvedTheme, setTheme } = useTheme();
+  const { isAdmin } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [incidenteOpen, setIncidenteOpen] = useState(false);
 
   useEffect(() => setMounted(true), []);
+
+  const dynamicNavItems = isAdmin
+    ? [...navItems, { href: '/admin', icon: Shield, label: 'Panel Admin' }]
+    : navItems;
 
   return (
     <>
@@ -46,7 +52,7 @@ export default function NavRail() {
 
         {/* Main nav */}
         <div className={styles.navItems}>
-          {navItems.map(({ href, icon: Icon, label }) => {
+          {dynamicNavItems.map(({ href, icon: Icon, label }) => {
             const active = pathname.startsWith(href);
             return (
               <Link
@@ -89,14 +95,10 @@ export default function NavRail() {
             <span className={styles.tooltip}>Ayuda</span>
           </button>
 
-          <button className={`${styles.navButton} hover:!text-red-500`}>
-            <LogOut className="w-5 h-5" />
-            <span className={styles.tooltip}>Salir</span>
-          </button>
         </div>
       </nav>
 
-      {/* Incidente Modal — rendered via portal at body level */}
+      {/* Modals */}
       <IncidenteModal
         open={incidenteOpen}
         onClose={() => setIncidenteOpen(false)}

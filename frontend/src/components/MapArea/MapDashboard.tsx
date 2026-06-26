@@ -7,6 +7,7 @@ import FilterSidebar from '../FilterSidebar/FilterSidebar';
 import MapLegend from './MapLegend';
 import PasoInfoPanel from '../PasoInfo/PasoInfoPanel';
 import styles from './MapArea.module.css';
+import { STRAPI_URL } from '@/lib/config';
 
 // Leaflet must be client-side only
 const MapView = dynamic(() => import('./MapView'), {
@@ -15,7 +16,7 @@ const MapView = dynamic(() => import('./MapView'), {
     <div className={styles.loadingOverlay}>
       <div className="flex flex-col items-center">
         <div className={styles.spinner} />
-        <p className={styles.loadingText}>Cargando mapa interactivo...</p>
+        <p className={styles.loadingText}>Cargando mapa...</p>
       </div>
     </div>
   ),
@@ -36,12 +37,11 @@ export default function MapDashboard() {
   useEffect(() => {
     async function fetchPasos() {
       try {
-        const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
-
-        // Fetch en paralelo: pasos + señales predictivas
-        const [resPasos, resSenales] = await Promise.all([
-          fetch(`${STRAPI_URL}/api/paso-fronterizos?pagination[limit]=100&populate=*`),
-          fetch(`${STRAPI_URL}/api/senal-predictivas?pagination[limit]=500&populate[id_paso][fields][0]=id&sort=fecha_calculo:desc`),
+        // Fetch en paralelo: pasos + señales predictivas + estado diario
+        const [resPasos, resSenales, resDiarios] = await Promise.all([
+          fetch(`${STRAPI_URL}/api/paso-fronterizos?pagination[limit]=100&populate=*`, { cache: 'no-store' }),
+          fetch(`${STRAPI_URL}/api/senal-predictivas?pagination[limit]=500&populate[id_paso][fields][0]=id&sort=fecha_calculo:desc`, { cache: 'no-store' }),
+          fetch(`${STRAPI_URL}/api/estado-diarios?pagination[limit]=500&populate[id_paso][fields][0]=id&sort=createdAt:desc`, { cache: 'no-store' }),
         ]);
 
         if (!resPasos.ok) {
@@ -68,6 +68,18 @@ export default function MapDashboard() {
                 });
                 senalMap.set(pasoId, currentList);
               }
+            }
+          }
+        }
+
+        // Construir mapa pasoId → EstadoDiario (tomando el más reciente por createdAt:desc)
+        const diarioMap = new Map<string, any>();
+        if (resDiarios.ok) {
+          const jsonDiarios = await resDiarios.json();
+          for (const d of (jsonDiarios.data ?? [])) {
+            const pasoId = String(d.id_paso?.id ?? d.id_paso?.documentId ?? d.id_paso);
+            if (pasoId && !diarioMap.has(pasoId)) {
+              diarioMap.set(pasoId, d);
             }
           }
         }
@@ -132,18 +144,30 @@ export default function MapDashboard() {
             }
           }
 
+          let estadoDiarioData = diarioMap.get(String(item.id));
+
+          let estadoFinal: 'abierto' | 'precaucion' | 'cerrado' = item.activo ? 'abierto' : 'cerrado';
+          if (item.activo && estadoDiarioData) {
+            const eg = (estadoDiarioData.estado_general || '').toLowerCase();
+            if (eg.includes('cerrado') || eg.includes('suspendido')) estadoFinal = 'cerrado';
+            else if (eg.includes('precaucion') || eg.includes('desconocido')) estadoFinal = 'precaucion';
+            else if (eg.includes('abierto')) estadoFinal = 'abierto';
+          }
+
           return {
             id: String(item.id),
+            documentId: item.documentId,
             nombre: item.nombre_oficial,
             lat: item.latitud,
             lng: item.longitud,
-            estado: item.activo ? 'abierto' : 'cerrado',
+            estado: estadoFinal,
             region: item.region,
             ultimaActualizacion: new Date(item.updatedAt || Date.now()).toLocaleDateString(),
             altitud: item.altitud || undefined,
             pronostico: pronostico,
             climaActual: climaActual,
             senalPredictivas: senalMap.get(String(item.id))?.sort((a, b) => a.horizonteHoras - b.horizonteHoras),
+            estado_diarios: estadoDiarioData,
           };
         });
         
