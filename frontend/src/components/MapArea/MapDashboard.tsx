@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback } from 'react';
 import dynamic from 'next/dynamic';
+import { Eye } from 'lucide-react';
 import { PasoFronterizo, FiltrosMapa, N8nDobleRutaResponse } from '@/lib/types';
 import { pasosFronterizos } from '@/lib/mockData';
 import FilterSidebar from '../FilterSidebar/FilterSidebar';
@@ -25,20 +26,17 @@ const MapView = dynamic(() => import('./MapView'), {
   ),
 });
 
-// C2: Panel izquierdo activo — 'filtros' | 'ruta' | null
-type LeftPanel = 'filtros' | 'ruta';
+// Panel izquierdo activo — 'filtros' | 'ruta' | 'resultados'
+type LeftPanel = 'filtros' | 'ruta' | 'resultados';
 
 export default function MapDashboard() {
   const [selectedPaso, setSelectedPaso] = useState<PasoFronterizo | null>(null);
 
-  // C2: Sistema de paneles mutuamente exclusivos
+  // Panel izquierdo: filtros (default) | formulario ruta | resultados ruta
   const [leftPanel, setLeftPanel] = useState<LeftPanel>('filtros');
 
   // Resultado de doble ruta (nuevo formato n8n)
   const [rutaResultado, setRutaResultado] = useState<N8nDobleRutaResponse | null>(null);
-
-  // Panel de resultados abierto/cerrado
-  const [resultadosPanelOpen, setResultadosPanelOpen] = useState(false);
 
   // C7/C8: estado de enfoque (primaria vs alternativa)
   const [alternativeIsFocused, setAlternativeIsFocused] = useState(false);
@@ -66,28 +64,25 @@ export default function MapDashboard() {
     setSelectedPaso((prev) => (prev?.id === paso.id ? null : paso));
   };
 
-  // C2: El botón "Ruta" abre el RutaPanel y cierra FilterSidebar (y viceversa)
+  // Botón "Ruta" en NavRail: alterna entre formulario y filtros
   const handleRutaToggle = useCallback(() => {
     setLeftPanel((prev) => (prev === 'ruta' ? 'filtros' : 'ruta'));
   }, []);
 
-  // Recibir el resultado de n8n desde RutaPanel
+  // Al finalizar cálculo: cerrar formulario, mostrar resultados a la izquierda
   const handleRutaCalculada = useCallback((resultado: N8nDobleRutaResponse | null) => {
     setRutaResultado(resultado);
     if (resultado) {
-      // Abrir panel de resultados automáticamente al recibir respuesta
-      setResultadosPanelOpen(true);
-      // Resetear enfoque a ruta primaria cuando se calcula una nueva ruta
+      setLeftPanel('resultados');
       setAlternativeIsFocused(false);
     }
   }, []);
 
-  // C5/E: Limpiar ruta — borra rutas, cierra panel resultados, resetea estado
+  // Limpiar ruta — borra rutas, vuelve a filtros
   const handleLimpiarRuta = useCallback(() => {
     setRutaResultado(null);
-    setResultadosPanelOpen(false);
+    setLeftPanel('filtros');
     setAlternativeIsFocused(false);
-    // Nota: el formulario RutaPanel mantiene sus campos (no se limpia)
   }, []);
 
   // C8: Toggle de enfoque entre ruta primaria y alternativa
@@ -95,14 +90,19 @@ export default function MapDashboard() {
     setAlternativeIsFocused((prev) => !prev);
   }, []);
 
+  // Botón Revisualizar Ruta: vuelve a mostrar panel de resultados a la izquierda
+  const handleRevisualizar = useCallback(() => {
+    setLeftPanel('resultados');
+  }, []);
+
   const rutaOpen = leftPanel === 'ruta';
 
   return (
     <>
-      {/* NavRail — embebido aquí para recibir props de rutaOpen */}
+      {/* NavRail */}
       <NavRail rutaOpen={rutaOpen} onRutaToggle={handleRutaToggle} />
 
-      {/* C2: Panel de filtros — visible solo cuando leftPanel === 'filtros' */}
+      {/* Panel izquierdo: filtros */}
       {leftPanel === 'filtros' && (
         <FilterSidebar
           filtros={filtros}
@@ -113,9 +113,22 @@ export default function MapDashboard() {
         />
       )}
 
-      {/* C2: Panel de rutas — visible solo cuando leftPanel === 'ruta' */}
+      {/* Panel izquierdo: formulario Calcular Ruta */}
       {leftPanel === 'ruta' && (
         <RutaPanel onRutaCalculada={handleRutaCalculada} />
+      )}
+
+      {/* Panel izquierdo: Resultados Ruta (aparece tras Finalizar, en el mismo lado) */}
+      {leftPanel === 'resultados' && (
+        <ResultadosPanel
+          resultado={rutaResultado}
+          pasos={pasosFiltrados}
+          onSelectPaso={handleSelectPaso}
+          onLimpiar={handleLimpiarRuta}
+          onClose={() => setLeftPanel('filtros')}
+          alternativeIsFocused={alternativeIsFocused}
+          onToggleFocus={handleToggleFocus}
+        />
       )}
 
       {/* Mapa */}
@@ -129,23 +142,24 @@ export default function MapDashboard() {
           rutaResultado={rutaResultado}
           alternativeIsFocused={alternativeIsFocused}
         />
+
+        {/* Botón flotante "Revisualizar Ruta" — aparece cuando hay resultado y el panel izquierdo NO muestra resultados */}
+        {rutaResultado && leftPanel !== 'resultados' && (
+          <button
+            className={styles.revisualizeBtn}
+            onClick={handleRevisualizar}
+            title="Ver resultados de la ruta calculada"
+          >
+            <Eye size={14} />
+            Revisualizar Ruta
+          </button>
+        )}
       </div>
 
-      {/* Panel de información del paso (derecha) */}
+      {/* Panel de información del paso (derecha) — independiente, no bloquea ResultadosPanel */}
       <PasoInfoPanel
         paso={selectedPaso}
         onClose={() => setSelectedPaso(null)}
-      />
-
-      {/* C5: Panel de resultados de ruta (derecha, sobre PasoInfoPanel) */}
-      <ResultadosPanel
-        resultado={resultadosPanelOpen ? rutaResultado : null}
-        pasos={pasosFiltrados}
-        onSelectPaso={handleSelectPaso}
-        onLimpiar={handleLimpiarRuta}
-        onClose={() => setResultadosPanelOpen(false)}
-        alternativeIsFocused={alternativeIsFocused}
-        onToggleFocus={handleToggleFocus}
       />
     </>
   );

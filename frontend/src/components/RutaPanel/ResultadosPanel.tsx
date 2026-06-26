@@ -107,8 +107,7 @@ export default function ResultadosPanel({
   };
 
   return (
-    <>
-      <aside className={`${styles.panel} ${resultado ? styles.open : ''}`}>
+    <aside className={styles.panel}>
         {/* Header */}
         <div className={styles.header}>
           <h2 className={styles.title}>Resultados de Ruta</h2>
@@ -195,13 +194,6 @@ export default function ResultadosPanel({
             🗑 Limpiar Ruta
           </button>
         </div>
-      </aside>
-
-      {/* Mobile backdrop */}
-      <div
-        className={`md:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-[55] transition-opacity ${resultado ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-        onClick={onClose}
-      />
-    </>
+    </aside>
   );
 }

@@ -3,8 +3,7 @@
 import { useState, useCallback } from 'react';
 import type { OrsResponse, N8nDobleRutaResponse, N8nMensaje } from '@/lib/types';
 
-export type PaisDestino = 'Argentina' | 'Bolivia' | 'Peru';
-export type PaisOrigen = 'Chile';
+export type Pais = 'Argentina' | 'Bolivia' | 'Chile' | 'Peru';
 export type TipoVehiculo = 'coche' | 'camion';
 export type SubtipoCamion =
   | 'autobus'
@@ -22,9 +21,9 @@ export interface DireccionEstructurada {
 
 export interface RutaParams {
   origen: DireccionEstructurada;
-  paisOrigen: PaisOrigen;
+  paisOrigen: Pais;
   destino: DireccionEstructurada;
-  paisDestino: PaisDestino;
+  paisDestino: Pais;
   tipoVehiculo: TipoVehiculo;
   subtipoCamion?: SubtipoCamion;
 }
@@ -89,43 +88,103 @@ export function useCalcularRuta(): UseCalcularRutaReturn {
         );
       }
 
-      // n8n retorna el nuevo array: [mensaje, orsGeoJSON1, orsGeoJSON2]
-      const data = await res.json();
+      // ── Leer respuesta como texto para máxima visibilidad en errores ─────────
+      const rawText = await res.text();
 
-      // Soportar tanto el array nuevo como un solo OrsResponse (retrocompatibilidad)
-      if (Array.isArray(data) && data.length >= 3) {
-        const mensajeRaw = data[0] as N8nMensaje;
-        const primaria   = data[1] as OrsResponse;
-        const alternativa = data[2] as OrsResponse;
-
-        if (
-          primaria?.type !== 'FeatureCollection' ||
-          !Array.isArray(primaria.features) ||
-          primaria.features.length === 0
-        ) {
-          throw new Error('La ruta primaria no contiene datos válidos.');
-        }
-        if (
-          alternativa?.type !== 'FeatureCollection' ||
-          !Array.isArray(alternativa.features) ||
-          alternativa.features.length === 0
-        ) {
-          throw new Error('La ruta alternativa no contiene datos válidos.');
-        }
-
-        setResultado({
-          mensaje: mensajeRaw,
-          rutaPrimaria: primaria,
-          rutaAlternativa: alternativa,
-        });
-      } else if (!Array.isArray(data) && data?.type === 'FeatureCollection') {
-        // Retrocompatibilidad: si n8n aún devuelve un solo OrsResponse
+      if (!rawText || rawText.trim().length === 0) {
         throw new Error(
-          'El servidor devolvió una sola ruta. Se esperan dos rutas (formato nuevo de n8n).'
+          '[Debug] n8n devolvió una respuesta vacía (sin body). ' +
+          'Verifica que el nodo "Respond to Webhook" en n8n está configurado correctamente.'
         );
-      } else {
-        throw new Error('La respuesta del servidor no tiene el formato esperado.');
       }
+
+      // ── Parsear el JSON ───────────────────────────────────────────────────────
+      let root: unknown;
+      try {
+        root = JSON.parse(rawText);
+      } catch (parseErr) {
+        throw new Error(
+          `[Debug] La respuesta de n8n no es JSON válido.\n` +
+          `Primeros 200 chars del body: ${rawText.slice(0, 200)}`
+        );
+      }
+
+      // ── Extraer el array de rutas ─────────────────────────────────────────────
+      // Esperamos que el nodo Code de n8n envíe routeResult (JSON string del array)
+      let parsedArray: unknown[] | null = null;
+
+      // Caso A: viene como string de array (formato del nodo Code: routeResult)
+      if (typeof root === 'string') {
+        try {
+          const inner = JSON.parse(root);
+          if (Array.isArray(inner)) parsedArray = inner;
+        } catch { /* no es JSON */ }
+      }
+
+      // Caso B: es directamente un array [mensaje, geo1, geo2]
+      if (!parsedArray && Array.isArray(root) && root.length >= 3) {
+        parsedArray = root;
+      }
+
+      // Caso C: el nodo Code devolvió { routeResult: "[...]" } (string serializado)
+      if (!parsedArray && typeof root === 'object' && root !== null) {
+        const obj = root as Record<string, unknown>;
+        if (typeof obj['routeResult'] === 'string') {
+          try {
+            const inner = JSON.parse(obj['routeResult'] as string);
+            if (Array.isArray(inner)) parsedArray = inner;
+          } catch { /* noop */ }
+        }
+        // Caso D: { data: [...] } u otros wrappers comunes
+        if (!parsedArray && Array.isArray(obj['data'])) parsedArray = obj['data'] as unknown[];
+        if (!parsedArray && Array.isArray(obj['body'])) parsedArray = obj['body'] as unknown[];
+        if (!parsedArray && Array.isArray(obj['items'])) parsedArray = obj['items'] as unknown[];
+      }
+
+      // Caso E: array anidado [ [msg, geo1, geo2] ]
+      if (!parsedArray && Array.isArray(root) && root.length === 1 && Array.isArray(root[0])) {
+        parsedArray = root[0] as unknown[];
+      }
+
+      // ── Si no pudimos extraer el array, dar error detallado ──────────────────
+      if (!parsedArray || parsedArray.length < 3) {
+        const rootType  = Array.isArray(root) ? `Array[${(root as unknown[]).length}]` : typeof root;
+        const rootKeys  = typeof root === 'object' && root !== null ? `Claves: [${Object.keys(root as object).join(', ')}]` : '';
+        const rootSnip  = rawText.slice(0, 300);
+        throw new Error(
+          `[Debug] No se pudo extraer el array de rutas de la respuesta de n8n.\n` +
+          `• Tipo recibido: ${rootType}. ${rootKeys}\n` +
+          `• Items en array: ${parsedArray ? parsedArray.length : 'N/A'} (se necesitan 3)\n` +
+          `• Raw body (primeros 300 chars):\n${rootSnip}\n\n` +
+          `💡 Solución: Agrega el nodo Code "n8n_code_node_doble_ruta.js" antes del "Respond to Webhook".`
+        );
+      }
+
+      // ── Validar y aplicar los 3 elementos ────────────────────────────────────
+      const mensajeRaw  = parsedArray[0] as N8nMensaje;
+      const primaria    = parsedArray[1] as OrsResponse;
+      const alternativa = parsedArray[2] as OrsResponse;
+
+      if (primaria?.type !== 'FeatureCollection' || !Array.isArray(primaria.features) || primaria.features.length === 0) {
+        throw new Error(
+          `[Debug] La ruta primaria (item[1]) no es un FeatureCollection válido.\n` +
+          `• type: "${primaria?.type}" (esperado: "FeatureCollection")\n` +
+          `• features: ${Array.isArray(primaria?.features) ? primaria.features.length : 'no es array'}`
+        );
+      }
+      if (alternativa?.type !== 'FeatureCollection' || !Array.isArray(alternativa.features) || alternativa.features.length === 0) {
+        throw new Error(
+          `[Debug] La ruta alternativa (item[2]) no es un FeatureCollection válido.\n` +
+          `• type: "${alternativa?.type}" (esperado: "FeatureCollection")\n` +
+          `• features: ${Array.isArray(alternativa?.features) ? alternativa.features.length : 'no es array'}`
+        );
+      }
+
+      setResultado({
+        mensaje: mensajeRaw,
+        rutaPrimaria: primaria,
+        rutaAlternativa: alternativa,
+      });
     } catch (err: unknown) {
       const message =
         err instanceof Error

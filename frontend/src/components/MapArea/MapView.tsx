@@ -275,21 +275,34 @@ export default function MapView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rutaResultado, isDark]);
 
-  // ── C7: Intercambio de colores al enfocar ────────────────────────────────
+  // ── C7: Intercambio de colores + z-order al enfocar ─────────────────────
   // Se ejecuta solo cuando cambia alternativeIsFocused (sin re-dibujar)
   useEffect(() => {
+    const map     = mapRef.current;
     const primLine = routePrimLineRef.current;
     const altLine  = routeAltLineRef.current;
-    if (!primLine || !altLine) return;
+    const primLayer = routeLayerPrimRef.current;
+    const altLayer  = routeLayerAltRef.current;
+    if (!map || !primLine || !altLine || !primLayer || !altLayer) return;
 
     if (alternativeIsFocused) {
-      // Alternativa brillante, primaria opaca
+      // Alternativa brillante y encima, primaria opaca y debajo
       primLine.setStyle({ color: ROUTE_COLORS.primary.dim });
       altLine.setStyle({ color: ROUTE_COLORS.primary.bright });
+      // Reordenar capas: primaria primero (debajo), alternativa encima
+      primLayer.remove();
+      altLayer.remove();
+      primLayer.addTo(map);
+      altLayer.addTo(map);
     } else {
-      // Primaria brillante, alternativa opaca
+      // Primaria brillante y encima, alternativa opaca y debajo
       primLine.setStyle({ color: ROUTE_COLORS.primary.bright });
       altLine.setStyle({ color: ROUTE_COLORS.primary.dim });
+      // Reordenar capas: alternativa primero (debajo), primaria encima
+      primLayer.remove();
+      altLayer.remove();
+      altLayer.addTo(map);
+      primLayer.addTo(map);
     }
   }, [alternativeIsFocused]);
 

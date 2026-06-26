@@ -91,3 +91,40 @@
     gap: 0.5rem;
   }
 }
+
+/* ── Botón flotante "Revisualizar Ruta" ─────────────────────────────────── */
+/* Se muestra sobre el mapa en la esquina inferior izquierda                  */
+.revisualizeBtn {
+  position: absolute;
+  bottom: 5.5rem;      /* Sobre los controles de zoom de Leaflet */
+  left: 1rem;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;     /* Pill shape */
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid rgba(37, 99, 235, 0.4);
+  background-color: rgba(15, 23, 42, 0.85);
+  color: white;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(37, 99, 235, 0.2);
+  transition: all 0.2s ease;
+  animation: fadeIn 0.3s ease;
+}
+
+.revisualizeBtn:hover {
+  background-color: var(--nav-active);
+  border-color: var(--nav-active);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.4);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
