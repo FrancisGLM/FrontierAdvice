@@ -117,3 +117,20 @@ export interface OrsResponse {
     };
   };
 }
+
+// ── Respuesta nueva de n8n: array [mensaje, rutaPrimaria, rutaAlternativa] ───
+// response[0] = { mensaje_natural, paso_primario?, paso_alternativo? }
+// response[1] = OrsResponse (ruta primaria)
+// response[2] = OrsResponse (ruta alternativa)
+
+export interface N8nMensaje {
+  mensaje_natural: string;
+  paso_primario?: string;
+  paso_alternativo?: string;
+}
+
+export interface N8nDobleRutaResponse {
+  mensaje: N8nMensaje;
+  rutaPrimaria: OrsResponse;
+  rutaAlternativa: OrsResponse;
+}

@@ -25,8 +25,11 @@ interface NavRailProps {
   onRutaToggle?: () => void;
 }
 
-const navItems = [
-  { href: '/mapa',          icon: Map,           label: 'Mapa' },
+const navItemsTop = [
+  { href: '/mapa', icon: Map, label: 'Mapa' },
+];
+
+const navItemsBottom = [
   { href: '/historial',     icon: History,       label: 'Historial' },
   { href: '/riesgo',        icon: TriangleAlert, label: 'Riesgo' },
   { href: '/configuracion', icon: Settings,      label: 'Configuración' },
@@ -52,7 +55,36 @@ export default function NavRail({ rutaOpen = false, onRutaToggle }: NavRailProps
 
         {/* Main nav */}
         <div className={styles.navItems}>
-          {navItems.map(({ href, icon: Icon, label }) => {
+          {/* Mapa */}
+          {navItemsTop.map(({ href, icon: Icon, label }) => {
+            const active = pathname === href || (href === '/mapa' && pathname.startsWith('/mapa'));
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`${styles.navButton} ${active && !rutaOpen ? styles.active : ''}`}
+              >
+                <Icon className="w-5 h-5" />
+                <span className={styles.tooltip}>{label}</span>
+              </Link>
+            );
+          })}
+
+          {/* Botón Ruta — siempre visible en /mapa, entre Mapa e Historial */}
+          {pathname.startsWith('/mapa') && (
+            <button
+              id="nav-ruta"
+              onClick={onRutaToggle}
+              className={`${styles.navButton} ${rutaOpen ? styles.active : ''}`}
+              title="Calcular ruta"
+            >
+              <Route className="w-5 h-5" />
+              <span className={styles.tooltip}>Ruta</span>
+            </button>
+          )}
+
+          {/* Historial, Riesgo, Configuración */}
+          {navItemsBottom.map(({ href, icon: Icon, label }) => {
             const active = pathname.startsWith(href);
             return (
               <Link
@@ -66,18 +98,6 @@ export default function NavRail({ rutaOpen = false, onRutaToggle }: NavRailProps
             );
           })}
 
-          {/* Botón Ruta — abre panel lateral en /mapa sin navegar */}
-          {pathname.startsWith('/mapa') && (
-            <button
-              id="nav-ruta"
-              onClick={onRutaToggle}
-              className={`${styles.navButton} ${rutaOpen ? styles.active : ''}`}
-              title="Calcular ruta"
-            >
-              <Route className="w-5 h-5" />
-              <span className={styles.tooltip}>Ruta</span>
-            </button>
-          )}
         </div>
 
         {/* Bottom actions */}

@@ -61,6 +61,38 @@
   letter-spacing: 0.05em;
 }
 
+/* Section header (ORIGEN / DESTINO) */
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--nav-active);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: -0.25rem;
+}
+
+.sectionIcon {
+  color: var(--nav-active);
+  flex-shrink: 0;
+}
+
+/* Thin divider between sections */
+.sectionDivider {
+  border: none;
+  border-top: 1px solid var(--border-subtle);
+  margin: 0.25rem 0;
+}
+
+/* Row layout for Calle + Número side by side */
+.fieldRow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
 /* Text input */
 .inputWrapper {
   position: relative;

@@ -1,72 +1,103 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { MapPin, Flag, ChevronDown, Navigation } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { MapPin, Flag, ChevronDown, Navigation, Eye } from 'lucide-react';
 import {
   useCalcularRuta,
   type PaisDestino,
+  type PaisOrigen,
   type TipoVehiculo,
   type SubtipoCamion,
+  type DireccionEstructurada,
 } from '@/lib/hooks/useCalcularRuta';
-import type { OrsResponse } from '@/lib/types';
+import type { N8nDobleRutaResponse } from '@/lib/types';
 import styles from './RutaPanel.module.css';
 
-const PAISES: { value: PaisDestino; label: string; flag: string }[] = [
-  { value: 'Argentina', label: 'Argentina', flag: '🇦🇷' },
-  { value: 'Bolivia',   label: 'Bolivia',   flag: '🇧🇴' },
-  { value: 'Peru',      label: 'Perú',      flag: '🇵🇪' },
+const PAISES_DESTINO: { value: PaisDestino; label: string; code: string }[] = [
+  { value: 'Argentina', label: 'Argentina', code: 'AR' },
+  { value: 'Bolivia',   label: 'Bolivia',   code: 'BO' },
+  { value: 'Peru',      label: 'Perú',      code: 'PE' },
 ];
 
-const SUBTIPOS: { value: SubtipoCamion; label: string }[] = [
-  { value: 'general',    label: 'General' },
-  { value: 'autobus',    label: 'Autobús' },
-  { value: 'agricola',   label: 'Agrícola' },
-  { value: 'forestal',   label: 'Forestal' },
-  { value: 'reparto',    label: 'Reparto' },
-  { value: 'mercancia',  label: 'Mercancía' },
+const PAISES_ORIGEN: { value: PaisOrigen; label: string; code: string }[] = [
+  { value: 'Chile', label: 'Chile', code: 'CL' },
 ];
+
+// C3c: Eliminada la opción "General". Autobús es el primero.
+const SUBTIPOS: { value: SubtipoCamion; label: string }[] = [
+  { value: 'autobus',   label: 'Autobús' },
+  { value: 'agricola',  label: 'Agrícola' },
+  { value: 'forestal',  label: 'Forestal' },
+  { value: 'reparto',   label: 'Reparto' },
+  { value: 'mercancia', label: 'Mercancía' },
+];
+
+const EMPTY_DIRECCION: DireccionEstructurada = { calle: '', numero: '', comuna: '', ciudad: '' };
 
 interface RutaPanelProps {
-  onRutaCalculada: (ruta: OrsResponse | null) => void;
-}
-
-function formatDuration(seconds: number): string {
-  const min = Math.round(seconds / 60);
-  const hrs = Math.floor(min / 60);
-  const rem = min % 60;
-  return hrs > 0 ? `${hrs} h ${rem} min` : `${min} min`;
+  onRutaCalculada: (resultado: N8nDobleRutaResponse | null) => void;
 }
 
 export default function RutaPanel({ onRutaCalculada }: RutaPanelProps) {
-  const { calcular, limpiar, loading, error, ruta } = useCalcularRuta();
+  const { calcular, limpiar, loading, error, resultado } = useCalcularRuta();
 
-  const [origen,        setOrigen]        = useState('');
-  const [destino,       setDestino]       = useState('');
-  const [pais,          setPais]          = useState<PaisDestino>('Argentina');
-  const [vehiculo,      setVehiculo]      = useState<TipoVehiculo>('coche');
-  const [subtipo,       setSubtipo]       = useState<SubtipoCamion>('general');
+  // ── Estado del formulario ───────────────────────────────────────────────────
+  const [paisOrigen, setPaisOrigen] = useState<PaisOrigen>('Chile');
+  const [origen, setOrigen]         = useState<DireccionEstructurada>(EMPTY_DIRECCION);
+  const [paisDestino, setPaisDestino] = useState<PaisDestino>('Argentina');
+  const [destino, setDestino]       = useState<DireccionEstructurada>(EMPTY_DIRECCION);
+  const [vehiculo, setVehiculo]     = useState<TipoVehiculo>('coche');
+  const [subtipo, setSubtipo]       = useState<SubtipoCamion>('autobus');
 
-  const canSubmit = origen.trim().length > 0 && destino.trim().length > 0 && !loading;
+  // C6: Estado de "tiene resultado almacenado" para cambiar el botón
+  const [hasResult, setHasResult] = useState(false);
+  const [storedResult, setStoredResult] = useState<N8nDobleRutaResponse | null>(null);
 
-  // Sync ruta to parent whenever it changes
+  // Verificar si el formulario tiene datos suficientes para enviar
+  const origenCompleto = origen.calle.trim().length > 0 || origen.ciudad.trim().length > 0;
+  const destinoCompleto = destino.calle.trim().length > 0 || destino.ciudad.trim().length > 0;
+  const canSubmit = origenCompleto && destinoCompleto && !loading;
+
+  // Sync resultado al padre
   useEffect(() => {
-    onRutaCalculada(ruta);
-  }, [ruta, onRutaCalculada]);
+    if (resultado) {
+      setHasResult(true);
+      setStoredResult(resultado);
+    }
+    onRutaCalculada(resultado);
+  }, [resultado, onRutaCalculada]);
 
-  const handleSubmit = async () => {
-    if (!canSubmit) return;
-    await calcular({
-      origen:        origen.trim(),
-      destino:       destino.trim(),
-      paisDestino:   pais,
-      tipoVehiculo:  vehiculo,
-      subtipoCamion: vehiculo === 'camion' ? subtipo : undefined,
-    });
+  // C6: cualquier cambio en campos → resetear estado "hasResult"
+  const markDirty = useCallback(() => {
+    if (hasResult) setHasResult(false);
+  }, [hasResult]);
+
+  const updateOrigen = (field: keyof DireccionEstructurada, value: string) => {
+    setOrigen(prev => ({ ...prev, [field]: value }));
+    markDirty();
   };
 
-  const handleLimpiar = () => {
-    limpiar();
-    // onRutaCalculada(null) is called via the useEffect above
+  const updateDestino = (field: keyof DireccionEstructurada, value: string) => {
+    setDestino(prev => ({ ...prev, [field]: value }));
+    markDirty();
+  };
+
+  // C6: "Calcular Ruta" → llama n8n. "Revisualizar Ruta" → re-emite resultado sin llamar n8n
+  const handleSubmit = async () => {
+    if (!canSubmit) return;
+    if (hasResult && storedResult) {
+      // Revisualizar: re-emite el resultado almacenado
+      onRutaCalculada(storedResult);
+      return;
+    }
+    await calcular({
+      origen,
+      paisOrigen,
+      destino,
+      paisDestino,
+      tipoVehiculo: vehiculo,
+      subtipoCamion: vehiculo === 'camion' ? subtipo : undefined,
+    });
   };
 
   return (
@@ -74,63 +105,164 @@ export default function RutaPanel({ onRutaCalculada }: RutaPanelProps) {
       {/* Header */}
       <div className={styles.header}>
         <h2 className={styles.title}>Calcular Ruta</h2>
-        <p className={styles.subtitle}>Chile → {pais}</p>
+        <p className={styles.subtitle}>{paisOrigen} → {paisDestino}</p>
       </div>
 
       {/* Form body */}
       <div className={styles.body}>
 
-        {/* Origen */}
-        <div className={styles.fieldGroup}>
-          <label className={styles.label}>Origen (Chile)</label>
-          <div className={styles.inputWrapper}>
-            <MapPin className={styles.inputIcon} size={14} />
-            <input
-              type="text"
-              className={styles.input}
-              placeholder="Ej: Curicó, Maule"
-              value={origen}
-              onChange={(e) => setOrigen(e.target.value)}
-              disabled={loading}
-            />
-          </div>
+        {/* ── ORIGEN ─────────────────────────────────────────── */}
+        <div className={styles.sectionHeader}>
+          <MapPin size={12} className={styles.sectionIcon} />
+          <span>ORIGEN</span>
         </div>
 
-        {/* País de destino */}
+        {/* País Origen (C3a) */}
         <div className={styles.fieldGroup}>
-          <label className={styles.label}>País de destino</label>
+          <label className={styles.label}>País Origen</label>
           <div className={styles.selectWrapper}>
             <select
               className={styles.select}
-              value={pais}
-              onChange={(e) => setPais(e.target.value as PaisDestino)}
+              value={paisOrigen}
+              onChange={(e) => { setPaisOrigen(e.target.value as PaisOrigen); markDirty(); }}
               disabled={loading}
             >
-              {PAISES.map(({ value, label, flag }) => (
-                <option key={value} value={value}>
-                  {flag} {label}
-                </option>
+              {PAISES_ORIGEN.map(({ value, label, code }) => (
+                <option key={value} value={value}>{code} {label}</option>
               ))}
             </select>
             <ChevronDown className={styles.selectIcon} size={14} />
           </div>
         </div>
 
-        {/* Destino */}
-        <div className={styles.fieldGroup}>
-          <label className={styles.label}>Destino</label>
-          <div className={styles.inputWrapper}>
-            <Flag className={styles.inputIcon} size={14} />
+        {/* Calle + Número (C3b) */}
+        <div className={styles.fieldRow}>
+          <div className={styles.fieldGroup} style={{ flex: 2 }}>
+            <label className={styles.label}>Calle</label>
             <input
               type="text"
               className={styles.input}
-              placeholder={`Ej: Buenos Aires, ${pais}`}
-              value={destino}
-              onChange={(e) => setDestino(e.target.value)}
+              placeholder="Ej: Avenida O'Higgins"
+              value={origen.calle}
+              onChange={(e) => updateOrigen('calle', e.target.value)}
+              disabled={loading}
+            />
+          </div>
+          <div className={styles.fieldGroup} style={{ flex: 1 }}>
+            <label className={styles.label}>Número</label>
+            <input
+              type="text"
+              className={styles.input}
+              placeholder="Ej: 1234"
+              value={origen.numero}
+              onChange={(e) => updateOrigen('numero', e.target.value)}
               disabled={loading}
             />
           </div>
         </div>
+
+        <div className={styles.fieldGroup}>
+          <label className={styles.label}>Comuna</label>
+          <input
+            type="text"
+            className={styles.input}
+            placeholder="Ej: Talca"
+            value={origen.comuna}
+            onChange={(e) => updateOrigen('comuna', e.target.value)}
+            disabled={loading}
+          />
+        </div>
+
+        <div className={styles.fieldGroup}>
+          <label className={styles.label}>Ciudad</label>
+          <input
+            type="text"
+            className={styles.input}
+            placeholder="Ej: Talca"
+            value={origen.ciudad}
+            onChange={(e) => updateOrigen('ciudad', e.target.value)}
+            disabled={loading}
+          />
+        </div>
+
+        {/* ── DESTINO ─────────────────────────────────────────── */}
+        <div className={styles.sectionDivider} />
+
+        <div className={styles.sectionHeader}>
+          <Flag size={12} className={styles.sectionIcon} />
+          <span>DESTINO</span>
+        </div>
+
+        {/* País de destino */}
+        <div className={styles.fieldGroup}>
+          <label className={styles.label}>País Destino</label>
+          <div className={styles.selectWrapper}>
+            <select
+              className={styles.select}
+              value={paisDestino}
+              onChange={(e) => { setPaisDestino(e.target.value as PaisDestino); markDirty(); }}
+              disabled={loading}
+            >
+              {PAISES_DESTINO.map(({ value, label, code }) => (
+                <option key={value} value={value}>{code} {label}</option>
+              ))}
+            </select>
+            <ChevronDown className={styles.selectIcon} size={14} />
+          </div>
+        </div>
+
+        {/* Calle + Número Destino (C3b) */}
+        <div className={styles.fieldRow}>
+          <div className={styles.fieldGroup} style={{ flex: 2 }}>
+            <label className={styles.label}>Calle</label>
+            <input
+              type="text"
+              className={styles.input}
+              placeholder="Ej: Av. Corrientes"
+              value={destino.calle}
+              onChange={(e) => updateDestino('calle', e.target.value)}
+              disabled={loading}
+            />
+          </div>
+          <div className={styles.fieldGroup} style={{ flex: 1 }}>
+            <label className={styles.label}>Número</label>
+            <input
+              type="text"
+              className={styles.input}
+              placeholder="Ej: 3247"
+              value={destino.numero}
+              onChange={(e) => updateDestino('numero', e.target.value)}
+              disabled={loading}
+            />
+          </div>
+        </div>
+
+        <div className={styles.fieldGroup}>
+          <label className={styles.label}>Comuna / Barrio</label>
+          <input
+            type="text"
+            className={styles.input}
+            placeholder="Ej: San Nicolás"
+            value={destino.comuna}
+            onChange={(e) => updateDestino('comuna', e.target.value)}
+            disabled={loading}
+          />
+        </div>
+
+        <div className={styles.fieldGroup}>
+          <label className={styles.label}>Ciudad</label>
+          <input
+            type="text"
+            className={styles.input}
+            placeholder="Ej: Buenos Aires"
+            value={destino.ciudad}
+            onChange={(e) => updateDestino('ciudad', e.target.value)}
+            disabled={loading}
+          />
+        </div>
+
+        {/* ── VEHÍCULO ─────────────────────────────────────────── */}
+        <div className={styles.sectionDivider} />
 
         {/* Tipo de vehículo */}
         <div className={styles.fieldGroup}>
@@ -146,7 +278,7 @@ export default function RutaPanel({ onRutaCalculada }: RutaPanelProps) {
                 key={value}
                 type="button"
                 className={`${styles.radioCard} ${vehiculo === value ? styles.radioActive : ''}`}
-                onClick={() => setVehiculo(value)}
+                onClick={() => { setVehiculo(value); markDirty(); }}
                 disabled={loading}
               >
                 <span style={{ fontSize: '1.25rem' }}>{icon}</span>
@@ -156,7 +288,7 @@ export default function RutaPanel({ onRutaCalculada }: RutaPanelProps) {
           </div>
         </div>
 
-        {/* Subtipo de camión — condicional */}
+        {/* Subtipo de camión — condicional. C3c: sin opción "General" */}
         {vehiculo === 'camion' && (
           <div className={`${styles.fieldGroup} ${styles.subtypeSection}`}>
             <label className={styles.label}>Tipo de camión <span style={{ opacity: 0.6, fontStyle: 'italic', textTransform: 'none', letterSpacing: 0 }}>(opcional)</span></label>
@@ -164,7 +296,7 @@ export default function RutaPanel({ onRutaCalculada }: RutaPanelProps) {
               <select
                 className={styles.select}
                 value={subtipo}
-                onChange={(e) => setSubtipo(e.target.value as SubtipoCamion)}
+                onChange={(e) => { setSubtipo(e.target.value as SubtipoCamion); markDirty(); }}
                 disabled={loading}
               >
                 {SUBTIPOS.map(({ value, label }) => (
@@ -193,30 +325,13 @@ export default function RutaPanel({ onRutaCalculada }: RutaPanelProps) {
           </div>
         )}
 
-        {/* Resultado */}
-        {ruta && ruta.features.length > 0 && (() => {
-          const summary = ruta.features[0].properties.summary;
-          const km      = (summary.distance / 1000).toFixed(1);
-          const dur     = formatDuration(summary.duration);
-          return (
-            <div className={styles.summaryCard}>
-              <p className={styles.summaryTitle}>✅ Ruta calculada</p>
-              <div className={styles.summaryRow}>
-                <span className={styles.summaryLabel}>🛣 Distancia</span>
-                <span className={styles.summaryValue}>{km} km</span>
-              </div>
-              <div className={styles.summaryRow}>
-                <span className={styles.summaryLabel}>⏱ Duración est.</span>
-                <span className={styles.summaryValue}>{dur}</span>
-              </div>
-            </div>
-          );
-        })()}
+        {/* C4: Sección "Ruta Calculada" ELIMINADA — los resultados van al panel ResultadosPanel */}
 
       </div>
 
       {/* Bottom actions */}
       <div className={styles.bottomSection}>
+        {/* C6: Botón dinámico "Calcular Ruta" / "Revisualizar Ruta" */}
         <button
           className={styles.primaryButton}
           onClick={handleSubmit}
@@ -227,19 +342,18 @@ export default function RutaPanel({ onRutaCalculada }: RutaPanelProps) {
               <span className={styles.spinner} />
               Calculando...
             </>
+          ) : hasResult ? (
+            <>
+              <Eye size={14} />
+              Revisualizar Ruta
+            </>
           ) : (
             <>
               <Navigation size={14} />
-              Calcular ruta
+              Calcular Ruta
             </>
           )}
         </button>
-
-        {ruta && (
-          <button className={styles.secondaryButton} onClick={handleLimpiar}>
-            🗑 Limpiar ruta
-          </button>
-        )}
       </div>
     </aside>
   );
