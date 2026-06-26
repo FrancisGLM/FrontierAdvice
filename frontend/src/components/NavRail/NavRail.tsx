@@ -14,20 +14,29 @@ import {
   Mountain,
   Bug,
   Shield,
+  Route,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import styles from './NavRail.module.css';
 import IncidenteModal from '@/components/IncidenteModal/IncidenteModal';
 import { useAuth } from '@/lib/AuthContext';
 
-const navItems = [
+interface NavRailProps {
+  rutaOpen?: boolean;
+  onRutaToggle?: () => void;
+}
+
+const navItemsTop = [
   { href: '/mapa', icon: Map, label: 'Mapa' },
-  { href: '/historial', icon: History, label: 'Historial' },
-  { href: '/riesgo', icon: TriangleAlert, label: 'Riesgo' },
-  { href: '/configuracion', icon: Settings, label: 'Configuración' },
 ];
 
-export default function NavRail() {
+const navItemsBottom = [
+  { href: '/historial',     icon: History,       label: 'Historial' },
+  { href: '/riesgo',        icon: TriangleAlert, label: 'Riesgo' },
+  { href: '/configuracion', icon: Settings,      label: 'Configuración' },
+];
+
+export default function NavRail({ rutaOpen = false, onRutaToggle }: NavRailProps) {
   const pathname = usePathname();
   const { resolvedTheme, setTheme } = useTheme();
   const { isAdmin } = useAuth();
@@ -36,9 +45,9 @@ export default function NavRail() {
 
   useEffect(() => setMounted(true), []);
 
-  const dynamicNavItems = isAdmin
-    ? [...navItems, { href: '/admin', icon: Shield, label: 'Panel Admin' }]
-    : navItems;
+  const dynamicNavItemsBottom = isAdmin
+    ? [...navItemsBottom, { href: '/admin', icon: Shield, label: 'Panel Admin' }]
+    : navItemsBottom;
 
   return (
     <>
@@ -52,7 +61,36 @@ export default function NavRail() {
 
         {/* Main nav */}
         <div className={styles.navItems}>
-          {dynamicNavItems.map(({ href, icon: Icon, label }) => {
+          {/* Mapa */}
+          {navItemsTop.map(({ href, icon: Icon, label }) => {
+            const active = pathname === href || (href === '/mapa' && pathname.startsWith('/mapa'));
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`${styles.navButton} ${active && !rutaOpen ? styles.active : ''}`}
+              >
+                <Icon className="w-5 h-5" />
+                <span className={styles.tooltip}>{label}</span>
+              </Link>
+            );
+          })}
+
+          {/* Botón Ruta — siempre visible en /mapa, entre Mapa e Historial */}
+          {pathname.startsWith('/mapa') && (
+            <button
+              id="nav-ruta"
+              onClick={onRutaToggle}
+              className={`${styles.navButton} ${rutaOpen ? styles.active : ''}`}
+              title="Calcular ruta"
+            >
+              <Route className="w-5 h-5" />
+              <span className={styles.tooltip}>Ruta</span>
+            </button>
+          )}
+
+          {/* Historial, Riesgo, Configuración, Admin */}
+          {dynamicNavItemsBottom.map(({ href, icon: Icon, label }) => {
             const active = pathname.startsWith(href);
             return (
               <Link
@@ -65,6 +103,7 @@ export default function NavRail() {
               </Link>
             );
           })}
+
         </div>
 
         {/* Bottom actions */}

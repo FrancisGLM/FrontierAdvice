@@ -4,13 +4,15 @@ import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useTheme } from 'next-themes';
-import { PasoFronterizo, EstadoPaso } from '@/lib/types';
+import { PasoFronterizo, EstadoPaso, N8nDobleRutaResponse, OrsResponse } from '@/lib/types';
 import styles from './MapArea.module.css';
 
 interface MapViewProps {
   pasos: PasoFronterizo[];
   onSelectPaso: (paso: PasoFronterizo) => void;
   selectedPasoId?: string;
+  rutaResultado?: N8nDobleRutaResponse | null;   // C7: nuevo prop doble ruta
+  alternativeIsFocused?: boolean;                 // C7: para intercambio de colores
 }
 
 const STATUS_COLORS: Record<EstadoPaso, string> = {
@@ -23,6 +25,12 @@ const STATUS_LABELS: Record<EstadoPaso, string> = {
   abierto:    'ABIERTO',
   precaucion: 'PRECAUCIÓN',
   cerrado:    'CERRADO',
+};
+
+// C7: Colores de rutas
+const ROUTE_COLORS = {
+  primary:     { bright: '#2563eb', dim: '#7BA7C9' },
+  casing:      { dark: 'rgba(15,23,42,0.6)', light: 'rgba(255,255,255,0.6)' },
 };
 
 type MarkerEntry = { outer: L.CircleMarker };
@@ -65,12 +73,82 @@ function createPopupContent(paso: PasoFronterizo, isDark: boolean): string {
   </div>`;
 }
 
-export default function MapView({ pasos, onSelectPaso, selectedPasoId }: MapViewProps) {
-  const mapRef       = useRef<L.Map | null>(null);
-  const markersRef   = useRef<Map<string, MarkerEntry>>(new Map());
-  const pulseRef     = useRef<L.Marker | null>(null);
-  const tileRef      = useRef<L.TileLayer | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+// ── Helper: construir polilíneas para una ruta ORS ───────────────────────────
+function buildRoutePolylines(
+  ors: OrsResponse,
+  color: string,
+  casingColor: string,
+  isDark: boolean,
+  tooltipBg: string,
+  tooltipTxt: string,
+  tooltipBdr: string,
+  label: string
+): { casing: L.Polyline; line: L.Polyline; bounds: L.LatLngBounds } {
+  const feature = ors.features[0];
+  const latlngs: L.LatLngExpression[] = feature.geometry.coordinates.map(
+    ([lng, lat]) => [lat, lng]
+  );
+
+  const casing = L.polyline(latlngs, {
+    color:   casingColor,
+    weight:  10,
+    opacity: 1,
+    lineCap: 'round',
+    lineJoin: 'round',
+  });
+
+  const line = L.polyline(latlngs, {
+    color,
+    weight:  5,
+    opacity: 0.9,
+    lineCap: 'round',
+    lineJoin: 'round',
+  });
+
+  const { summary } = feature.properties;
+  const km  = (summary.distance / 1000).toFixed(1);
+  const min = Math.round(summary.duration / 60);
+  const hrs = Math.floor(min / 60);
+  const rem = min % 60;
+  const durStr = hrs > 0 ? `${hrs}h ${rem}min` : `${min} min`;
+
+  line.bindTooltip(
+    `<div style="
+      background:${tooltipBg};
+      backdrop-filter:blur(8px);
+      color:${tooltipTxt};
+      border:1px solid ${tooltipBdr};
+      padding:8px 14px;
+      border-radius:24px;
+      font-size:13px;
+      font-weight:600;
+      font-family:system-ui,-apple-system,sans-serif;
+      white-space:nowrap;
+      box-shadow:0 4px 16px rgba(0,0,0,0.12);
+      pointer-events:none;
+    ">${label} 🛣 ${km} km &nbsp;·&nbsp; ⏱ ${durStr}</div>`,
+    { sticky: true, className: 'leaflet-tooltip-custom', opacity: 1 }
+  );
+
+  return { casing, line, bounds: L.latLngBounds(latlngs) };
+}
+
+export default function MapView({
+  pasos,
+  onSelectPaso,
+  selectedPasoId,
+  rutaResultado,
+  alternativeIsFocused = false,
+}: MapViewProps) {
+  const mapRef            = useRef<L.Map | null>(null);
+  const markersRef        = useRef<Map<string, MarkerEntry>>(new Map());
+  const pulseRef          = useRef<L.Marker | null>(null);
+  const routeLayerPrimRef = useRef<L.LayerGroup | null>(null);  // C7: capa primaria
+  const routeLayerAltRef  = useRef<L.LayerGroup | null>(null);  // C7: capa alternativa
+  const routePrimLineRef  = useRef<L.Polyline | null>(null);    // C7: línea primaria (para setStyle)
+  const routeAltLineRef   = useRef<L.Polyline | null>(null);    // C7: línea alt (para setStyle)
+  const tileRef           = useRef<L.TileLayer | null>(null);
+  const containerRef      = useRef<HTMLDivElement>(null);
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === 'dark';
 
@@ -82,10 +160,9 @@ export default function MapView({ pasos, onSelectPaso, selectedPasoId }: MapView
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
 
-    // Chile spans from ~-17.6 (Visviri) to ~-52.3 (Bellavista), longitude ~-66 to -75
     const chileBounds: L.LatLngBoundsExpression = [
-      [-54.5, -76.0], // SW — sur de Magallanes + margen
-      [-17.0, -64.5], // NE — norte de Arica + margen
+      [-54.5, -76.0],
+      [-17.0, -64.5],
     ];
 
     const map = L.map(containerRef.current, {
@@ -95,14 +172,11 @@ export default function MapView({ pasos, onSelectPaso, selectedPasoId }: MapView
       maxZoom: 18,
       zoomControl: false,
       attributionControl: true,
-      maxBounds: [[-60.0, -82.0], [-14.0, -60.0]], // restringe el paneo a la zona Chile-Argentina
+      maxBounds: [[-60.0, -82.0], [-14.0, -60.0]],
       maxBoundsViscosity: 0.8,
     });
 
-    // Ajustar para que Chile quede perfectamente encuadrado al inicio
     map.fitBounds(chileBounds, { padding: [20, 20] });
-
-    // Zoom buttons in the bottom right corner
     L.control.zoom({ position: 'bottomright' }).addTo(map);
 
     const tile = L.tileLayer(isDark ? darkTile : lightTile, { attribution, maxZoom: 18 });
@@ -129,6 +203,109 @@ export default function MapView({ pasos, onSelectPaso, selectedPasoId }: MapView
     tileRef.current.setUrl(isDark ? darkTile : lightTile);
   }, [isDark, darkTile, lightTile]);
 
+  // ── C7: Dibujar/actualizar DOS rutas ───────────────────────────────────────
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    // Limpiar capas anteriores
+    if (routeLayerPrimRef.current) {
+      routeLayerPrimRef.current.remove();
+      routeLayerPrimRef.current = null;
+    }
+    if (routeLayerAltRef.current) {
+      routeLayerAltRef.current.remove();
+      routeLayerAltRef.current = null;
+    }
+    routePrimLineRef.current = null;
+    routeAltLineRef.current  = null;
+
+    if (!rutaResultado) return;
+
+    const casingColor = isDark
+      ? ROUTE_COLORS.casing.dark
+      : ROUTE_COLORS.casing.light;
+
+    const tooltipBg  = isDark ? 'rgba(15,23,42,0.95)' : 'rgba(255,255,255,0.95)';
+    const tooltipTxt = isDark ? '#f8fafc' : '#0f172a';
+    const tooltipBdr = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.08)';
+
+    // Determinar colores iniciales según el estado de enfoque
+    const primColor = alternativeIsFocused ? ROUTE_COLORS.primary.dim : ROUTE_COLORS.primary.bright;
+    const altColor  = alternativeIsFocused ? ROUTE_COLORS.primary.bright : ROUTE_COLORS.primary.dim;
+
+    // ── Ruta Primaria ─────────────────────────────────────────────────────────
+    const prim = buildRoutePolylines(
+      rutaResultado.rutaPrimaria,
+      primColor,
+      casingColor,
+      isDark,
+      tooltipBg, tooltipTxt, tooltipBdr,
+      '⭐ Ruta primaria:'
+    );
+    const layerPrim = L.layerGroup([prim.casing, prim.line]).addTo(map);
+    routeLayerPrimRef.current = layerPrim;
+    routePrimLineRef.current  = prim.line;
+
+    // ── Ruta Alternativa ──────────────────────────────────────────────────────
+    const alt = buildRoutePolylines(
+      rutaResultado.rutaAlternativa,
+      altColor,
+      casingColor,
+      isDark,
+      tooltipBg, tooltipTxt, tooltipBdr,
+      '📍 Ruta alternativa:'
+    );
+    const layerAlt = L.layerGroup([alt.casing, alt.line]).addTo(map);
+    routeLayerAltRef.current = layerAlt;
+    routeAltLineRef.current  = alt.line;
+
+    // fitBounds combinando AMBAS rutas
+    const combinedBounds = prim.bounds.extend(alt.bounds);
+    map.fitBounds(combinedBounds, { padding: [48, 48], maxZoom: 14, animate: true });
+
+    return () => {
+      layerPrim.remove();
+      layerAlt.remove();
+      routeLayerPrimRef.current = null;
+      routeLayerAltRef.current  = null;
+      routePrimLineRef.current  = null;
+      routeAltLineRef.current   = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rutaResultado, isDark]);
+
+  // ── C7: Intercambio de colores + z-order al enfocar ─────────────────────
+  // Se ejecuta solo cuando cambia alternativeIsFocused (sin re-dibujar)
+  useEffect(() => {
+    const map     = mapRef.current;
+    const primLine = routePrimLineRef.current;
+    const altLine  = routeAltLineRef.current;
+    const primLayer = routeLayerPrimRef.current;
+    const altLayer  = routeLayerAltRef.current;
+    if (!map || !primLine || !altLine || !primLayer || !altLayer) return;
+
+    if (alternativeIsFocused) {
+      // Alternativa brillante y encima, primaria opaca y debajo
+      primLine.setStyle({ color: ROUTE_COLORS.primary.dim });
+      altLine.setStyle({ color: ROUTE_COLORS.primary.bright });
+      // Reordenar capas: primaria primero (debajo), alternativa encima
+      primLayer.remove();
+      altLayer.remove();
+      primLayer.addTo(map);
+      altLayer.addTo(map);
+    } else {
+      // Primaria brillante y encima, alternativa opaca y debajo
+      primLine.setStyle({ color: ROUTE_COLORS.primary.bright });
+      altLine.setStyle({ color: ROUTE_COLORS.primary.dim });
+      // Reordenar capas: alternativa primero (debajo), primaria encima
+      primLayer.remove();
+      altLayer.remove();
+      altLayer.addTo(map);
+      primLayer.addTo(map);
+    }
+  }, [alternativeIsFocused]);
+
   // Pulse ring for selected marker
   useEffect(() => {
     const map = mapRef.current;
@@ -144,7 +321,7 @@ export default function MapView({ pasos, onSelectPaso, selectedPasoId }: MapView
     if (!paso) return;
 
     const color = STATUS_COLORS[paso.estado];
-    const size  = 20; // Matches selected marker radius (10) * 2
+    const size  = 20;
     const half  = size / 2;
 
     const pulseIcon = L.divIcon({
@@ -174,7 +351,6 @@ export default function MapView({ pasos, onSelectPaso, selectedPasoId }: MapView
     const map = mapRef.current;
     if (!map) return;
 
-    // Remove stale markers
     markersRef.current.forEach((entry, id) => {
       if (!pasos.find((p) => p.id === id)) {
         entry.outer.remove();
@@ -204,7 +380,6 @@ export default function MapView({ pasos, onSelectPaso, selectedPasoId }: MapView
         return;
       }
 
-      // Tooltip: only on hover
       const tooltipBg  = isDark ? 'rgba(15,23,42,0.95)' : 'rgba(255,255,255,0.95)';
       const tooltipTxt = isDark ? '#f8fafc' : '#0f172a';
       const tooltipBdr = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.08)';
@@ -271,10 +446,8 @@ export default function MapView({ pasos, onSelectPaso, selectedPasoId }: MapView
       const isMobile  = window.innerWidth <= 768;
       
       if (isMobile) {
-        // Shift map center down to move point up, avoiding bottom sheet
         targetPoint.y += window.innerHeight * 0.2;
       } else {
-        // Shift map center right to move point left, avoiding side panel (width: 352px)
         targetPoint.x += 176;
       }
       

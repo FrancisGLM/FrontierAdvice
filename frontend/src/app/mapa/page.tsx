@@ -1,4 +1,3 @@
-import NavRail from '@/components/NavRail/NavRail';
 import MapDashboard from '@/components/MapArea/MapDashboard';
 
 export const metadata = {
@@ -9,7 +8,6 @@ export const metadata = {
 export default function MapaPage() {
   return (
     <div className="flex h-[100dvh] w-full overflow-hidden flex-col md:flex-row relative bg-[var(--bg-base)]">
-      <NavRail />
       <MapDashboard />
     </div>
   );
