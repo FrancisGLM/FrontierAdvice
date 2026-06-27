@@ -68,27 +68,82 @@
   gap: 1.25rem;
 }
 
-/* Mensaje natural — card con fondo sutil */
-.mensajeCard {
+/* Puntos de Origen y Destino */
+.routeHeaderCard {
   background-color: var(--bg-solid);
   border: 1px solid var(--border-strong);
   border-radius: 1rem;
-  padding: 1rem;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.mensajeTitulo {
+.routePoint {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.routeIconWrapper {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.625rem;
+  background-color: rgba(37, 99, 235, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--nav-active);
+  flex-shrink: 0;
+}
+
+.routeText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.routeLabel {
   font-size: 0.65rem;
   font-weight: 700;
   color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  margin-bottom: 0.625rem;
 }
 
-.mensajeTexto {
-  font-size: 0.8125rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
+.routeValue {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.routeDivider {
+  display: flex;
+  align-items: center;
+  padding-left: 1.125rem; /* align center of icon */
+  margin: -0.25rem 0;
+}
+
+.routeLine {
+  width: 2px;
+  height: 12px;
+  background-color: var(--border-strong);
+}
+
+.routeCenterIcon {
+  color: var(--border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 -0.4rem;
+  background: var(--bg-solid);
+  padding: 0.125rem;
+  z-index: 1;
 }
 
 /* Section title */
@@ -197,16 +252,22 @@
   margin: 0;
 }
 
-/* Toggle button — "Enfocar ruta alternativa / primaria" */
+/* Botones dinámicos (toggle + export) */
+.actionButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
 .toggleButton {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.625rem;
+  padding: 0.75rem;
   border-radius: 0.75rem;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -225,6 +286,28 @@
   background-color: rgba(37, 99, 235, 0.08);
   border-color: var(--nav-active);
   color: var(--nav-active);
+}
+
+.exportButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(16, 185, 129, 0.3); /* green-500 equivalent */
+  background-color: transparent;
+  color: #10b981;
+}
+
+.exportButton:hover {
+  background-color: rgba(16, 185, 129, 0.07);
+  border-color: #10b981;
 }
 
 /* Bottom section with Limpiar button */

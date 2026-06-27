@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, Ruler, Clock, MapPin, ArrowLeftRight } from 'lucide-react';
+import { X, Ruler, Clock, MapPin, ArrowLeftRight, ExternalLink, Route } from 'lucide-react';
 import type { N8nDobleRutaResponse, OrsResponse, PasoFronterizo } from '@/lib/types';
 import styles from './ResultadosPanel.module.css';
 
@@ -38,29 +38,14 @@ function extraerNombrePaso(
   resultado: N8nDobleRutaResponse,
   isAlternative: boolean
 ): string {
-  if (!isAlternative && resultado.mensaje.paso_primario) {
-    return resultado.mensaje.paso_primario;
+  if (!isAlternative && resultado.mensaje.paso_fronterizo_primario) {
+    return resultado.mensaje.paso_fronterizo_primario;
   }
-  if (isAlternative && resultado.mensaje.paso_alternativo) {
-    return resultado.mensaje.paso_alternativo;
+  if (isAlternative && resultado.mensaje.paso_fronterizo_alternativo) {
+    return resultado.mensaje.paso_fronterizo_alternativo;
   }
 
-  // Fallback: buscar en el mensaje_natural
-  const texto = resultado.mensaje.mensaje_natural ?? '';
-
-  if (!isAlternative) {
-    // Primera mención de "Complejo Fronterizo" o "Paso" en el texto
-    const match = texto.match(/(?:Complejo Fronterizo|Paso Fronterizo|paso)\s+([\w\s]+?)(?:,|\.|\s+que|\s+en|\s+con)/i);
-    return match ? match[0].replace(/,|\.|\s+que.*|en.*|con.*/i, '').trim() : '—';
-  } else {
-    // Segunda mención: buscar "segunda mejor opción" o "alternativa"
-    const match = texto.match(/(?:segunda mejor opci[oó]n|alternativa).*?(?:Complejo Fronterizo|Paso Fronterizo)\s+([\w\s]+?)(?:,|\.|\s)/i);
-    if (match) return match[0].replace(/.*(?:Complejo Fronterizo|Paso Fronterizo)\s+/i, '').replace(/,|\.|\s*$/, '').trim();
-    // Fallback: segunda ocurrencia de Complejo Fronterizo
-    const allMatches = [...texto.matchAll(/(?:Complejo Fronterizo|Paso Fronterizo)\s+[\w\s]+?(?=,|\.)/gi)];
-    if (allMatches.length >= 2) return allMatches[1][0].trim();
-    return '—';
-  }
+  return '—';
 }
 
 // ── Componente ───────────────────────────────────────────────────────────────
@@ -106,6 +91,14 @@ export default function ResultadosPanel({
     if (pasoEncontrado) onSelectPaso(pasoEncontrado);
   };
 
+  const handleExport = () => {
+    const origin = display.origenStr || '';
+    const destination = display.destinoStr || '';
+    const waypoints = nombrePaso || '';
+    const url = `https://www.google.com/maps/dir/${encodeURIComponent(origin)}/${encodeURIComponent(waypoints)}/${encodeURIComponent(destination)}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
   return (
     <aside className={styles.panel}>
         {/* Header */}
@@ -119,10 +112,33 @@ export default function ResultadosPanel({
         {/* Scrollable content */}
         <div className={styles.content}>
 
-          {/* B) Mensaje natural — no cambia al enfocar */}
-          <div className={styles.mensajeCard}>
-            <p className={styles.mensajeTitulo}>🤖 Análisis de ruta</p>
-            <p className={styles.mensajeTexto}>{display.mensaje.mensaje_natural}</p>
+          {/* B) Puntos de Origen y Destino (reemplaza Análisis de ruta) */}
+          <div className={styles.routeHeaderCard}>
+            <div className={styles.routePoint}>
+              <div className={styles.routeIconWrapper}>
+                <MapPin size={16} />
+              </div>
+              <div className={styles.routeText}>
+                <span className={styles.routeLabel}>Origen</span>
+                <span className={styles.routeValue}>{display.origenStr || 'Desconocido'}</span>
+              </div>
+            </div>
+            
+            <div className={styles.routeDivider}>
+              <div className={styles.routeLine} />
+              <div className={styles.routeCenterIcon}><Route size={14} /></div>
+              <div className={styles.routeLine} />
+            </div>
+
+            <div className={styles.routePoint}>
+              <div className={styles.routeIconWrapper}>
+                <MapPin size={16} />
+              </div>
+              <div className={styles.routeText}>
+                <span className={styles.routeLabel}>Destino</span>
+                <span className={styles.routeValue}>{display.destinoStr || 'Desconocido'}</span>
+              </div>
+            </div>
           </div>
 
           {/* C) Widgets dinámicos — cambian con alternativeIsFocused */}
@@ -177,14 +193,20 @@ export default function ResultadosPanel({
 
           <div className={styles.divider} />
 
-          {/* D) Botón toggle enfoque — C8 */}
-          <button
-            className={`${styles.toggleButton} ${alternativeIsFocused ? styles.focused : ''}`}
-            onClick={onToggleFocus}
-          >
-            <ArrowLeftRight size={14} />
-            {alternativeIsFocused ? 'Enfocar ruta primaria' : 'Enfocar ruta alternativa'}
-          </button>
+          {/* D) Botones dinámicos */}
+          <div className={styles.actionButtons}>
+            <button
+              className={`${styles.toggleButton} ${alternativeIsFocused ? styles.focused : ''}`}
+              onClick={onToggleFocus}
+            >
+              <ArrowLeftRight size={16} />
+              {alternativeIsFocused ? 'Enfocar ruta primaria' : 'Enfocar ruta alternativa'}
+            </button>
+            <button className={styles.exportButton} onClick={handleExport}>
+              <ExternalLink size={16} />
+              Exportar Ruta en Maps
+            </button>
+          </div>
 
         </div>
 

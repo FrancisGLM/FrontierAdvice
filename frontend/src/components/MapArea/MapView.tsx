@@ -46,7 +46,9 @@ function buildRoutePolylines(
   tooltipBg: string,
   tooltipTxt: string,
   tooltipBdr: string,
-  label: string
+  label: string,
+  lineOpacity: number,
+  casingOpacity: number
 ): { casing: L.Polyline; line: L.Polyline; bounds: L.LatLngBounds } {
   const feature = ors.features[0];
   const latlngs: L.LatLngExpression[] = feature.geometry.coordinates.map(
@@ -56,7 +58,7 @@ function buildRoutePolylines(
   const casing = L.polyline(latlngs, {
     color:   casingColor,
     weight:  10,
-    opacity: 1,
+    opacity: casingOpacity,
     lineCap: 'round',
     lineJoin: 'round',
   });
@@ -64,7 +66,7 @@ function buildRoutePolylines(
   const line = L.polyline(latlngs, {
     color,
     weight:  5,
-    opacity: 0.9,
+    opacity: lineOpacity,
     lineCap: 'round',
     lineJoin: 'round',
   });
@@ -111,6 +113,8 @@ export default function MapView({
   const routeLayerAltRef  = useRef<L.LayerGroup | null>(null);  // C7: capa alternativa
   const routePrimLineRef  = useRef<L.Polyline | null>(null);    // C7: línea primaria (para setStyle)
   const routeAltLineRef   = useRef<L.Polyline | null>(null);    // C7: línea alt (para setStyle)
+  const routePrimCasRef   = useRef<L.Polyline | null>(null);
+  const routeAltCasRef    = useRef<L.Polyline | null>(null);
   const tileRef           = useRef<L.TileLayer | null>(null);
   const containerRef      = useRef<HTMLDivElement>(null);
   const { resolvedTheme } = useTheme();
@@ -183,6 +187,8 @@ export default function MapView({
     }
     routePrimLineRef.current = null;
     routeAltLineRef.current  = null;
+    routePrimCasRef.current  = null;
+    routeAltCasRef.current   = null;
 
     if (!rutaResultado) return;
 
@@ -194,9 +200,15 @@ export default function MapView({
     const tooltipTxt = isDark ? '#f8fafc' : '#0f172a';
     const tooltipBdr = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.08)';
 
-    // Determinar colores iniciales según el estado de enfoque
+    // Determinar colores y opacidades iniciales según el estado de enfoque
     const primColor = alternativeIsFocused ? ROUTE_COLORS.primary.dim : ROUTE_COLORS.primary.bright;
     const altColor  = alternativeIsFocused ? ROUTE_COLORS.primary.bright : ROUTE_COLORS.primary.dim;
+    
+    const primOp = alternativeIsFocused ? 0.35 : 0.9;
+    const altOp  = alternativeIsFocused ? 0.9 : 0.35;
+    
+    const primCasOp = alternativeIsFocused ? 0.2 : 1;
+    const altCasOp  = alternativeIsFocused ? 1 : 0.2;
 
     // ── Ruta Primaria ─────────────────────────────────────────────────────────
     const prim = buildRoutePolylines(
@@ -205,11 +217,13 @@ export default function MapView({
       casingColor,
       isDark,
       tooltipBg, tooltipTxt, tooltipBdr,
-      '⭐ Ruta primaria:'
+      '⭐ Ruta primaria:',
+      primOp, primCasOp
     );
     const layerPrim = L.layerGroup([prim.casing, prim.line]).addTo(map);
     routeLayerPrimRef.current = layerPrim;
     routePrimLineRef.current  = prim.line;
+    routePrimCasRef.current   = prim.casing;
 
     // ── Ruta Alternativa ──────────────────────────────────────────────────────
     const alt = buildRoutePolylines(
@@ -218,11 +232,13 @@ export default function MapView({
       casingColor,
       isDark,
       tooltipBg, tooltipTxt, tooltipBdr,
-      '📍 Ruta alternativa:'
+      '📍 Ruta alternativa:',
+      altOp, altCasOp
     );
     const layerAlt = L.layerGroup([alt.casing, alt.line]).addTo(map);
     routeLayerAltRef.current = layerAlt;
     routeAltLineRef.current  = alt.line;
+    routeAltCasRef.current   = alt.casing;
 
     // fitBounds combinando AMBAS rutas
     const combinedBounds = prim.bounds.extend(alt.bounds);
@@ -235,6 +251,8 @@ export default function MapView({
       routeLayerAltRef.current  = null;
       routePrimLineRef.current  = null;
       routeAltLineRef.current   = null;
+      routePrimCasRef.current   = null;
+      routeAltCasRef.current    = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rutaResultado, isDark]);
@@ -245,14 +263,18 @@ export default function MapView({
     const map     = mapRef.current;
     const primLine = routePrimLineRef.current;
     const altLine  = routeAltLineRef.current;
+    const primCas  = routePrimCasRef.current;
+    const altCas   = routeAltCasRef.current;
     const primLayer = routeLayerPrimRef.current;
     const altLayer  = routeLayerAltRef.current;
     if (!map || !primLine || !altLine || !primLayer || !altLayer) return;
 
     if (alternativeIsFocused) {
       // Alternativa brillante y encima, primaria opaca y debajo
-      primLine.setStyle({ color: ROUTE_COLORS.primary.dim });
-      altLine.setStyle({ color: ROUTE_COLORS.primary.bright });
+      primLine.setStyle({ color: ROUTE_COLORS.primary.dim, opacity: 0.35 });
+      altLine.setStyle({ color: ROUTE_COLORS.primary.bright, opacity: 0.9 });
+      primCas?.setStyle({ opacity: 0.2 });
+      altCas?.setStyle({ opacity: 1 });
       // Reordenar capas: primaria primero (debajo), alternativa encima
       primLayer.remove();
       altLayer.remove();
@@ -260,8 +282,10 @@ export default function MapView({
       altLayer.addTo(map);
     } else {
       // Primaria brillante y encima, alternativa opaca y debajo
-      primLine.setStyle({ color: ROUTE_COLORS.primary.bright });
-      altLine.setStyle({ color: ROUTE_COLORS.primary.dim });
+      primLine.setStyle({ color: ROUTE_COLORS.primary.bright, opacity: 0.9 });
+      altLine.setStyle({ color: ROUTE_COLORS.primary.dim, opacity: 0.35 });
+      primCas?.setStyle({ opacity: 1 });
+      altCas?.setStyle({ opacity: 0.2 });
       // Reordenar capas: alternativa primero (debajo), primaria encima
       primLayer.remove();
       altLayer.remove();
@@ -348,6 +372,7 @@ export default function MapView({
       const tooltipBdr = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.08)';
 
       const outer = L.circleMarker(latlng, {
+        pane:        'markerPane',
         radius,
         color:       borderColor,
         weight:      2.5,

@@ -1,5 +1,6 @@
 'use client';
 
+import { N8N_WEBHOOK_URL } from '@/lib/config';
 import { useState, useCallback } from 'react';
 import type { OrsResponse, N8nDobleRutaResponse, N8nMensaje } from '@/lib/types';
 
@@ -60,18 +61,18 @@ export function useCalcularRuta(): UseCalcularRutaReturn {
     setError(null);
     setResultado(null);
 
-    const webhookUrl = '/api/calcular-ruta';
+    const webhookUrl = `${N8N_WEBHOOK_URL}/calcular-ruta`;
 
     // Construir payload: concatenar campos estructurados de dirección
     const origenStr = concatenarDireccion(params.origen);
     const destinoStr = concatenarDireccion(params.destino);
 
     const payload = {
-      origen:          origenStr,
-      destino:         destinoStr,
-      paisDestino:     params.paisDestino,
-      tipoVehiculo:    params.tipoVehiculo,
-      subtipoCamion:   params.tipoVehiculo === 'camion' ? params.subtipoCamion : undefined,
+      origen: origenStr,
+      destino: destinoStr,
+      paisDestino: params.paisDestino,
+      tipoVehiculo: params.tipoVehiculo,
+      subtipoCamion: params.tipoVehiculo === 'camion' ? params.subtipoCamion : undefined,
     };
 
     try {
@@ -107,6 +108,14 @@ export function useCalcularRuta(): UseCalcularRutaReturn {
           `[Debug] La respuesta de n8n no es JSON válido.\n` +
           `Primeros 200 chars del body: ${rawText.slice(0, 200)}`
         );
+      }
+
+      // ── Comprobar si hubo un error directo del Agente ─────────────────────────
+      if (typeof root === 'object' && root !== null && !Array.isArray(root)) {
+        const obj = root as Record<string, unknown>;
+        if (typeof obj.error === 'string' && obj.error.trim().length > 0) {
+          throw new Error(obj.error);
+        }
       }
 
       // ── Extraer el array de rutas ─────────────────────────────────────────────
@@ -146,11 +155,22 @@ export function useCalcularRuta(): UseCalcularRutaReturn {
         parsedArray = root[0] as unknown[];
       }
 
+      // Caso F: Array de 1 elemento con routeResult [ { routeResult: "[...]" } ]
+      if (!parsedArray && Array.isArray(root) && root.length === 1 && typeof root[0] === 'object' && root[0] !== null) {
+        const obj = root[0] as Record<string, unknown>;
+        if (typeof obj['routeResult'] === 'string') {
+          try {
+            const inner = JSON.parse(obj['routeResult'] as string);
+            if (Array.isArray(inner)) parsedArray = inner;
+          } catch { /* noop */ }
+        }
+      }
+
       // ── Si no pudimos extraer el array, dar error detallado ──────────────────
       if (!parsedArray || parsedArray.length < 3) {
-        const rootType  = Array.isArray(root) ? `Array[${(root as unknown[]).length}]` : typeof root;
-        const rootKeys  = typeof root === 'object' && root !== null ? `Claves: [${Object.keys(root as object).join(', ')}]` : '';
-        const rootSnip  = rawText.slice(0, 300);
+        const rootType = Array.isArray(root) ? `Array[${(root as unknown[]).length}]` : typeof root;
+        const rootKeys = typeof root === 'object' && root !== null ? `Claves: [${Object.keys(root as object).join(', ')}]` : '';
+        const rootSnip = rawText.slice(0, 300);
         throw new Error(
           `[Debug] No se pudo extraer el array de rutas de la respuesta de n8n.\n` +
           `• Tipo recibido: ${rootType}. ${rootKeys}\n` +
@@ -161,8 +181,8 @@ export function useCalcularRuta(): UseCalcularRutaReturn {
       }
 
       // ── Validar y aplicar los 3 elementos ────────────────────────────────────
-      const mensajeRaw  = parsedArray[0] as N8nMensaje;
-      const primaria    = parsedArray[1] as OrsResponse;
+      const mensajeRaw = parsedArray[0] as N8nMensaje;
+      const primaria = parsedArray[1] as OrsResponse;
       const alternativa = parsedArray[2] as OrsResponse;
 
       if (primaria?.type !== 'FeatureCollection' || !Array.isArray(primaria.features) || primaria.features.length === 0) {
@@ -184,6 +204,8 @@ export function useCalcularRuta(): UseCalcularRutaReturn {
         mensaje: mensajeRaw,
         rutaPrimaria: primaria,
         rutaAlternativa: alternativa,
+        origenStr,
+        destinoStr,
       });
     } catch (err: unknown) {
       const message =
