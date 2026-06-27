@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { MapPin, Flag, Car, ChevronDown, ChevronLeft, ChevronRight, Navigation } from 'lucide-react';
+import { MapPin, Flag, Car, ChevronDown, ChevronLeft, ChevronRight, Navigation, Check, Truck, Lightbulb, AlertTriangle } from 'lucide-react';
 import {
   useCalcularRuta,
   type Pais,
@@ -32,10 +32,10 @@ const EMPTY_DIRECCION: DireccionEstructurada = { calle: '', numero: '', comuna: 
 type Step = 'origen' | 'destino' | 'vehiculo';
 const STEPS: Step[] = ['origen', 'destino', 'vehiculo'];
 
-const STEP_ICONS: Record<Step, string> = {
-  origen:   '📍',
-  destino:  '🏁',
-  vehiculo: '🚗',
+const STEP_ICONS: Record<Step, JSX.Element> = {
+  origen:   <MapPin size={16} />,
+  destino:  <Flag size={16} />,
+  vehiculo: <Car size={16} />,
 };
 
 const STEP_LABELS: Record<Step, string> = {
@@ -130,7 +130,7 @@ export default function RutaPanel({ onRutaCalculada }: RutaPanelProps) {
                   i < stepIndex ? styles.stepDone : '',
                 ].join(' ')}
               >
-                {i < stepIndex ? '✓' : STEP_ICONS[s]}
+                {i < stepIndex ? <Check size={16} /> : STEP_ICONS[s]}
               </div>
               {i < STEPS.length - 1 && (
                 <div className={`${styles.stepConnector} ${i < stepIndex ? styles.stepConnectorDone : ''}`} />
@@ -172,7 +172,7 @@ export default function RutaPanel({ onRutaCalculada }: RutaPanelProps) {
             <div className={styles.sectionDivider} />
 
             <div className={styles.sectionHeader}>
-              <MapPin size={12} className={styles.sectionIcon} />
+              <MapPin size={16} className={styles.sectionIcon} />
               <span>Dirección de Origen</span>
             </div>
 
@@ -248,7 +248,7 @@ export default function RutaPanel({ onRutaCalculada }: RutaPanelProps) {
             <div className={styles.sectionDivider} />
 
             <div className={styles.sectionHeader}>
-              <Flag size={12} className={styles.sectionIcon} />
+              <Flag size={16} className={styles.sectionIcon} />
               <span>Dirección de Destino</span>
             </div>
 
@@ -303,16 +303,16 @@ export default function RutaPanel({ onRutaCalculada }: RutaPanelProps) {
         {step === 'vehiculo' && (
           <>
             <div className={styles.sectionHeader}>
-              <Car size={12} className={styles.sectionIcon} />
+              <Car size={16} className={styles.sectionIcon} />
               <span>Tipo de Vehículo</span>
             </div>
 
             <div className={styles.radioGroup}>
               {(
                 [
-                  { value: 'coche',  label: 'Coche',  icon: '🚗' },
-                  { value: 'camion', label: 'Camión', icon: '🚛' },
-                ] as { value: TipoVehiculo; label: string; icon: string }[]
+                  { value: 'coche',  label: 'Coche',  icon: <Car size={24} /> },
+                  { value: 'camion', label: 'Camión', icon: <Truck size={24} /> },
+                ] as { value: TipoVehiculo; label: string; icon: JSX.Element }[]
               ).map(({ value, label, icon }) => (
                 <button
                   key={value}
@@ -321,7 +321,7 @@ export default function RutaPanel({ onRutaCalculada }: RutaPanelProps) {
                   onClick={() => setVehiculo(value)}
                   disabled={loading}
                 >
-                  <span style={{ fontSize: '1.5rem' }}>{icon}</span>
+                  <span style={{ color: vehiculo === value ? 'var(--nav-active)' : 'var(--text-secondary)', display: 'flex', justifyContent: 'center' }}>{icon}</span>
                   {label}
                 </button>
               ))}
@@ -349,7 +349,7 @@ export default function RutaPanel({ onRutaCalculada }: RutaPanelProps) {
                   <ChevronDown className={styles.selectIcon} size={14} />
                 </div>
                 <div className={styles.tipBox}>
-                  <span className={styles.tipIcon}>💡</span>
+                  <span className={styles.tipIcon}><Lightbulb size={16} /></span>
                   <p className={styles.tipText}>
                     Especificar el tipo mejora el cálculo considerando restricciones de altura, peso y acceso a ciertas vías.
                   </p>
@@ -372,7 +372,7 @@ export default function RutaPanel({ onRutaCalculada }: RutaPanelProps) {
             {/* Error */}
             {error && (
               <div className={styles.errorBox}>
-                <span className={styles.errorIcon}>⚠️</span>
+                <span className={styles.errorIcon}><AlertTriangle size={16} /></span>
                 <p className={styles.errorText}>{error}</p>
               </div>
             )}

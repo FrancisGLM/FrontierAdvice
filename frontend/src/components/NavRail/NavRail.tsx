@@ -31,7 +31,6 @@ const navItemsTop = [
 ];
 
 const navItemsBottom = [
-  { href: '/historial',     icon: History,       label: 'Historial' },
   { href: '/riesgo',        icon: TriangleAlert, label: 'Riesgo' },
   { href: '/configuracion', icon: Settings,      label: 'Configuración' },
 ];

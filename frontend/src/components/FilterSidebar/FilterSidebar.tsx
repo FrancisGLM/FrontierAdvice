@@ -45,8 +45,8 @@ export default function FilterSidebar({
 
         {/* Header */}
         <div className={styles.header}>
-          <h1 className={styles.title}>Estado de Pasos</h1>
-          <p className={styles.subtitle}>Chile — Argentina</p>
+          <h1 className={styles.title}>FrontierAdvice</h1>
+          <p className={styles.subtitle}>Monitoreo de pasos fronterizos</p>
         </div>
 
         {/* Search */}
@@ -99,7 +99,7 @@ export default function FilterSidebar({
           <p className={styles.listHeader}>
             {pasos.length} paso{pasos.length !== 1 ? 's' : ''} encontrados
           </p>
-          {pasos.map((paso) => {
+          {[...pasos].sort((a, b) => b.lat - a.lat).map((paso) => {
             const badge = estadoBadge[paso.estado];
             const isSelected = paso.id === selectedPasoId;
             return (

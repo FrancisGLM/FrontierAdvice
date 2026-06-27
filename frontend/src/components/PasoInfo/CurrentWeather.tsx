@@ -29,22 +29,22 @@ export default function CurrentWeather({ clima }: CurrentWeatherProps) {
       {/* Stats grid */}
       <div className={styles.cwGrid}>
         <div className={styles.cwStat}>
-          <Wind size={14} className={styles.cwStatIcon} />
+          <Wind size={25} className={styles.cwStatIcon} />
           <span className={styles.cwStatValue}>{clima.viento} km/h</span>
           <span className={styles.cwStatLabel}>Viento</span>
         </div>
         <div className={styles.cwStat}>
-          <Droplets size={14} className={styles.cwStatIcon} />
+          <Droplets size={25} className={styles.cwStatIcon} />
           <span className={styles.cwStatValue}>{clima.humedad}%</span>
           <span className={styles.cwStatLabel}>Humedad</span>
         </div>
         <div className={styles.cwStat}>
-          <Eye size={14} className={styles.cwStatIcon} />
+          <Eye size={25} className={styles.cwStatIcon} />
           <span className={styles.cwStatValue}>{clima.visibilidad} km</span>
           <span className={styles.cwStatLabel}>Visibilidad</span>
         </div>
         <div className={styles.cwStat}>
-          <Gauge size={14} className={styles.cwStatIcon} />
+          <Gauge size={25} className={styles.cwStatIcon} />
           <span className={styles.cwStatValue}>{clima.presion} hPa</span>
           <span className={styles.cwStatLabel}>Presión</span>
         </div>

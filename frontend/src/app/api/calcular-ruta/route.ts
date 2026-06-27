@@ -10,7 +10,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(req: NextRequest) {
   const webhookUrl =
     process.env.N8N_WEBHOOK_URL ??
-    'https://n8n.frontieradvice.tech/webhook-test/calcular-ruta';
+    'https://n8n.frontieradvice.tech/webhook/calcular-ruta';
 
   let body: unknown;
   try {

@@ -110,7 +110,7 @@ export default function PredictionBadge({ senales }: PredictionBadgeProps) {
     <div className={styles.predContainer}>
       <div className={styles.predHeaderContainer}>
         <div className={styles.predHeaderLeft}>
-          <BrainCircuit size={15} className={styles.predBrainIcon} />
+          <BrainCircuit size={18} className={styles.predBrainIcon} />
           <span className={styles.predTitle}>Predicción Estado</span>
         </div>
         <div className={styles.predMetaFooterInline}>

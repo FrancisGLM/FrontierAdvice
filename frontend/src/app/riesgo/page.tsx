@@ -248,8 +248,9 @@ export default function RiesgoPage() {
         {/* Column header */}
         <div style={{
           display: 'grid', gridTemplateColumns: '1.5fr 100px 130px 1.5fr 120px',
-          padding: '0.5rem 1.5rem', gap: '1rem',
+          padding: '1rem 1.5rem 0.75rem', gap: '1rem',
           borderTop: '1px solid var(--border-subtle)',
+          alignItems: 'center'
         }}>
           {[
             { label: 'Paso Fronterizo', align: 'start' },
@@ -259,8 +260,8 @@ export default function RiesgoPage() {
             { label: 'Tendencia', align: 'start' }
           ].map((h, i) => (
             <span key={i} style={{ 
-              fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', 
-              letterSpacing: '0.05em', color: 'var(--text-secondary)',
+              fontSize: '0.85rem', fontWeight: 800, textTransform: 'uppercase', 
+              letterSpacing: '0.05em', color: 'var(--text-primary)',
               justifySelf: h.align 
             }}>
               {h.label}
