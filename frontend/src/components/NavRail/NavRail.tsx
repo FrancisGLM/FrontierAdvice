@@ -24,6 +24,7 @@ import { useAuth } from '@/lib/AuthContext';
 interface NavRailProps {
   rutaOpen?: boolean;
   onRutaToggle?: () => void;
+  onMapaClick?: () => void;
 }
 
 const navItemsTop = [
@@ -36,7 +37,7 @@ const navItemsBottom = [
   { href: '/configuracion', icon: Settings,      label: 'Configuración' },
 ];
 
-export default function NavRail({ rutaOpen = false, onRutaToggle }: NavRailProps) {
+export default function NavRail({ rutaOpen = false, onRutaToggle, onMapaClick }: NavRailProps) {
   const pathname = usePathname();
   const { resolvedTheme, setTheme } = useTheme();
   const { isAdmin } = useAuth();
@@ -69,6 +70,11 @@ export default function NavRail({ rutaOpen = false, onRutaToggle }: NavRailProps
                 key={href}
                 href={href}
                 className={`${styles.navButton} ${active && !rutaOpen ? styles.active : ''}`}
+                onClick={(e) => {
+                  if (pathname.startsWith('/mapa') && href === '/mapa' && onMapaClick) {
+                    onMapaClick();
+                  }
+                }}
               >
                 <Icon className="w-5 h-5" />
                 <span className={styles.tooltip}>{label}</span>
@@ -76,18 +82,22 @@ export default function NavRail({ rutaOpen = false, onRutaToggle }: NavRailProps
             );
           })}
 
-          {/* Botón Ruta — siempre visible en /mapa, entre Mapa e Historial */}
-          {pathname.startsWith('/mapa') && (
-            <button
-              id="nav-ruta"
-              onClick={onRutaToggle}
-              className={`${styles.navButton} ${rutaOpen ? styles.active : ''}`}
-              title="Calcular ruta"
-            >
-              <Route className="w-5 h-5" />
-              <span className={styles.tooltip}>Ruta</span>
-            </button>
-          )}
+          {/* Botón Ruta — siempre visible */}
+          <Link
+            id="nav-ruta"
+            href="/mapa?tab=ruta"
+            onClick={(e) => {
+              if (pathname.startsWith('/mapa')) {
+                e.preventDefault();
+                if (onRutaToggle) onRutaToggle();
+              }
+            }}
+            className={`${styles.navButton} ${rutaOpen && pathname.startsWith('/mapa') ? styles.active : ''}`}
+            title="Calcular ruta"
+          >
+            <Route className="w-5 h-5" />
+            <span className={styles.tooltip}>Ruta</span>
+          </Link>
 
           {/* Historial, Riesgo, Configuración, Admin */}
           {dynamicNavItemsBottom.map(({ href, icon: Icon, label }) => {

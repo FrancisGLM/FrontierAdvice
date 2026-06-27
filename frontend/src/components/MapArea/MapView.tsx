@@ -35,43 +35,7 @@ const ROUTE_COLORS = {
 
 type MarkerEntry = { outer: L.CircleMarker };
 
-function createPopupContent(paso: PasoFronterizo, isDark: boolean): string {
-  const color     = STATUS_COLORS[paso.estado];
-  const bg        = isDark ? '#0f172a' : '#ffffff';
-  const textMain  = isDark ? '#f8fafc' : '#0f172a';
-  const textMuted = isDark ? '#94a3b8' : '#64748b';
-  const border    = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.08)';
 
-  return `<div style="
-    background:${bg};color:${textMain};
-    border:1px solid ${border};border-radius:16px;
-    padding:16px;min-width:240px;
-    font-family:system-ui,-apple-system,sans-serif;
-    box-shadow:0 12px 40px rgba(0,0,0,0.2);
-  ">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
-      <div>
-        <div style="font-size:16px;font-weight:700;letter-spacing:-0.01em;">${paso.nombre}</div>
-        ${paso.subtitulo ? `<div style="font-size:12px;color:${textMuted};margin-top:2px;">${paso.subtitulo}</div>` : ''}
-      </div>
-    </div>
-    
-    <div style="
-      display:flex;align-items:center;gap:8px;
-      background:${color}15;border:1px solid ${color}30;
-      border-radius:8px;padding:8px 12px;margin-bottom:16px;
-    ">
-      <div style="width:8px;height:8px;border-radius:50%;background:${color};flex-shrink:0;box-shadow:0 0 6px ${color};"></div>
-      <span style="font-size:12px;font-weight:700;color:${color};letter-spacing:0.02em;">ESTADO: ${STATUS_LABELS[paso.estado]}</span>
-    </div>
-    
-    <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:${textMuted};">
-      <div style="display:flex;align-items:center;gap:6px;"><span style="opacity:0.7">📍</span> ${paso.region}</div>
-      ${paso.altitud ? `<div style="display:flex;align-items:center;gap:6px;"><span style="opacity:0.7">⛰</span> ${paso.altitud.toLocaleString()} m.s.n.m.</div>` : ''}
-      <div style="display:flex;align-items:center;gap:6px;"><span style="opacity:0.7">🕐</span> Actualizado: ${paso.ultimaActualizacion}</div>
-    </div>
-  </div>`;
-}
 
 // ── Helper: construir polilíneas para una ruta ORS ───────────────────────────
 function buildRoutePolylines(
@@ -376,7 +340,6 @@ export default function MapView({
           radius,
         });
         existing.outer.setLatLng(latlng);
-        existing.outer.setPopupContent(createPopupContent(paso, isDark));
         return;
       }
 
@@ -418,12 +381,7 @@ export default function MapView({
         }
       );
 
-      outer.bindPopup(createPopupContent(paso, isDark), {
-        maxWidth:    300,
-        className:   'leaflet-popup-custom',
-        closeButton: true,
-        offset:      [0, -radius]
-      });
+
 
       outer.on('click', () => {
         onSelectPaso(paso);

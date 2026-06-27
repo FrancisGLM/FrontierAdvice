@@ -52,6 +52,16 @@ export default function MapDashboard() {
   });
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('tab') === 'ruta') {
+        setLeftPanel('ruta');
+        window.history.replaceState(null, '', '/mapa');
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     async function fetchPasos() {
       try {
         // Fetch en paralelo: pasos + señales predictivas + estado diario
@@ -251,7 +261,11 @@ export default function MapDashboard() {
   return (
     <div className="flex flex-1 w-full h-full relative overflow-hidden">
       {/* NavRail */}
-      <NavRail rutaOpen={rutaOpen} onRutaToggle={handleRutaToggle} />
+      <NavRail 
+        rutaOpen={rutaOpen} 
+        onRutaToggle={handleRutaToggle} 
+        onMapaClick={() => setLeftPanel('filtros')} 
+      />
 
       {/* Panel izquierdo: filtros */}
       {leftPanel === 'filtros' && (

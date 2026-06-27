@@ -6,10 +6,10 @@ import { AuthProvider } from '@/lib/AuthContext';
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
-    <AuthProvider>
-      <NextThemesProvider attribute="class" defaultTheme="system" enableSystem>
+    <NextThemesProvider attribute="class" defaultTheme="system" enableSystem>
+      <AuthProvider>
         {children}
-      </NextThemesProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </NextThemesProvider>
   );
 }

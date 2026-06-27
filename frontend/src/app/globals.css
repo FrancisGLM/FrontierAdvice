@@ -5,32 +5,32 @@
 @custom-variant light (&:is(.light, .light *));
 
 :root {
-  /* Premium Light Palette */
-  --bg-base: #f8fafc;
-  --bg-glass: rgba(255, 255, 255, 0.7);
+  /* Premium Light Palette — improved contrast */
+  --bg-base: #f1f5f9;
+  --bg-glass: rgba(255, 255, 255, 0.82);
   --bg-solid: #ffffff;
   
   --text-primary: #0f172a;
-  --text-secondary: #64748b;
+  --text-secondary: #475569;
   --text-inverse: #ffffff;
   
-  --border-subtle: rgba(15, 23, 42, 0.08);
-  --border-strong: rgba(15, 23, 42, 0.15);
+  --border-subtle: rgba(15, 23, 42, 0.12);
+  --border-strong: rgba(15, 23, 42, 0.20);
   
-  --nav-bg: rgba(255, 255, 255, 0.85);
+  --nav-bg: rgba(255, 255, 255, 0.90);
   --nav-active: #2563eb;
   
   /* Status Colors (Vibrant) */
-  --status-open: #10b981;
-  --status-open-bg: rgba(16, 185, 129, 0.1);
-  --status-caution: #f59e0b;
-  --status-caution-bg: rgba(245, 158, 11, 0.1);
-  --status-closed: #ef4444;
-  --status-closed-bg: rgba(239, 68, 68, 0.1);
+  --status-open: #059669;
+  --status-open-bg: rgba(5, 150, 105, 0.12);
+  --status-caution: #d97706;
+  --status-caution-bg: rgba(217, 119, 6, 0.12);
+  --status-closed: #dc2626;
+  --status-closed-bg: rgba(220, 38, 38, 0.12);
 
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.12);
 }
 
 .dark {
@@ -146,35 +146,7 @@ path.leaflet-interactive:focus,
   100% { box-shadow: 0 0 0 0 transparent; }
 }
 
-/* Custom Leaflet popup overrides */
-.leaflet-popup-custom {
-  animation: popupFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes popupFadeIn {
-  0% { opacity: 0; transform: translateY(10px) scale(0.95); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-.leaflet-popup-custom .leaflet-popup-content-wrapper {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  border-radius: 12px !important;
-  padding: 0 !important;
-}
-
-.leaflet-popup-custom .leaflet-popup-content {
-  margin: 0 !important;
-}
-
-.leaflet-popup-custom .leaflet-popup-tip-container {
-  display: none !important;
-}
-
-.leaflet-interactive:focus,
-path.leaflet-interactive:focus,
-.leaflet-container:focus,
+/* Extra focus resets (popup-close, marker) */
 .leaflet-popup-close-button:focus,
 .leaflet-marker-icon:focus {
   outline: none !important;
