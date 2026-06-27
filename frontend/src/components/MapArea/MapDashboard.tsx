@@ -65,10 +65,11 @@ export default function MapDashboard() {
     async function fetchPasos() {
       try {
         // Fetch en paralelo: pasos + señales predictivas + estado diario
+        const baseUrl = STRAPI_URL.replace(/\/$/, '');
         const [resPasos, resSenales, resDiarios] = await Promise.all([
-          fetch(`${STRAPI_URL}/api/paso-fronterizos?pagination[limit]=100&populate=*`, { cache: 'no-store' }),
-          fetch(`${STRAPI_URL}/api/senal-predictivas?pagination[limit]=500&populate[id_paso][fields][0]=id&sort=fecha_calculo:desc`, { cache: 'no-store' }),
-          fetch(`${STRAPI_URL}/api/estado-diarios?pagination[limit]=500&populate[id_paso][fields][0]=id&sort=createdAt:desc`, { cache: 'no-store' }),
+          fetch(`${baseUrl}/api/paso-fronterizos?pagination[limit]=100&populate=*`, { cache: 'no-store' }),
+          fetch(`${baseUrl}/api/senal-predictivas?pagination[limit]=500&populate[id_paso][fields][0]=id&sort=fecha_calculo:desc`, { cache: 'no-store' }),
+          fetch(`${baseUrl}/api/estado-diarios?pagination[limit]=500&populate[id_paso][fields][0]=id&sort=createdAt:desc`, { cache: 'no-store' }),
         ]);
 
         if (!resPasos.ok) {
