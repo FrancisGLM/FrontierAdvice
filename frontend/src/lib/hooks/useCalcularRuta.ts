@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import type { OrsResponse, N8nDobleRutaResponse, N8nMensaje } from '@/lib/types';
+import { N8N_WEBHOOK_URL } from '@/lib/config';
 
 export type Pais = 'Argentina' | 'Bolivia' | 'Chile' | 'Peru';
 export type TipoVehiculo = 'coche' | 'camion';
@@ -60,7 +61,7 @@ export function useCalcularRuta(): UseCalcularRutaReturn {
     setError(null);
     setResultado(null);
 
-    const webhookUrl = '/api/calcular-ruta';
+    const webhookUrl = `${N8N_WEBHOOK_URL}/calcular-ruta`;
 
     // Construir payload: concatenar campos estructurados de dirección
     const origenStr = concatenarDireccion(params.origen);

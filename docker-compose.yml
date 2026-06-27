@@ -62,7 +62,7 @@ services:
     build: ./frontend
     restart: unless-stopped
     environment:
-      NEXT_PUBLIC_STRAPI_URL: http://strapi:1337
+      NEXT_PUBLIC_STRAPI_URL: https://strapi.frontieradvice.tech
     volumes:
       - ./frontend/src:/app/src
       - ./frontend/public:/app/public

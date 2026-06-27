@@ -78,8 +78,10 @@ const MOTIVO_MATCHERS = [
   { regex: /tormenta/i, icon: CloudLightning, color: '#eab308' }, // yellow-500
 
   // History & Structural
+  { regex: /cierre en las últimas 24|cierre en las ultimas 24/i, icon: History, color: '#ea580c' }, // orange-600
+  { regex: /último estado.*cerrado|ultimo estado.*cerrado/i, icon: ShieldAlert, color: '#dc2626' }, // red-600
   { regex: /estructural|estacional|temporada/i, icon: Construction, color: '#dc2626' }, // red-600
-  { regex: /cierre|cerrado/i, icon: History, color: '#ef4444' }, // red-500
+  { regex: /cierre|cerrado/i, icon: AlertTriangle, color: '#ef4444' }, // red-500
   { regex: /precaución/i, icon: ShieldAlert, color: '#f59e0b' }, // amber-500
 
   // Risk / Alert
