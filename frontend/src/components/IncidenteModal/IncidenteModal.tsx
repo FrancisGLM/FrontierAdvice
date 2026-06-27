@@ -36,9 +36,9 @@ export default function IncidenteModal({ open, onClose }: Props) {
   useEffect(() => {
     async function fetchPasos() {
       try {
-        const res = await fetch(`${STRAPI_URL}/api/paso-fronterizos?pagination[limit]=100`);
+        const res = await fetch(`/api/proxy/pasos`);
         const data = await res.json();
-        setPasosOptions(data.data.map((p: any) => ({ id: p.documentId, nombre: p.nombre_oficial })));
+        setPasosOptions((data.data || []).map((p: any) => ({ id: p.documentId, nombre: p.nombre_oficial })));
       } catch (err) {
         console.error('Error fetching pasos:', err);
       }

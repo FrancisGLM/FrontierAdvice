@@ -2,10 +2,10 @@
 // All API URLs are read from environment variables with sensible fallbacks.
 
 export const STRAPI_URL =
-  process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
+  process.env.NEXT_PUBLIC_STRAPI_URL || 'https://strapi.frontieradvice.tech';
 
 export const N8N_WEBHOOK_URL =
-  process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL || 'http://localhost:5678/webhook';
+  process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL || 'https://n8n.frontieradvice.tech/webhook';
 
 export const ADMIN_KEY =
   process.env.NEXT_PUBLIC_ADMIN_KEY || '';
