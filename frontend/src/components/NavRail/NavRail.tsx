@@ -18,7 +18,6 @@ import {
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import styles from './NavRail.module.css';
-import IncidenteModal from '@/components/IncidenteModal/IncidenteModal';
 import { useAuth } from '@/lib/AuthContext';
 
 interface NavRailProps {
@@ -42,7 +41,6 @@ export default function NavRail({ rutaOpen = false, onRutaToggle, onMapaClick }:
   const { resolvedTheme, setTheme } = useTheme();
   const { isAdmin } = useAuth();
   const [mounted, setMounted] = useState(false);
-  const [incidenteOpen, setIncidenteOpen] = useState(false);
 
   useEffect(() => setMounted(true), []);
 
@@ -129,29 +127,8 @@ export default function NavRail({ rutaOpen = false, onRutaToggle, onMapaClick }:
               </span>
             </button>
           )}
-
-          <button
-            id="nav-reportar-incidente"
-            onClick={() => setIncidenteOpen(true)}
-            className={`${styles.navButton} ${incidenteOpen ? styles.active : ''}`}
-          >
-            <Bug className="w-5 h-5" />
-            <span className={styles.tooltip}>Reportar incidente</span>
-          </button>
-
-          <button className={styles.navButton}>
-            <HelpCircle className="w-5 h-5" />
-            <span className={styles.tooltip}>Ayuda</span>
-          </button>
-
         </div>
       </nav>
-
-      {/* Modals */}
-      <IncidenteModal
-        open={incidenteOpen}
-        onClose={() => setIncidenteOpen(false)}
-      />
     </>
   );
 }
