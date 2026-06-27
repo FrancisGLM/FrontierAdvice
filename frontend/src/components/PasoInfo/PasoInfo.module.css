@@ -453,9 +453,10 @@
 }
 
 .predGridTime {
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: 1.125rem;
+  font-weight: 800;
   color: var(--text-primary);
+  line-height: 1;
 }
 
 .predGridStatus {
