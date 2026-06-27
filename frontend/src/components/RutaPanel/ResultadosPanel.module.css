@@ -146,14 +146,21 @@
   z-index: 1;
 }
 
-/* Section title */
+/* Título de Sección */
 .sectionTitle {
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   color: var(--text-secondary);
-  margin-bottom: 0.625rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.sectionTitleIcon {
+  color: var(--nav-active);
 }
 
 /* Widgets grid: 3 cards */
@@ -289,7 +296,7 @@
 }
 
 .exportButton {
-  width: 100%;
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -308,6 +315,40 @@
 .exportButton:hover {
   background-color: rgba(16, 185, 129, 0.07);
   border-color: #10b981;
+}
+
+.rowButtons {
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.shareButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(139, 92, 246, 0.3); /* purple-500 equivalent */
+  background-color: transparent;
+  color: #8b5cf6;
+}
+
+.shareButton:hover {
+  background-color: rgba(139, 92, 246, 0.07);
+  border-color: #8b5cf6;
+}
+
+.shareButton.copied {
+  background-color: #8b5cf6;
+  border-color: #8b5cf6;
+  color: #ffffff;
 }
 
 /* Bottom section with Limpiar button */

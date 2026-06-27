@@ -115,6 +115,7 @@ export default function MapView({
   const routeAltLineRef   = useRef<L.Polyline | null>(null);    // C7: línea alt (para setStyle)
   const routePrimCasRef   = useRef<L.Polyline | null>(null);
   const routeAltCasRef    = useRef<L.Polyline | null>(null);
+  const endpointsLayerRef = useRef<L.LayerGroup | null>(null); // C7: Origin & Destination markers
   const tileRef           = useRef<L.TileLayer | null>(null);
   const containerRef      = useRef<HTMLDivElement>(null);
   const { resolvedTheme } = useTheme();
@@ -140,7 +141,7 @@ export default function MapView({
       maxZoom: 18,
       zoomControl: false,
       attributionControl: true,
-      maxBounds: [[-60.0, -82.0], [-14.0, -60.0]],
+      maxBounds: [[-60.0, -90.0], [15.0, -34.0]], // Expanded to cover all of South America
       maxBoundsViscosity: 0.8,
     });
 
@@ -184,6 +185,10 @@ export default function MapView({
     if (routeLayerAltRef.current) {
       routeLayerAltRef.current.remove();
       routeLayerAltRef.current = null;
+    }
+    if (endpointsLayerRef.current) {
+      endpointsLayerRef.current.remove();
+      endpointsLayerRef.current = null;
     }
     routePrimLineRef.current = null;
     routeAltLineRef.current  = null;
@@ -240,15 +245,78 @@ export default function MapView({
     routeAltLineRef.current  = alt.line;
     routeAltCasRef.current   = alt.casing;
 
-    // fitBounds combinando AMBAS rutas
+    // ── Marcadores de Origen y Destino ────────────────────────────────────────
+    const coords = rutaResultado.rutaPrimaria.features[0].geometry.coordinates;
+    const originLngLat = coords[0];
+    const destLngLat = coords[coords.length - 1];
+    
+    const originLatLng: L.LatLngExpression = [originLngLat[1], originLngLat[0]];
+    const destLatLng: L.LatLngExpression = [destLngLat[1], destLngLat[0]];
+
+    const epBorderColor = isDark ? '#ffffff' : '#000000';
+    const epFillColor   = isDark ? '#222222' : '#f8f9fa';
+
+    const originCircle = L.circleMarker(originLatLng, {
+      pane: 'markerPane',
+      radius: 6,
+      color: epBorderColor,
+      weight: 3,
+      fillColor: epFillColor,
+      fillOpacity: 1,
+      interactive: false,
+    });
+
+    const destCircle = L.circleMarker(destLatLng, {
+      pane: 'markerPane',
+      radius: 6,
+      color: epBorderColor,
+      weight: 3,
+      fillColor: epFillColor,
+      fillOpacity: 1,
+      interactive: false,
+    });
+
+    const destPinHtml = `<svg width="28" height="38" viewBox="0 0 24 34" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.25));">
+      <path d="M12 0C5.372 0 0 5.372 0 12c0 7.5 12 22 12 22s12-14.5 12-22c0-6.628-5.372-12-12-12z" fill="#EA4335" stroke="#B31412" stroke-width="1"/>
+      <circle cx="12" cy="12" r="4.5" fill="#75150C"/>
+    </svg>`;
+    
+    const destPinIcon = L.divIcon({
+      className: '',
+      html: destPinHtml,
+      iconSize: [28, 38],
+      iconAnchor: [14, 36], // slightly above the circle marker
+    });
+
+    const destPin = L.marker(destLatLng, {
+      icon: destPinIcon,
+      pane: 'markerPane',
+      interactive: false,
+    });
+
+    const layerEndpoints = L.layerGroup([originCircle, destCircle, destPin]).addTo(map);
+    endpointsLayerRef.current = layerEndpoints;
+
+    // fitBounds combinando AMBAS rutas y dando más espacio a la derecha por el panel UI
     const combinedBounds = prim.bounds.extend(alt.bounds);
-    map.fitBounds(combinedBounds, { padding: [48, 48], maxZoom: 14, animate: true });
+    const isMobile = window.innerWidth <= 768;
+    const paddingRight = isMobile ? 48 : 380; // 380px para dar espacio al panel lateral de 352px
+    const paddingBottom = isMobile ? 380 : 48; // Si es móvil, el panel está abajo
+
+    map.fitBounds(combinedBounds, { 
+      paddingTopLeft: [48, 48], 
+      paddingBottomRight: [paddingRight, paddingBottom], 
+      maxZoom: 14, 
+      animate: true 
+    });
 
     return () => {
       layerPrim.remove();
       layerAlt.remove();
+      layerEndpoints.remove();
       routeLayerPrimRef.current = null;
       routeLayerAltRef.current  = null;
+      endpointsLayerRef.current = null;
       routePrimLineRef.current  = null;
       routeAltLineRef.current   = null;
       routePrimCasRef.current   = null;

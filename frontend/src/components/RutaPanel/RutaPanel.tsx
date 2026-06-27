@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { MapPin, Flag, Car, ChevronDown, ChevronLeft, ChevronRight, Navigation, Check, Truck, Lightbulb, AlertTriangle } from 'lucide-react';
+import { MapPin, Flag, Car, ChevronDown, ChevronLeft, ChevronRight, Navigation, Check, Truck, Lightbulb, AlertTriangle, Trash2 } from 'lucide-react';
 import {
   useCalcularRuta,
   type Pais,
@@ -54,21 +54,50 @@ export default function RutaPanel({ onRutaCalculada }: RutaPanelProps) {
   const [step, setStep] = useState<Step>('origen');
 
   // ── Form state ──────────────────────────────────────────────────────────────
-  const [paisOrigen, setPaisOrigen] = useState<Pais>('Chile');
+  const [paisOrigen, setPaisOrigen] = useState<Pais | ''>('');
   const [origen, setOrigen]         = useState<DireccionEstructurada>(EMPTY_DIRECCION);
-  const [paisDestino, setPaisDestino] = useState<Pais>('Argentina');
+  const [paisDestino, setPaisDestino] = useState<Pais | ''>('');
   const [destino, setDestino]       = useState<DireccionEstructurada>(EMPTY_DIRECCION);
-  const [vehiculo, setVehiculo]     = useState<TipoVehiculo>('coche');
-  const [subtipo, setSubtipo]       = useState<SubtipoCamion>('autobus');
+  const [vehiculo, setVehiculo]     = useState<TipoVehiculo | ''>('');
+  const [subtipo, setSubtipo]       = useState<SubtipoCamion | ''>('');
 
   const stepIndex = STEPS.indexOf(step);
 
   // Per-step validation
-  const origenValido  = origen.calle.trim().length > 0 || origen.ciudad.trim().length > 0;
-  const destinoValido = destino.calle.trim().length > 0 || destino.ciudad.trim().length > 0;
+  const origenValido  = paisOrigen !== '' && origen.calle.trim().length > 0 && origen.numero.trim().length > 0 && origen.comuna.trim().length > 0 && origen.ciudad.trim().length > 0;
+  const destinoValido = paisDestino !== '' && destino.calle.trim().length > 0 && destino.numero.trim().length > 0 && destino.comuna.trim().length > 0 && destino.ciudad.trim().length > 0;
+  const vehiculoValido = vehiculo !== '' && (vehiculo === 'camion' ? subtipo !== '' : true);
+  
   const canContinue   = step === 'origen' ? origenValido
                       : step === 'destino' ? destinoValido
-                      : true;
+                      : vehiculoValido;
+
+  // Clear step logic
+  const isStepDirty = () => {
+    if (step === 'origen') {
+      return paisOrigen !== '' || origen.calle !== '' || origen.numero !== '' || origen.comuna !== '' || origen.ciudad !== '';
+    }
+    if (step === 'destino') {
+      return paisDestino !== '' || destino.calle !== '' || destino.numero !== '' || destino.comuna !== '' || destino.ciudad !== '';
+    }
+    if (step === 'vehiculo') {
+      return vehiculo !== '' || subtipo !== '';
+    }
+    return false;
+  };
+
+  const handleClearStep = () => {
+    if (step === 'origen') {
+      setPaisOrigen('');
+      setOrigen(EMPTY_DIRECCION);
+    } else if (step === 'destino') {
+      setPaisDestino('');
+      setDestino(EMPTY_DIRECCION);
+    } else if (step === 'vehiculo') {
+      setVehiculo('');
+      setSubtipo('');
+    }
+  };
 
   // Sync resultado al padre
   useEffect(() => {
@@ -94,11 +123,13 @@ export default function RutaPanel({ onRutaCalculada }: RutaPanelProps) {
   };
 
   const handleFinalizar = async () => {
+    if (paisOrigen === '' || paisDestino === '' || vehiculo === '') return;
+    
     await calcular({
       origen, paisOrigen,
       destino, paisDestino,
       tipoVehiculo: vehiculo,
-      subtipoCamion: vehiculo === 'camion' ? subtipo : undefined,
+      subtipoCamion: vehiculo === 'camion' ? (subtipo as SubtipoCamion) : undefined,
     });
   };
 
@@ -159,6 +190,7 @@ export default function RutaPanel({ onRutaCalculada }: RutaPanelProps) {
                   onChange={e => setPaisOrigen(e.target.value as Pais)}
                   disabled={loading}
                 >
+                  <option value="" disabled>Seleccione el país de Origen</option>
                   {PAISES.map(({ value, label, code }) => (
                     <option key={value} value={value} disabled={value === paisDestino}>
                       {code} — {label}
@@ -235,6 +267,7 @@ export default function RutaPanel({ onRutaCalculada }: RutaPanelProps) {
                   onChange={e => setPaisDestino(e.target.value as Pais)}
                   disabled={loading}
                 >
+                  <option value="" disabled>Seleccione el país de Destino</option>
                   {PAISES.map(({ value, label, code }) => (
                     <option key={value} value={value} disabled={value === paisOrigen}>
                       {code} — {label}
@@ -342,6 +375,7 @@ export default function RutaPanel({ onRutaCalculada }: RutaPanelProps) {
                     onChange={e => setSubtipo(e.target.value as SubtipoCamion)}
                     disabled={loading}
                   >
+                    <option value="" disabled>Seleccione el tipo de camión</option>
                     {SUBTIPOS.map(({ value, label }) => (
                       <option key={value} value={value}>{label}</option>
                     ))}
@@ -390,8 +424,18 @@ export default function RutaPanel({ onRutaCalculada }: RutaPanelProps) {
               Volver
             </button>
           ) : (
-            <div />
+            <div style={{ width: '84px' }} />
           )}
+
+          {/* Botón Borrar Paso */}
+          <button 
+             className={`${styles.clearStepButton} ${isStepDirty() ? styles.clearStepActive : ''}`} 
+             onClick={handleClearStep} 
+             disabled={!isStepDirty() || loading}
+             title="Limpiar campos de este paso"
+          >
+            <Trash2 size={16} />
+          </button>
 
           {/* Continuar / Finalizar */}
           {step !== 'vehiculo' ? (

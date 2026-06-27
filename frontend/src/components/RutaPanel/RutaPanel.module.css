@@ -410,6 +410,36 @@
   cursor: not-allowed;
 }
 
+.clearStepButton {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-subtle);
+  background-color: transparent;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.clearStepActive {
+  opacity: 1;
+  background-color: #ef4444; /* red-500 */
+  border-color: #ef4444;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.clearStepActive:hover {
+  background-color: #dc2626; /* red-600 */
+  border-color: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
 /* Loading spinner */
 .spinner {
   width: 0.875rem;

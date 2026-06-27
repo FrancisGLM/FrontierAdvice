@@ -69,6 +69,7 @@ export function useCalcularRuta(): UseCalcularRutaReturn {
 
     const payload = {
       origen: origenStr,
+      paisOrigen: params.paisOrigen,
       destino: destinoStr,
       paisDestino: params.paisDestino,
       tipoVehiculo: params.tipoVehiculo,
