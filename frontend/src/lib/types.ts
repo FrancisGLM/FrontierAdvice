@@ -148,13 +148,15 @@ export interface OrsResponse {
 // response[2] = OrsResponse (ruta alternativa)
 
 export interface N8nMensaje {
-  mensaje_natural: string;
-  paso_primario?: string;
-  paso_alternativo?: string;
+  paso_fronterizo_primario?: string;
+  paso_fronterizo_alternativo?: string;
+  error?: string;
 }
 
 export interface N8nDobleRutaResponse {
   mensaje: N8nMensaje;
   rutaPrimaria: OrsResponse;
   rutaAlternativa: OrsResponse;
+  origenStr?: string;
+  destinoStr?: string;
 }

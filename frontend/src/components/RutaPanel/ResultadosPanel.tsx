@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, Ruler, Clock, MapPin, ArrowLeftRight } from 'lucide-react';
+import { X, Ruler, Clock, MapPin, Flag, ArrowLeftRight, ExternalLink, Route, Share2, Check, Star, Mountain } from 'lucide-react';
 import type { N8nDobleRutaResponse, OrsResponse, PasoFronterizo } from '@/lib/types';
 import styles from './ResultadosPanel.module.css';
 
@@ -34,12 +34,11 @@ function getDuracion(ors: OrsResponse): string {
 }
 
 function extraerNombrePaso(r: N8nDobleRutaResponse, isAlternative: boolean): string {
+  if (!isAlternative && r.mensaje?.paso_fronterizo_primario) return r.mensaje.paso_fronterizo_primario;
+  if (isAlternative && r.mensaje?.paso_fronterizo_alternativo) return r.mensaje.paso_fronterizo_alternativo;
+
   const ors = isAlternative ? r.rutaAlternativa : r.rutaPrimaria;
   if (!ors.features || ors.features.length === 0) return '—';
-
-  // Buscar el paso en los metadatos de N8N si existe
-  if (isAlternative && r.pasoAlternativo) return r.pasoAlternativo;
-  if (!isAlternative && r.pasoPrimario) return r.pasoPrimario;
 
   const steps = ors.features[0]?.properties?.segments?.[0]?.steps;
   if (!steps) return '—';
@@ -94,6 +93,7 @@ export default function ResultadosPanel({
 
   // Para mantener el contenido visible durante la animación de salida
   const [activeResultado, setActiveResultado] = useState<N8nDobleRutaResponse | null>(resultado);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (resultado) {
@@ -124,6 +124,23 @@ export default function ResultadosPanel({
     if (pasoEncontrado) onSelectPaso(pasoEncontrado);
   };
 
+  const getMapsUrl = () => {
+    const origin = display.origenStr || '';
+    const destination = display.destinoStr || '';
+    const waypoints = nombrePaso || '';
+    return `https://www.google.com/maps/dir/${encodeURIComponent(origin)}/${encodeURIComponent(waypoints)}/${encodeURIComponent(destination)}`;
+  };
+
+  const handleExport = () => {
+    window.open(getMapsUrl(), '_blank', 'noopener,noreferrer');
+  };
+
+  const handleShare = () => {
+    navigator.clipboard.writeText(getMapsUrl());
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <aside className={`${styles.panel} ${isOpen !== undefined ? (animateOpen ? styles.desktopOpen : styles.desktopClosed) : ''} ${animateOpen ? styles.open : ''}`}>
       {/* ── Header ────────────────────────────────────────────────────────────── */}
@@ -137,17 +154,39 @@ export default function ResultadosPanel({
         {/* Scrollable content */}
         <div className={styles.content}>
 
-          {/* B) Mensaje natural — no cambia al enfocar */}
-          <div className={styles.mensajeCard}>
-            <p className={styles.mensajeTitulo}>🤖 Análisis de ruta</p>
-            <p className={styles.mensajeTexto}>{display.mensaje.mensaje_natural}</p>
+          {/* B) Puntos de Origen y Destino (reemplaza Análisis de ruta) */}
+          <div className={styles.routeHeaderCard}>
+            <div className={styles.routePoint}>
+              <div className={styles.routeIconWrapper}>
+                <MapPin size={16} />
+              </div>
+              <div className={styles.routeText}>
+                <span className={styles.routeLabel}>Origen</span>
+                <span className={styles.routeValue}>{display.origenStr || 'Desconocido'}</span>
+              </div>
+            </div>
+            
+            <div className={styles.routeDivider}>
+              <div className={styles.routeLine} />
+            </div>
+
+            <div className={styles.routePoint}>
+              <div className={styles.routeIconWrapper}>
+                <Flag size={16} />
+              </div>
+              <div className={styles.routeText}>
+                <span className={styles.routeLabel}>Destino</span>
+                <span className={styles.routeValue}>{display.destinoStr || 'Desconocido'}</span>
+              </div>
+            </div>
           </div>
 
-          {/* C) Widgets dinámicos — cambian con alternativeIsFocused */}
+          {/* C) Título de ruta enfocada y Widgets */}
           <div>
-            <p className={styles.sectionTitle}>
-              {alternativeIsFocused ? '📍 Ruta alternativa' : '⭐ Ruta primaria'}
-            </p>
+            <h3 className={styles.sectionTitle}>
+              {alternativeIsFocused ? 'Ruta alternativa' : 'Ruta primaria'}
+            </h3>
+            
             <div className={styles.widgetsGrid}>
 
               {/* Widget 1 — Distancia */}
@@ -175,7 +214,7 @@ export default function ResultadosPanel({
               {/* Widget 3 — Paso fronterizo */}
               <div className={styles.widget}>
                 <div className={styles.widgetIcon}>
-                  <MapPin size={18} />
+                  <Mountain size={18} />
                 </div>
                 <div className={styles.pasoWidgetBody}>
                   <div className={styles.pasoInfo}>
@@ -195,16 +234,28 @@ export default function ResultadosPanel({
 
           <div className={styles.divider} />
 
-          {/* D) Botón toggle enfoque — C8 */}
-          <button
-            className={`${styles.toggleButton} ${alternativeIsFocused ? styles.focused : ''}`}
-            onClick={onToggleFocus}
-          >
-            <ArrowLeftRight size={14} />
-            {alternativeIsFocused ? 'Enfocar ruta primaria' : 'Enfocar ruta alternativa'}
-          </button>
+            <div className={styles.actionButtons}>
+              <button
+                className={`${styles.toggleButton} ${alternativeIsFocused ? styles.focused : ''}`}
+                onClick={onToggleFocus}
+              >
+                <ArrowLeftRight size={16} />
+                {alternativeIsFocused ? 'Enfocar ruta primaria' : 'Enfocar ruta alternativa'}
+              </button>
+              
+              <div className={styles.rowButtons}>
+                <button className={styles.exportButton} onClick={handleExport}>
+                  <ExternalLink size={16} />
+                  Abrir en Maps
+                </button>
+                <button className={`${styles.shareButton} ${copied ? styles.copied : ''}`} onClick={handleShare}>
+                  {copied ? <Check size={16} /> : <Share2 size={16} />}
+                  {copied ? '¡Copiado!' : 'Compartir'}
+                </button>
+              </div>
+            </div>
 
-        </div>
+          </div>
 
         {/* E) Limpiar Ruta — al fondo */}
         <div className={styles.bottomSection}>

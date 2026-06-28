@@ -1,15 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { MapPin, Flag, Car, ChevronDown, ChevronLeft, ChevronRight, Navigation, Check, Truck, Lightbulb, AlertTriangle } from 'lucide-react';
-import {
-  useCalcularRuta,
-  type Pais,
-  type TipoVehiculo,
-  type SubtipoCamion,
-  type DireccionEstructurada,
-} from '@/lib/hooks/useCalcularRuta';
+import React, { useEffect } from 'react';
+import { useRutaContext } from '@/lib/RutaContext';
+import { MapPin, Flag, Car, ChevronDown, ChevronLeft, ChevronRight, Navigation, Check, Truck, Lightbulb, AlertTriangle, Trash2, Route } from 'lucide-react';
+import type { DireccionEstructurada, Pais, TipoVehiculo, SubtipoCamion } from '@/lib/hooks/useCalcularRuta';
 import type { N8nDobleRutaResponse } from '@/lib/types';
+import { EMPTY_DIRECCION } from '@/lib/RutaContext';
 import styles from './RutaPanel.module.css';
 
 const PAISES: { value: Pais; label: string; code: string }[] = [
@@ -27,12 +23,10 @@ const SUBTIPOS: { value: SubtipoCamion; label: string }[] = [
   { value: 'mercancia', label: 'Mercancía' },
 ];
 
-const EMPTY_DIRECCION: DireccionEstructurada = { calle: '', numero: '', comuna: '', ciudad: '' };
-
 type Step = 'origen' | 'destino' | 'vehiculo';
 const STEPS: Step[] = ['origen', 'destino', 'vehiculo'];
 
-const STEP_ICONS: Record<Step, JSX.Element> = {
+const STEP_ICONS: Record<Step, React.ReactNode> = {
   origen:   <MapPin size={16} />,
   destino:  <Flag size={16} />,
   vehiculo: <Car size={16} />,
@@ -47,10 +41,22 @@ const STEP_LABELS: Record<Step, string> = {
 interface RutaPanelProps {
   onRutaCalculada: (resultado: N8nDobleRutaResponse | null) => void;
   isOpen: boolean;
+  onLimpiarRuta: () => void;
 }
 
-export default function RutaPanel({ onRutaCalculada, isOpen }: RutaPanelProps) {
-  const { calcular, loading, error, resultado } = useCalcularRuta();
+export default function RutaPanel({ onRutaCalculada, isOpen, onLimpiarRuta }: RutaPanelProps) {
+  const {
+    step, setStep,
+    paisOrigen, setPaisOrigen,
+    origen, setOrigen,
+    paisDestino, setPaisDestino,
+    destino, setDestino,
+    vehiculo, setVehiculo,
+    subtipo, setSubtipo,
+    isCalculated, setIsCalculated,
+    calcular, loading, error, rutaResultado: resultado
+  } = useRutaContext();
+
   const [mounted, setMounted] = useState(isOpen);
   const [animateOpen, setAnimateOpen] = useState(false);
 
@@ -66,37 +72,62 @@ export default function RutaPanel({ onRutaCalculada, isOpen }: RutaPanelProps) {
     }
   }, [isOpen]);
 
-  const [step, setStep] = useState<Step>('origen');
-
-  // ── Form state ──────────────────────────────────────────────────────────────
-  const [paisOrigen, setPaisOrigen] = useState<Pais>('Chile');
-  const [origen, setOrigen]         = useState<DireccionEstructurada>(EMPTY_DIRECCION);
-  const [paisDestino, setPaisDestino] = useState<Pais>('Argentina');
-  const [destino, setDestino]       = useState<DireccionEstructurada>(EMPTY_DIRECCION);
-  const [vehiculo, setVehiculo]     = useState<TipoVehiculo>('coche');
-  const [subtipo, setSubtipo]       = useState<SubtipoCamion>('autobus');
-
   const stepIndex = STEPS.indexOf(step);
 
   // Per-step validation
-  const origenValido  = origen.calle.trim().length > 0 || origen.ciudad.trim().length > 0;
-  const destinoValido = destino.calle.trim().length > 0 || destino.ciudad.trim().length > 0;
+  const origenValido  = paisOrigen !== '' && origen.calle.trim().length > 0 && origen.numero.trim().length > 0 && origen.comuna.trim().length > 0 && origen.ciudad.trim().length > 0;
+  const destinoValido = paisDestino !== '' && destino.calle.trim().length > 0 && destino.numero.trim().length > 0 && destino.comuna.trim().length > 0 && destino.ciudad.trim().length > 0;
+  const vehiculoValido = vehiculo !== '' && (vehiculo === 'camion' ? subtipo !== '' : true);
+  
   const canContinue   = step === 'origen' ? origenValido
                       : step === 'destino' ? destinoValido
-                      : true;
+                      : vehiculoValido;
 
-  // Sync resultado al padre
+  // Clear step logic
+  const isStepDirty = () => {
+    if (step === 'origen') {
+      return paisOrigen !== '' || origen.calle !== '' || origen.numero !== '' || origen.comuna !== '' || origen.ciudad !== '';
+    }
+    if (step === 'destino') {
+      return paisDestino !== '' || destino.calle !== '' || destino.numero !== '' || destino.comuna !== '' || destino.ciudad !== '';
+    }
+    if (step === 'vehiculo') {
+      return vehiculo !== '' || subtipo !== '';
+    }
+    return false;
+  };
+
+  const handleClearStep = () => {
+    if (step === 'origen') {
+      setPaisOrigen('');
+      setOrigen(EMPTY_DIRECCION);
+    } else if (step === 'destino') {
+      setPaisDestino('');
+      setDestino(EMPTY_DIRECCION);
+    } else if (step === 'vehiculo') {
+      setVehiculo('');
+      setSubtipo('');
+    }
+  };
+
+  // Sync resultado al padre y marcar como calculado
   useEffect(() => {
     if (resultado) {
+      setIsCalculated(true);
       onRutaCalculada(resultado);
     }
   }, [resultado, onRutaCalculada]);
 
-  const updateOrigen = (field: keyof DireccionEstructurada, value: string) =>
+  // Si el usuario cambia cualquier campo, se pierde el estado de 'calculado'
+  const updateOrigen = (field: keyof DireccionEstructurada, value: string) => {
     setOrigen(prev => ({ ...prev, [field]: value }));
+    setIsCalculated(false);
+  };
 
-  const updateDestino = (field: keyof DireccionEstructurada, value: string) =>
+  const updateDestino = (field: keyof DireccionEstructurada, value: string) => {
     setDestino(prev => ({ ...prev, [field]: value }));
+    setIsCalculated(false);
+  };
 
   const handleContinuar = () => {
     if (step === 'origen')  setStep('destino');
@@ -109,11 +140,13 @@ export default function RutaPanel({ onRutaCalculada, isOpen }: RutaPanelProps) {
   };
 
   const handleFinalizar = async () => {
+    if (paisOrigen === '' || paisDestino === '' || vehiculo === '') return;
+    
     await calcular({
       origen, paisOrigen,
       destino, paisDestino,
       tipoVehiculo: vehiculo,
-      subtipoCamion: vehiculo === 'camion' ? subtipo : undefined,
+      subtipoCamion: vehiculo === 'camion' ? (subtipo as SubtipoCamion) : undefined,
     });
   };
 
@@ -173,9 +206,13 @@ export default function RutaPanel({ onRutaCalculada, isOpen }: RutaPanelProps) {
                 <select
                   className={styles.select}
                   value={paisOrigen}
-                  onChange={e => setPaisOrigen(e.target.value as Pais)}
+                  onChange={e => {
+                    setPaisOrigen(e.target.value as Pais);
+                    setIsCalculated(false);
+                  }}
                   disabled={loading}
                 >
+                  <option value="" disabled>Seleccione el país de Origen</option>
                   {PAISES.map(({ value, label, code }) => (
                     <option key={value} value={value} disabled={value === paisDestino}>
                       {code} — {label}
@@ -249,9 +286,13 @@ export default function RutaPanel({ onRutaCalculada, isOpen }: RutaPanelProps) {
                 <select
                   className={styles.select}
                   value={paisDestino}
-                  onChange={e => setPaisDestino(e.target.value as Pais)}
+                  onChange={e => {
+                    setPaisDestino(e.target.value as Pais);
+                    setIsCalculated(false);
+                  }}
                   disabled={loading}
                 >
+                  <option value="" disabled>Seleccione el país de Destino</option>
                   {PAISES.map(({ value, label, code }) => (
                     <option key={value} value={value} disabled={value === paisOrigen}>
                       {code} — {label}
@@ -329,13 +370,16 @@ export default function RutaPanel({ onRutaCalculada, isOpen }: RutaPanelProps) {
                 [
                   { value: 'coche',  label: 'Coche',  icon: <Car size={24} /> },
                   { value: 'camion', label: 'Camión', icon: <Truck size={24} /> },
-                ] as { value: TipoVehiculo; label: string; icon: JSX.Element }[]
+                ] as { value: TipoVehiculo; label: string; icon: React.ReactNode }[]
               ).map(({ value, label, icon }) => (
                 <button
                   key={value}
                   type="button"
                   className={`${styles.radioCard} ${vehiculo === value ? styles.radioActive : ''}`}
-                  onClick={() => setVehiculo(value)}
+                  onClick={() => {
+                    setVehiculo(value);
+                    setIsCalculated(false);
+                  }}
                   disabled={loading}
                 >
                   <span style={{ color: vehiculo === value ? 'var(--nav-active)' : 'var(--text-secondary)', display: 'flex', justifyContent: 'center' }}>{icon}</span>
@@ -347,18 +391,19 @@ export default function RutaPanel({ onRutaCalculada, isOpen }: RutaPanelProps) {
             {vehiculo === 'camion' && (
               <div className={`${styles.fieldGroup} ${styles.subtypeSection}`}>
                 <label className={styles.label}>
-                  Subtipo{' '}
-                  <span style={{ opacity: 0.6, fontStyle: 'italic', textTransform: 'none', letterSpacing: 0 }}>
-                    (opcional)
-                  </span>
+                  Subtipo
                 </label>
                 <div className={styles.selectWrapper}>
                   <select
                     className={styles.select}
                     value={subtipo}
-                    onChange={e => setSubtipo(e.target.value as SubtipoCamion)}
+                    onChange={e => {
+                      setSubtipo(e.target.value as SubtipoCamion);
+                      setIsCalculated(false);
+                    }}
                     disabled={loading}
                   >
+                    <option value="" disabled>Seleccione el Subtipo de Camión</option>
                     {SUBTIPOS.map(({ value, label }) => (
                       <option key={value} value={value}>{label}</option>
                     ))}
@@ -407,8 +452,18 @@ export default function RutaPanel({ onRutaCalculada, isOpen }: RutaPanelProps) {
               Volver
             </button>
           ) : (
-            <div />
+            <div style={{ width: '84px' }} />
           )}
+
+          {/* Botón Borrar Paso */}
+          <button 
+             className={`${styles.clearStepButton} ${isStepDirty() ? styles.clearStepActive : ''}`} 
+             onClick={handleClearStep} 
+             disabled={!isStepDirty() || loading}
+             title="Limpiar campos de este paso"
+          >
+            <Trash2 size={16} />
+          </button>
 
           {/* Continuar / Finalizar */}
           {step !== 'vehiculo' ? (
@@ -420,11 +475,21 @@ export default function RutaPanel({ onRutaCalculada, isOpen }: RutaPanelProps) {
               Continuar
               <ChevronRight size={14} />
             </button>
+          ) : isCalculated ? (
+            <button
+              className={styles.primaryButton}
+              onClick={() => {
+                onLimpiarRuta();
+              }}
+            >
+              <Route size={14} />
+              Nueva Ruta
+            </button>
           ) : (
             <button
               className={styles.primaryButton}
               onClick={handleFinalizar}
-              disabled={loading}
+              disabled={!canContinue || loading}
             >
               {loading ? (
                 <>

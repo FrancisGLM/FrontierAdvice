@@ -375,15 +375,20 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  border: 1px solid var(--border-strong);
-  background-color: transparent;
-  color: var(--text-secondary);
+  border: none;
+  background-color: var(--nav-active);
+  color: white;
   white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 
-.backButton:hover {
-  background-color: var(--border-subtle);
-  color: var(--text-primary);
+.backButton:hover:not(:disabled) {
+  background-color: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.backButton:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 /* Continuar / Finalizar */
@@ -416,6 +421,36 @@
 .primaryButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.clearStepButton {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-subtle);
+  background-color: transparent;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.clearStepActive {
+  opacity: 1;
+  background-color: #ef4444; /* red-500 */
+  border-color: #ef4444;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.clearStepActive:hover {
+  background-color: #dc2626; /* red-600 */
+  border-color: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
 }
 
 /* Loading spinner */
