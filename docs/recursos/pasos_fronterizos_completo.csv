@@ -1,0 +1,36 @@
+nombre_oficial,region,habilitado_para,codigo_fuente,latitud,longitud,activo
+Complejo Chacalluta,Arica y Parinacota,"[""vehículos menores"", ""transporte de carga"", ""carga agrícola""]",chacalluta,-18.314947653467293,-70.31355252975217,True
+Complejo Fronterizo Integrado Chungará,Arica y Parinacota,"[""todo tipo de vehículos""]",chungara,-18.281256220599374,-69.1382599889235,True
+Complejo Fronterizo Visviri,Arica y Parinacota,"[""vehículos menores"", ""buses""]",visviri,-17.728156808376593,-69.39906250042017,True
+Complejo Fronterizo Colchane,Tarapacá,"[""todo tipo de vehículos""]",colchane,-19.27613535545881,-68.6220071110844,True
+Complejo fronterizo Jama,Antofagasta,"[""todo tipo de vehículos""]",jama,-23.226542016937067,-67.06293188309498,True
+Complejo Hito Cajón,Antofagasta,"[""todo tipo de vehículos""]",hito-cajon,-22.91657340212709,-67.7979900727528,True
+Complejo Fronterizo Integrado SICO,Antofagasta,"[""transporte de carga""]",sico,-23.833408397414892,-67.2500858282544,True
+Complejo Fronterizo Ollagüe,Antofagasta,"[""transporte de carga"", ""buses"", ""vehículos particulares""]",ollague,-21.22291395093902,-68.24932111715349,True
+Complejo Fronterizo San Pedro de Atacama,Antofagasta,"[""todo tipo de vehículos""]",atacama,-22.88333183390768,-67.7999981381664,True
+Complejo Fronterizo San Francisco,Atacama,"[""todo tipo de vehículos""]",san-francisco,-26.8736943672027,-68.29908137438692,True
+Complejo Pircas Negras,Atacama,[],pircas-negras,-28.174001788557046,-69.1450367463152,False
+Complejo Fronterizo Agua Negra,Coquimbo,"[""vehículos 4x2"", ""vehículos 4x4"", ""buses hasta 22 pasajeros""]",agua-negra,-29.97618611901986,-70.0946108575695,True
+Complejo Fronterizo Los Libertadores,Valparaíso,"[""todo tipo de vehículos""]",los-libertadores,-32.84271357006212,-70.12060761622942,True
+Complejo Fronterizo Vergara,Maule,"[""todo tipo de vehículos""]",vergara,-35.13867059392304,-70.47748941504368,True
+Complejo Fronterizo Pehuenche,Maule,"[""todo tipo de vehículos""]",pehuenche,-35.98339876179999,-70.40008582155707,True
+Complejo Fronterizo Pichachén,Biobío,"[""vehículos livianos""]",pichachen,-37.44999588969475,-71.11666670674028,True
+Complejo Fronterizo Pino Hachado,La Araucanía,"[""todo tipo de vehículos""]",pino-hachado,-38.64353932515282,-70.94181263016343,True
+Complejo Fronterizo Icalma,La Araucanía,"[""vehículos menores""]",icalma,-38.833707304029545,-71.26765072252385,True
+Complejo Fronterizo Mamuil Malal,La Araucanía,"[""vehículos menores"", ""buses""]",paso-mamuil,-39.58305791239352,-71.4693939286603,True
+Complejo Fronterizo Carirriñe,Los Ríos,[],carirrine,-39.776136245936684,-71.70115430268253,False
+Complejo Fronterizo Hua Hum,Los Ríos,"[""vehículos menores"", ""buses""]",hua-hum,-40.09957264039809,-71.67327902924646,True
+Complejo Fronterizo Cardenal Samoré,Los Lagos,"[""todo tipo de vehículos""]",cardenal-samore,-40.661793579874114,-72.12630979106433,True
+Complejo Fronterizo Peulla,Los Lagos,"[""todo tipo de vehículos""]",paso-perez-rosales,-41.06906983182753,-71.83030792865698,True
+Complejo Fronterizo El Límite – Futaleufú,Los Lagos,"[""vehículos particulares"", ""buses"", ""transporte de carga""]",futaleufu,-43.17649779051323,-71.7577012994437,True
+Complejo Fronterizo Río Encuentro - Palena,Los Lagos,"[""vehículos particulares"", ""buses"", ""transporte de carga""]",palena,-43.59291558357533,-71.71250712830513,True
+Complejo Fronterizo Coyhaique Alto,Aysén,"[""vehículos menores"", ""buses"", ""transporte de carga""]",coyhaique-alto,-45.48091934238515,-71.60339430008784,True
+Complejo Fronterizo Huemules,Aysén,"[""vehículos particulares"", ""buses"", ""transporte de carga""]",huemules,-45.910651767448066,-71.68669185610418,True
+Complejo Fronterizo Jeinimeni,Aysén,"[""transporte de carga"", ""vehículos particulares"", ""buses""]",jeinimeni,-46.56415379554354,-71.67146899938595,True
+Complejo Ingeniero Ibáñez- Pallavicini,Aysén,"[""vehículos menores""]",ibanez-pallavicini,-46.27668627373935,-71.71346772826352,True
+Complejo Fronterizo Dorotea,Magallanes,"[""transporte de carga"", ""buses"", ""vehículos particulares""]",dorotea,-51.6047274439038,-72.33307040008525,True
+Complejo Fronterizo Casas Viejas,Magallanes,"[""todo tipo de vehículos""]",casas-viejas,-51.699614296982354,-72.3284620253791,True
+Complejo Fronterizo Río Don Guillermo,Magallanes,"[""transporte de carga"", ""buses"", ""vehículos particulares""]",don-guillermo,-51.25578941434214,-72.23629537197762,True
+Complejo Fronterizo Integración Austral,Magallanes,"[""buses"", ""vehículos menores""]",integracion-austral,-52.13921294439705,-69.51967392894386,True
+Complejo Fronterizo San Sebastián,Magallanes,"[""todo tipo de vehículos""]",san-sebastian,-53.32290744501417,-68.65291812894517,True
+Complejo Fronterizo Bellavista,Magallanes,"[""vehículos menores""]",bellavista,-54.00263390577415,-68.6188257681079,True
