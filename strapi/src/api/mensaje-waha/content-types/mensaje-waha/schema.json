@@ -7,13 +7,13 @@
     "displayName": "MensajeWAHA"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
     "msg_id_waha": {
       "type": "string",
-      "unique": true
+      "unique": false
     },
     "msg_body": {
       "type": "biginteger"

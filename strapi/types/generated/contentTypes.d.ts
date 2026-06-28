@@ -558,7 +558,7 @@ export interface ApiClimaActualClimaActual extends Struct.CollectionTypeSchema {
     singularName: 'clima-actual';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     capturado_en: Schema.Attribute.DateTime;
@@ -601,7 +601,7 @@ export interface ApiEstadoDiarioEstadoDiario
     singularName: 'estado-diario';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     confianza_extraccion: Schema.Attribute.Decimal;
@@ -653,7 +653,7 @@ export interface ApiMensajeWahaMensajeWaha extends Struct.CollectionTypeSchema {
     singularName: 'mensaje-waha';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
@@ -673,7 +673,7 @@ export interface ApiMensajeWahaMensajeWaha extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     msg_body: Schema.Attribute.BigInteger;
     msg_fecha_iso: Schema.Attribute.DateTime;
-    msg_id_waha: Schema.Attribute.String & Schema.Attribute.Unique;
+    msg_id_waha: Schema.Attribute.String;
     msg_row_id: Schema.Attribute.Integer;
     msg_server_id: Schema.Attribute.Integer;
     msg_timestamp: Schema.Attribute.BigInteger;
@@ -695,7 +695,7 @@ export interface ApiPasoFronterizoPasoFronterizo
     singularName: 'paso-fronterizo';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     activo: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
@@ -739,7 +739,7 @@ export interface ApiReporteIncidenteReporteIncidente
     singularName: 'reporte-incidente';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
@@ -783,7 +783,7 @@ export interface ApiRestriccionRestriccion extends Struct.CollectionTypeSchema {
     singularName: 'restriccion';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
@@ -817,7 +817,7 @@ export interface ApiSenalPredictivaSenalPredictiva
     singularName: 'senal-predictiva';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
