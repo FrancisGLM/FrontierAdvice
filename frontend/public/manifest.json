@@ -1,0 +1,23 @@
+{
+  "name": "FrontierAdvice",
+  "short_name": "FrontierAdvice",
+  "description": "Monitoreo y predicción de estado de pasos fronterizos en tiempo real",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#09090b",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192x192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/icon-512x512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

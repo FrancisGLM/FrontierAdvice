@@ -247,16 +247,11 @@ export default function RiesgoPage() {
         </div>
 
         {/* Column header */}
-        <div style={{
-          display: 'grid', gridTemplateColumns: '1.5fr 100px 130px 1.5fr 120px',
-          padding: '1rem 1.5rem 0.75rem', gap: '1rem',
-          borderTop: '1px solid var(--border-subtle)',
-          alignItems: 'center'
-        }}>
+        <div className="desktop-header-row">
           {[
             { label: 'Paso Fronterizo', align: 'start' },
             { label: 'Prob. Cierre', align: 'start' },
-            { label: 'Horizonte (D+1, D+2, D+3)', align: 'center' },
+            { label: 'Horizonte', align: 'center' },
             { label: 'Factor Principal', align: 'start' },
             { label: 'Tendencia', align: 'start' }
           ].map((h, i) => (
@@ -422,15 +417,15 @@ export default function RiesgoPage() {
                   {/* Horizonte */}
                   <div className="horizon-mobile" style={{ display: 'flex', gap: '0.35rem', alignItems: 'center', justifySelf: 'center' }}>
                     <div style={{ textAlign: 'center' }}>
-                      <p style={{ fontSize: '0.6rem', color: 'var(--text-secondary)', marginBottom: '0.2rem' }}>D+1</p>
+                      <p style={{ fontSize: '0.6rem', color: 'var(--text-secondary)', marginBottom: '0.2rem' }}>24h</p>
                       <HorizonteCell nivel={pred.riesgoManana} />
                     </div>
                     <div style={{ textAlign: 'center' }}>
-                      <p style={{ fontSize: '0.6rem', color: 'var(--text-secondary)', marginBottom: '0.2rem' }}>D+2</p>
+                      <p style={{ fontSize: '0.6rem', color: 'var(--text-secondary)', marginBottom: '0.2rem' }}>48h</p>
                       <HorizonteCell nivel={pred.riesgoPasado} />
                     </div>
                     <div style={{ textAlign: 'center' }}>
-                      <p style={{ fontSize: '0.6rem', color: 'var(--text-secondary)', marginBottom: '0.2rem' }}>D+3</p>
+                      <p style={{ fontSize: '0.6rem', color: 'var(--text-secondary)', marginBottom: '0.2rem' }}>72h</p>
                       <HorizonteCell nivel={pred.riesgoTercero} />
                     </div>
                   </div>

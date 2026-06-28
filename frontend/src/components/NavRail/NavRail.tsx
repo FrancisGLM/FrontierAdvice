@@ -53,7 +53,7 @@ export default function NavRail({ rutaOpen = false, onRutaToggle, onMapaClick }:
         {/* Logo */}
         <div className={styles.logoContainer}>
           <div className={styles.logo}>
-            <Mountain className="w-6 h-6 text-white" />
+            <img src="/icon-192x192.svg" alt="FrontierAdvice Logo" className="w-12 h-12 object-contain" />
           </div>
         </div>
 
