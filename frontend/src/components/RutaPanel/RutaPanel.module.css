@@ -367,15 +367,20 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  border: 1px solid var(--border-strong);
-  background-color: transparent;
-  color: var(--text-secondary);
+  border: none;
+  background-color: var(--nav-active);
+  color: white;
   white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 
-.backButton:hover {
-  background-color: var(--border-subtle);
-  color: var(--text-primary);
+.backButton:hover:not(:disabled) {
+  background-color: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.backButton:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 /* Continuar / Finalizar */

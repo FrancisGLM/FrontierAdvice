@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, Ruler, Clock, MapPin, ArrowLeftRight, ExternalLink, Route, Share2, Check, Star, Mountain } from 'lucide-react';
+import { X, Ruler, Clock, MapPin, Flag, ArrowLeftRight, ExternalLink, Route, Share2, Check, Star, Mountain } from 'lucide-react';
 import type { N8nDobleRutaResponse, OrsResponse, PasoFronterizo } from '@/lib/types';
 import styles from './ResultadosPanel.module.css';
 
@@ -136,13 +136,11 @@ export default function ResultadosPanel({
             
             <div className={styles.routeDivider}>
               <div className={styles.routeLine} />
-              <div className={styles.routeCenterIcon}><Route size={14} /></div>
-              <div className={styles.routeLine} />
             </div>
 
             <div className={styles.routePoint}>
               <div className={styles.routeIconWrapper}>
-                <MapPin size={16} />
+                <Flag size={16} />
               </div>
               <div className={styles.routeText}>
                 <span className={styles.routeLabel}>Destino</span>
