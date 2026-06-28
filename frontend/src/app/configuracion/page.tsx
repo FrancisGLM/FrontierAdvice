@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { Settings, Shield, Lock, LogOut } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Settings, Shield, Lock, LogOut, Sun, Moon, Eye } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import LoginModal from '@/components/LoginModal/LoginModal';
 import { useAuth } from '@/lib/AuthContext';
 
@@ -37,6 +38,10 @@ function Section({ icon: Icon, title, children, color }: {
 export default function ConfiguracionPage() {
   const [loginOpen, setLoginOpen] = useState(false);
   const { isAdmin, logout } = useAuth();
+  const { theme, setTheme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
 
   return (
     <div style={{
@@ -75,7 +80,7 @@ export default function ConfiguracionPage() {
             {[
               { label: 'Versión', value: '0.1.0 — Beta' },
               { label: 'Fuentes de datos', value: 'UPF Ministerio, pasosfronterizos.gov.cl, @UPFronterizos' },
-              { label: 'Proyecto', value: 'Proyecto de Título — Ingeniería Civil Informática, UCM 2026' },
+              { label: 'Proyecto', value: 'FrontierAdvice' },
               { label: 'Autores', value: 'Francisco López · Franco Ingravallo' },
             ].map((item, i, arr) => (
               <div key={item.label}>
@@ -86,6 +91,32 @@ export default function ConfiguracionPage() {
                 {i < arr.length - 1 && <div style={{ height: '1px', backgroundColor: 'var(--border-subtle)', marginTop: '1rem' }} />}
               </div>
             ))}
+          </Section>
+
+          {/* Apariencia y Accesibilidad */}
+          <Section icon={Eye} title="Apariencia y Accesibilidad" color="#10b981">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+              <div>
+                <p style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary)' }}>Modo de Contraste</p>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.125rem' }}>
+                  Cambia entre colores claros u oscuros para mejorar la visibilidad.
+                </p>
+              </div>
+              <button 
+                onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+                style={{
+                  padding: '0.5rem 1rem', borderRadius: '0.5rem', backgroundColor: 'var(--bg-base)',
+                  color: 'var(--text-primary)', fontSize: '0.875rem', fontWeight: 600, border: '1px solid var(--border-strong)',
+                  cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem'
+                }}
+              >
+                {mounted && resolvedTheme === 'dark' ? (
+                  <><Sun size={16} /> Modo Claro</>
+                ) : (
+                  <><Moon size={16} /> Modo Oscuro</>
+                )}
+              </button>
+            </div>
           </Section>
 
           {/* Administración */}
