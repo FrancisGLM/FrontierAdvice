@@ -13,6 +13,7 @@ interface MapViewProps {
   selectedPasoId?: string;
   rutaResultado?: N8nDobleRutaResponse | null;   // C7: nuevo prop doble ruta
   alternativeIsFocused?: boolean;                 // C7: para intercambio de colores
+  onSelectAlternative?: (isAlternative: boolean) => void;
 }
 
 const STATUS_COLORS: Record<EstadoPaso, string> = {
@@ -48,7 +49,8 @@ function buildRoutePolylines(
   tooltipBdr: string,
   label: string,
   lineOpacity: number,
-  casingOpacity: number
+  casingOpacity: number,
+  onClick?: () => void
 ): { casing: L.Polyline; line: L.Polyline; bounds: L.LatLngBounds } {
   const feature = ors.features[0];
   const latlngs: L.LatLngExpression[] = feature.geometry.coordinates.map(
@@ -70,6 +72,11 @@ function buildRoutePolylines(
     lineCap: 'round',
     lineJoin: 'round',
   });
+
+  if (onClick) {
+    casing.on('click', onClick);
+    line.on('click', onClick);
+  }
 
   const { summary } = feature.properties;
   const km  = (summary.distance / 1000).toFixed(1);
@@ -105,6 +112,7 @@ export default function MapView({
   selectedPasoId,
   rutaResultado,
   alternativeIsFocused = false,
+  onSelectAlternative,
 }: MapViewProps) {
   const mapRef            = useRef<L.Map | null>(null);
   const markersRef        = useRef<Map<string, MarkerEntry>>(new Map());
@@ -223,7 +231,8 @@ export default function MapView({
       isDark,
       tooltipBg, tooltipTxt, tooltipBdr,
       '⭐ Ruta primaria:',
-      primOp, primCasOp
+      primOp, primCasOp,
+      () => onSelectAlternative?.(false)
     );
     const layerPrim = L.layerGroup([prim.casing, prim.line]).addTo(map);
     routeLayerPrimRef.current = layerPrim;
@@ -238,7 +247,8 @@ export default function MapView({
       isDark,
       tooltipBg, tooltipTxt, tooltipBdr,
       '📍 Ruta alternativa:',
-      altOp, altCasOp
+      altOp, altCasOp,
+      () => onSelectAlternative?.(true)
     );
     const layerAlt = L.layerGroup([alt.casing, alt.line]).addTo(map);
     routeLayerAltRef.current = layerAlt;

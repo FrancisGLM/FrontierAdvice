@@ -265,10 +265,10 @@ export default function RutaPanel({ onRutaCalculada, isOpen, onLimpiarRuta }: Ru
             </div>
 
             <div className={styles.fieldGroup}>
-              <label className={styles.label}>Ciudad</label>
+              <label className={styles.label}>Región</label>
               <input
                 type="text" className={styles.input}
-                placeholder="Ej: Talca"
+                placeholder="Ej: Del Maule"
                 value={origen.ciudad}
                 onChange={e => updateOrigen('ciudad', e.target.value)}
                 disabled={loading}
@@ -345,7 +345,7 @@ export default function RutaPanel({ onRutaCalculada, isOpen, onLimpiarRuta }: Ru
             </div>
 
             <div className={styles.fieldGroup}>
-              <label className={styles.label}>Ciudad</label>
+              <label className={styles.label}>Región</label>
               <input
                 type="text" className={styles.input}
                 placeholder="Ej: Buenos Aires"

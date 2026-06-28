@@ -327,6 +327,7 @@ export default function MapDashboard() {
             selectedPasoId={selectedPaso?.id}
             rutaResultado={rutaResultado}
             alternativeIsFocused={alternativeIsFocused}
+            onSelectAlternative={setAlternativeIsFocused}
           />
         )}
 
