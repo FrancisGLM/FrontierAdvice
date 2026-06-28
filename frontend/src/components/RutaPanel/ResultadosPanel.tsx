@@ -13,6 +13,7 @@ interface ResultadosPanelProps {
   onClose: () => void;
   alternativeIsFocused: boolean;
   onToggleFocus: () => void;
+  isOpen?: boolean;
 }
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
@@ -23,40 +24,39 @@ function getDistanciaKm(ors: OrsResponse): string {
 }
 
 function getDuracion(ors: OrsResponse): string {
-  const seg = ors.features[0]?.properties?.summary?.duration ?? 0;
-  const hrs = Math.floor(seg / 3600);
-  const min = Math.floor((seg % 3600) / 60);
-  if (hrs > 0) return `${hrs} h ${min} min`;
-  return `${min} min`;
+  const segs = ors.features[0]?.properties?.summary?.duration ?? 0;
+  const horas = Math.floor(segs / 3600);
+  const minutos = Math.floor((segs % 3600) / 60);
+  if (horas > 0) {
+    return `${horas}h ${minutos}m`;
+  }
+  return `${minutos} min`;
 }
 
-/**
- * Extrae el nombre del paso desde el mensaje_natural usando heurística de texto.
- * Si el backend ya envía paso_primario / paso_alternativo, los usa directamente.
- */
-function extraerNombrePaso(
-  resultado: N8nDobleRutaResponse,
-  isAlternative: boolean
-): string {
-  if (!isAlternative && resultado.mensaje.paso_primario) {
-    return resultado.mensaje.paso_primario;
-  }
-  if (isAlternative && resultado.mensaje.paso_alternativo) {
-    return resultado.mensaje.paso_alternativo;
+function extraerNombrePaso(r: N8nDobleRutaResponse, isAlternative: boolean): string {
+  const ors = isAlternative ? r.rutaAlternativa : r.rutaPrimaria;
+  if (!ors.features || ors.features.length === 0) return '—';
+
+  // Buscar el paso en los metadatos de N8N si existe
+  if (isAlternative && r.pasoAlternativo) return r.pasoAlternativo;
+  if (!isAlternative && r.pasoPrimario) return r.pasoPrimario;
+
+  const steps = ors.features[0]?.properties?.segments?.[0]?.steps;
+  if (!steps) return '—';
+
+  // Si no viene explícito, usar heurística sobre las instrucciones (fallback)
+  const cruzando = steps.find(s => s.instruction.toLowerCase().includes('complejo fronterizo') || s.instruction.toLowerCase().includes('paso fronterizo'));
+  if (cruzando) {
+    const nameMatch = cruzando.instruction.match(/(?:Complejo Fronterizo|Paso Fronterizo)\s+([\w\s]+?)(?:,|\.|$)/i);
+    if (nameMatch && nameMatch[1]) return nameMatch[1].trim();
   }
 
-  // Fallback: buscar en el mensaje_natural
-  const texto = resultado.mensaje.mensaje_natural ?? '';
-
-  if (!isAlternative) {
-    // Primera mención de "Complejo Fronterizo" o "Paso" en el texto
-    const match = texto.match(/(?:Complejo Fronterizo|Paso Fronterizo|paso)\s+([\w\s]+?)(?:,|\.|\s+que|\s+en|\s+con)/i);
-    return match ? match[0].replace(/,|\.|\s+que.*|en.*|con.*/i, '').trim() : '—';
+  // Buscar en toda la ruta
+  const texto = steps.map(s => s.instruction).join(' | ');
+  const match = texto.match(/(?:Complejo Fronterizo|Paso Fronterizo)\s+([\w\s]+?)(?:,|\.|$)/i);
+  if (match && match[1]) {
+    return match[1].trim();
   } else {
-    // Segunda mención: buscar "segunda mejor opción" o "alternativa"
-    const match = texto.match(/(?:segunda mejor opci[oó]n|alternativa).*?(?:Complejo Fronterizo|Paso Fronterizo)\s+([\w\s]+?)(?:,|\.|\s)/i);
-    if (match) return match[0].replace(/.*(?:Complejo Fronterizo|Paso Fronterizo)\s+/i, '').replace(/,|\.|\s*$/, '').trim();
-    // Fallback: segunda ocurrencia de Complejo Fronterizo
     const allMatches = [...texto.matchAll(/(?:Complejo Fronterizo|Paso Fronterizo)\s+[\w\s]+?(?=,|\.)/gi)];
     if (allMatches.length >= 2) return allMatches[1][0].trim();
     return '—';
@@ -73,7 +73,25 @@ export default function ResultadosPanel({
   onClose,
   alternativeIsFocused,
   onToggleFocus,
+  isOpen,
 }: ResultadosPanelProps) {
+  // Para animación de mount (cuando cambia isOpen)
+  const [mounted, setMounted] = useState(isOpen ?? true);
+  const [animateOpen, setAnimateOpen] = useState(false);
+
+  useEffect(() => {
+    if (isOpen === undefined) return;
+    if (isOpen) {
+      setMounted(true);
+      const frame = requestAnimationFrame(() => requestAnimationFrame(() => setAnimateOpen(true)));
+      return () => cancelAnimationFrame(frame);
+    } else {
+      setAnimateOpen(false);
+      const timer = setTimeout(() => setMounted(false), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
+
   // Para mantener el contenido visible durante la animación de salida
   const [activeResultado, setActiveResultado] = useState<N8nDobleRutaResponse | null>(resultado);
 
@@ -87,7 +105,7 @@ export default function ResultadosPanel({
   }, [resultado]);
 
   const display = resultado || activeResultado;
-  if (!display) return null;
+  if ((isOpen !== undefined && !mounted) || !display) return null;
 
   const rutaActiva: OrsResponse = alternativeIsFocused
     ? display.rutaAlternativa
@@ -107,14 +125,14 @@ export default function ResultadosPanel({
   };
 
   return (
-    <aside className={styles.panel}>
-        {/* Header */}
-        <div className={styles.header}>
-          <h2 className={styles.title}>Resultados de Ruta</h2>
-          <button onClick={onClose} className={styles.closeButton} title="Cerrar panel">
-            <X size={20} />
-          </button>
-        </div>
+    <aside className={`${styles.panel} ${isOpen !== undefined ? (animateOpen ? styles.desktopOpen : styles.desktopClosed) : ''} ${animateOpen ? styles.open : ''}`}>
+      {/* ── Header ────────────────────────────────────────────────────────────── */}
+      <div className={styles.header}>
+        <h2 className={styles.title}>Resultados de Ruta</h2>
+        <button onClick={onClose} className={styles.closeButton} title="Cerrar panel">
+          <X size={20} />
+        </button>
+      </div>
 
         {/* Scrollable content */}
         <div className={styles.content}>

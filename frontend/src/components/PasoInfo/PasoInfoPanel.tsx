@@ -67,11 +67,23 @@ function CountryFlag({ country }: { country: 'CL' | 'AR' | 'BO' | 'PE' }) {
 
 export default function PasoInfoPanel({ paso, onClose }: PasoInfoPanelProps) {
   const [activePaso, setActivePaso] = useState<PasoFronterizo | null>(paso);
+  const [touchStartY, setTouchStartY] = useState<number | null>(null);
+  const [translateY, setTranslateY] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     if (paso) {
       setActivePaso(paso);
+      setTranslateY(0);
+      setIsDragging(false);
+      // Wait for DOM paint before adding .open class to trigger CSS transition
+      const frameId = requestAnimationFrame(() => {
+        requestAnimationFrame(() => setIsMounted(true));
+      });
+      return () => cancelAnimationFrame(frameId);
     } else {
+      setIsMounted(false);
       const timer = setTimeout(() => setActivePaso(null), 400); // match transition duration
       return () => clearTimeout(timer);
     }
@@ -80,6 +92,33 @@ export default function PasoInfoPanel({ paso, onClose }: PasoInfoPanelProps) {
   const displayPaso = paso || activePaso;
 
   if (!displayPaso) return null;
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartY(e.touches[0].clientY);
+    setIsDragging(true);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartY === null) return;
+    const currentY = e.touches[0].clientY;
+    const diff = currentY - touchStartY;
+    if (diff > 0) {
+      setTranslateY(diff);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+    if (translateY > 120) {
+      // Clearing translateY lets the CSS transition take over and animate it offscreen
+      setTranslateY(0);
+      onClose();
+    } else {
+      // Snap back to 0 smoothly
+      setTranslateY(0);
+    }
+    setTouchStartY(null);
+  };
 
   const cfg = estadoConfig[displayPaso.estado];
   const diario = displayPaso.estado_diarios;
@@ -103,10 +142,23 @@ export default function PasoInfoPanel({ paso, onClose }: PasoInfoPanelProps) {
     yellow: { bg: '#fef9c3', text: '#854d0e', icon: '#eab308' },
     red: { bg: '#fee2e2', text: '#991b1b', icon: '#ef4444' }
   };
+  
+  // Calculate dynamic opacity for the backdrop during drag
+  const backdropOpacity = Math.max(0, 1 - (translateY / 250));
 
   return (
     <>
-      <aside className={`${styles.panel} ${paso ? styles.open : ''}`}>
+      <aside 
+        className={`${styles.panel} ${isMounted ? styles.open : ''}`}
+        style={{ 
+          transform: translateY > 0 ? `translateY(${translateY}px)` : undefined,
+          transition: isDragging ? 'none' : undefined 
+        }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        <div className={styles.pullHandle} />
         {/* Header */}
         <div className={styles.header}>
           <h2 className={styles.title}>Información del Paso</h2>
@@ -223,7 +275,11 @@ export default function PasoInfoPanel({ paso, onClose }: PasoInfoPanelProps) {
 
       {/* Mobile Backdrop */}
       <div 
-        className={`md:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-[55] transition-opacity ${paso ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+        className={`md:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-[55] transition-opacity ${paso ? 'pointer-events-auto' : 'pointer-events-none'}`}
+        style={{ 
+          opacity: paso ? backdropOpacity : 0,
+          transition: isDragging ? 'none' : 'opacity 0.4s ease'
+        }}
         onClick={onClose}
       />
     </>

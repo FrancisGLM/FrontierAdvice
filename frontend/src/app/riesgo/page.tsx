@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { TriangleAlert, Zap, TrendingDown, AlertCircle, CheckCircle2, Search } from 'lucide-react';
+import { TriangleAlert, Zap, TrendingDown, AlertCircle, CheckCircle2, Search, ChevronDown } from 'lucide-react';
 import { STRAPI_URL } from '@/lib/config';
 
 type NivelRiesgo = 'bajo' | 'medio' | 'alto';
@@ -90,6 +90,7 @@ export default function RiesgoPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -271,7 +272,7 @@ export default function RiesgoPage() {
       </div>
 
       {/* List */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '1rem 2rem 2rem' }}>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '1rem 2rem 6rem' }}>
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: '3rem' }}>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Cargando análisis de riesgo desde Strapi...</p>
@@ -286,35 +287,124 @@ export default function RiesgoPage() {
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <style>{`
+              .riesgo-card {
+                display: grid;
+                grid-template-columns: 1.5fr 100px 130px 1.5fr 120px;
+                gap: 1rem;
+                align-items: center;
+                background-color: var(--bg-solid);
+                border-radius: 1rem;
+                padding: 1rem 1.5rem;
+                border: 1px solid var(--border-subtle);
+                box-shadow: var(--shadow-sm);
+                transition: all 0.2s;
+              }
+              .riesgo-card:hover {
+                box-shadow: var(--shadow-md);
+              }
+              .riesgo-expanded-content {
+                display: contents;
+              }
+              .prob-bar-wrapper {
+                display: block;
+              }
+              .desktop-header-row {
+                display: grid;
+                grid-template-columns: 1.5fr 100px 130px 1.5fr 120px;
+                padding: 1rem 1.5rem 0.75rem;
+                gap: 1rem;
+                border-top: 1px solid var(--border-subtle);
+                align-items: center;
+              }
+              @media (max-width: 768px) {
+                .desktop-header-row {
+                  display: none;
+                }
+                .chevron-mobile {
+                  display: block !important;
+                }
+                .riesgo-card {
+                  display: flex;
+                  flex-direction: column;
+                  align-items: stretch;
+                  gap: 0.75rem;
+                  cursor: pointer;
+                }
+                .riesgo-expanded-content {
+                  display: flex;
+                  flex-direction: column;
+                  gap: 0.75rem;
+                  overflow: hidden;
+                  max-height: 0;
+                  opacity: 0;
+                  padding-top: 0;
+                  border-top: 1px solid transparent;
+                  transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease, border-color 0.3s ease;
+                }
+                .riesgo-expanded-content.open {
+                  max-height: 200px;
+                  opacity: 1;
+                  border-top-color: var(--border-subtle);
+                  padding-top: 0.75rem;
+                }
+                .prob-bar-wrapper {
+                  display: flex;
+                  align-items: center;
+                  gap: 1rem;
+                  justify-content: space-between;
+                }
+                .prob-bar-wrapper > div:first-child {
+                  margin-bottom: 0 !important;
+                }
+                .prob-bar-wrapper > div:last-child {
+                  flex: 1;
+                  max-width: 150px;
+                }
+                .horizon-mobile {
+                  justify-self: flex-start !important;
+                }
+              }
+            `}</style>
+            
             {filteredData.map((pred) => {
+              const isExpanded = expandedId === pred.pasoId;
               const barColor = pred.probabilidadCierre >= 70 ? '#ef4444'
                 : pred.probabilidadCierre >= 30 ? '#f59e0b' : '#10b981';
               return (
                 <div
                   key={pred.pasoId}
-                  style={{
-                    display: 'grid', gridTemplateColumns: '1.5fr 100px 130px 1.5fr 120px',
-                    gap: '1rem', alignItems: 'center',
-                    backgroundColor: 'var(--bg-solid)', borderRadius: '1rem',
-                    padding: '1rem 1.5rem', border: '1px solid var(--border-subtle)',
-
-                    boxShadow: 'var(--shadow-sm)', transition: 'box-shadow 0.2s',
+                  className="riesgo-card"
+                  onClick={() => {
+                    if (window.innerWidth <= 768) {
+                      setExpandedId(isExpanded ? null : pred.pasoId);
+                    }
                   }}
-                  onMouseEnter={e => (e.currentTarget.style.boxShadow = 'var(--shadow-md)')}
-                  onMouseLeave={e => (e.currentTarget.style.boxShadow = 'var(--shadow-sm)')}
                 >
                   {/* Paso info */}
-                  <div>
-                    <p style={{ fontSize: '0.9375rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.125rem' }}>
-                      {pred.pasoNombre}
-                    </p>
-                    <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                      {pred.region}{pred.altitud ? ` · ${pred.altitud.toLocaleString()} m.s.n.m.` : ''}
-                    </p>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div>
+                      <p style={{ fontSize: '0.9375rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.125rem' }}>
+                        {pred.pasoNombre}
+                      </p>
+                      <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                        {pred.region}{pred.altitud ? ` · ${pred.altitud.toLocaleString()} m.s.n.m.` : ''}
+                      </p>
+                    </div>
+                    <ChevronDown 
+                      className="chevron-mobile" 
+                      size={20} 
+                      style={{ 
+                        color: 'var(--text-secondary)', 
+                        transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                        transition: 'transform 0.3s ease',
+                        display: 'none' /* hidden on desktop */
+                      }} 
+                    />
                   </div>
 
                   {/* Probability bar */}
-                  <div>
+                  <div className="prob-bar-wrapper">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
                       <span style={{ fontSize: '1.1rem', fontWeight: 800, color: barColor }}>
                         {pred.probabilidadCierre}%
@@ -330,7 +420,7 @@ export default function RiesgoPage() {
                   </div>
 
                   {/* Horizonte */}
-                  <div style={{ display: 'flex', gap: '0.35rem', alignItems: 'center', justifySelf: 'center' }}>
+                  <div className="horizon-mobile" style={{ display: 'flex', gap: '0.35rem', alignItems: 'center', justifySelf: 'center' }}>
                     <div style={{ textAlign: 'center' }}>
                       <p style={{ fontSize: '0.6rem', color: 'var(--text-secondary)', marginBottom: '0.2rem' }}>D+1</p>
                       <HorizonteCell nivel={pred.riesgoManana} />
@@ -345,17 +435,19 @@ export default function RiesgoPage() {
                     </div>
                   </div>
 
-                  {/* Factor */}
-                  <p style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
-                    {pred.factorPrincipal}
-                  </p>
+                  <div className={`riesgo-expanded-content ${isExpanded ? 'open' : ''}`}>
+                    {/* Factor */}
+                    <p style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                      {pred.factorPrincipal}
+                    </p>
 
-                  {/* Tendencia */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <TendenciaIcon t={pred.tendencia} />
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'capitalize' }}>
-                      {pred.tendencia}
-                    </span>
+                    {/* Tendencia */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <TendenciaIcon t={pred.tendencia} />
+                      <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'capitalize' }}>
+                        {pred.tendencia}
+                      </span>
+                    </div>
                   </div>
                 </div>
               );

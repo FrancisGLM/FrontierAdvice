@@ -3,13 +3,21 @@
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-right: 1px solid var(--border-subtle);
-  width: 18rem; /* 288px */
+  width: 20rem; /* 320px */
   height: 100vh;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
   z-index: 40;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.desktopOpen {
+  transform: translateX(0);
+}
+
+.desktopClosed {
+  transform: translateX(-100%);
 }
 
 .header {
@@ -305,16 +313,24 @@
     position: fixed;
     top: 0;
     left: 0;
-    height: calc(100vh - 4.5rem); /* Account for bottom nav */
+    height: calc(100dvh - 4.5rem - env(safe-area-inset-bottom));
     transform: translateX(-100%);
     box-shadow: var(--shadow-glass);
+    z-index: 60;
   }
 
   .sidebar.open {
     transform: translateX(0);
   }
 
+  /* When sidebar is closed, toggle button is on the screen edge.
+     When open, it's slightly outside the sidebar to close it. */
   .mobileToggle {
     display: flex;
+    position: absolute;
+    top: 5rem;
+    right: -2.5rem;
+    width: 2.5rem;
+    height: 3rem;
   }
 }

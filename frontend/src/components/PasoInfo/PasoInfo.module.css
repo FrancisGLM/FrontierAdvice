@@ -306,6 +306,15 @@
     box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.1);
   }
 
+  .pullHandle {
+    display: block;
+    width: 3rem;
+    height: 0.35rem;
+    background-color: var(--border-strong);
+    border-radius: 999px;
+    margin: 0.75rem auto 0;
+  }
+
   .panel.open {
     transform: translateY(0);
   }
@@ -472,4 +481,30 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.tooltipContainer {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, opacity 0.4s ease, margin-top 0.4s ease;
+  margin-top: 0;
+}
+
+.tooltipOpen {
+  max-height: 100px;
+  opacity: 1;
+  margin-top: 0.5rem;
+}
+
+.tooltipInner {
+  padding: 0.5rem 0.75rem;
+  background-color: var(--bg-glass);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
 }

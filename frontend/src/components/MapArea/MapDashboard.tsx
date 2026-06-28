@@ -268,34 +268,42 @@ export default function MapDashboard() {
         onMapaClick={() => setLeftPanel('filtros')} 
       />
 
-      {/* Panel izquierdo: filtros */}
-      {leftPanel === 'filtros' && (
-        <FilterSidebar
-          filtros={filtros}
-          onFiltros={(partial) => setFiltros((prev) => ({ ...prev, ...partial }))}
-          pasos={pasosFiltrados}
-          onSelectPaso={handleSelectPaso}
-          selectedPasoId={selectedPaso?.id}
-        />
-      )}
+      {/* Paneles Izquierdos (Filtros, Ruta, Resultados) superpuestos en Grid */}
+      <div className="relative flex-shrink-0 grid grid-cols-1 grid-rows-1 z-40">
+        {/* Panel izquierdo: filtros */}
+        <div style={{ gridArea: '1 / 1' }}>
+          <FilterSidebar
+            isOpen={leftPanel === 'filtros'}
+            filtros={filtros}
+            onFiltros={(partial) => setFiltros((prev) => ({ ...prev, ...partial }))}
+            pasos={pasosFiltrados}
+            onSelectPaso={handleSelectPaso}
+            selectedPasoId={selectedPaso?.id}
+          />
+        </div>
 
-      {/* Panel izquierdo: formulario Calcular Ruta */}
-      {leftPanel === 'ruta' && (
-        <RutaPanel onRutaCalculada={handleRutaCalculada} />
-      )}
+        {/* Panel izquierdo: formulario Calcular Ruta */}
+        <div style={{ gridArea: '1 / 1' }}>
+          <RutaPanel 
+            isOpen={leftPanel === 'ruta'}
+            onRutaCalculada={handleRutaCalculada} 
+          />
+        </div>
 
-      {/* Panel izquierdo: Resultados Ruta */}
-      {leftPanel === 'resultados' && (
-        <ResultadosPanel
-          resultado={rutaResultado}
-          pasos={pasosFiltrados}
-          onSelectPaso={handleSelectPaso}
-          onLimpiar={handleLimpiarRuta}
-          onClose={() => setLeftPanel('filtros')}
-          alternativeIsFocused={alternativeIsFocused}
-          onToggleFocus={handleToggleFocus}
-        />
-      )}
+        {/* Panel izquierdo: Resultados Ruta */}
+        <div style={{ gridArea: '1 / 1' }}>
+          <ResultadosPanel
+            isOpen={leftPanel === 'resultados'}
+            resultado={rutaResultado}
+            pasos={pasosFiltrados}
+            onSelectPaso={handleSelectPaso}
+            onLimpiar={handleLimpiarRuta}
+            onClose={() => setLeftPanel('filtros')}
+            alternativeIsFocused={alternativeIsFocused}
+            onToggleFocus={handleToggleFocus}
+          />
+        </div>
+      </div>
 
       {/* Mapa */}
       <div className={`${styles.mapArea} flex-1 relative w-full h-full bg-[var(--bg-base)]`}>

@@ -67,7 +67,7 @@ export default function ConfiguracionPage() {
       </div>
 
       {/* Content */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem 2rem 2rem' }}>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem 2rem 6rem' }}>
         <div style={{ maxWidth: '640px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
 
           {/* Acerca de */}

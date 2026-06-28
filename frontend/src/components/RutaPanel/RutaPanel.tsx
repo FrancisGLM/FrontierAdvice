@@ -46,10 +46,25 @@ const STEP_LABELS: Record<Step, string> = {
 
 interface RutaPanelProps {
   onRutaCalculada: (resultado: N8nDobleRutaResponse | null) => void;
+  isOpen: boolean;
 }
 
-export default function RutaPanel({ onRutaCalculada }: RutaPanelProps) {
+export default function RutaPanel({ onRutaCalculada, isOpen }: RutaPanelProps) {
   const { calcular, loading, error, resultado } = useCalcularRuta();
+  const [mounted, setMounted] = useState(isOpen);
+  const [animateOpen, setAnimateOpen] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setMounted(true);
+      const frame = requestAnimationFrame(() => requestAnimationFrame(() => setAnimateOpen(true)));
+      return () => cancelAnimationFrame(frame);
+    } else {
+      setAnimateOpen(false);
+      const timer = setTimeout(() => setMounted(false), 300); // 300ms match transition
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
 
   const [step, setStep] = useState<Step>('origen');
 
@@ -113,8 +128,10 @@ export default function RutaPanel({ onRutaCalculada }: RutaPanelProps) {
     destino.ciudad,
   ].filter(Boolean).join(', ') || '—';
 
+  if (!mounted) return null;
+
   return (
-    <aside className={styles.panel}>
+    <aside className={`${styles.panel} ${isOpen !== undefined ? (animateOpen ? styles.desktopOpen : styles.desktopClosed) : ''} ${animateOpen ? styles.open : ''}`}>
       {/* ── Header con step bar ─────────────────────────────── */}
       <div className={styles.header}>
         <h2 className={styles.title}>Calcular Ruta</h2>

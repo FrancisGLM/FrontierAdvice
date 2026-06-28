@@ -106,16 +106,26 @@
 @media (max-width: 768px) {
   .navRail {
     width: 100%;
-    height: 4.5rem; /* 72px */
+    height: calc(4.5rem + env(safe-area-inset-bottom));
     flex-direction: row;
-    justify-content: space-between;
-    padding: 0 1rem;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0 0.5rem;
     border-right: none;
     border-top: 1px solid var(--border-subtle);
     position: fixed;
     bottom: 0;
     left: 0;
     padding-bottom: env(safe-area-inset-bottom);
+    overflow-x: auto;
+    gap: 0.25rem;
+    /* Hide scrollbar for a cleaner look */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .navRail::-webkit-scrollbar {
+    display: none;
   }
 
   .logoContainer {
@@ -124,17 +134,23 @@
 
   .navItems {
     flex-direction: row;
-    justify-content: space-around;
-    width: 100%;
+    justify-content: flex-start;
+    width: auto;
+    flex: 1;
+    gap: 0.25rem;
   }
 
   .bottomActions {
-    display: none; /* Hide extra actions or move to a menu */
+    display: flex;
+    flex-direction: row;
+    margin-top: 0;
+    gap: 0.25rem;
   }
 
   .navButton {
     width: 3.5rem;
     height: 3.5rem;
+    flex-shrink: 0;
   }
 
   .tooltip {

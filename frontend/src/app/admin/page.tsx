@@ -69,7 +69,7 @@ export default function AdminPage() {
         </div>
       </div>
 
-      <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
+      <div style={{ padding: '2rem', paddingBottom: '6rem', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
         {activeTab === 'pasos' && <PasosTab jwt={token} />}
         {activeTab === 'incidentes' && <IncidentesTab jwt={token} />}
       </div>
@@ -142,8 +142,8 @@ function PasosTab({ jwt }: { jwt: string }) {
         </button>
       </div>
 
-      <div style={{ backgroundColor: 'var(--bg-solid)', borderRadius: '1rem', border: '1px solid var(--border-subtle)', overflow: 'hidden' }}>
-        <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse' }}>
+      <div style={{ backgroundColor: 'var(--bg-solid)', borderRadius: '1rem', border: '1px solid var(--border-subtle)', overflowX: 'auto' }}>
+        <table style={{ width: '100%', minWidth: '600px', textAlign: 'left', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ backgroundColor: 'var(--bg-glass)', borderBottom: '1px solid var(--border-subtle)' }}>
               <th style={{ padding: '1rem', fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>Nombre Oficial</th>
@@ -324,8 +324,35 @@ function IncidentesTab({ jwt }: { jwt: string }) {
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <style>{`
+            .incidente-card {
+              display: flex;
+              justify-content: space-between;
+              align-items: flex-start;
+              gap: 1rem;
+            }
+            .incidente-actions {
+              display: flex;
+              flex-direction: column;
+              gap: 0.5rem;
+            }
+            @media (max-width: 768px) {
+              .incidente-card {
+                flex-direction: column;
+              }
+              .incidente-actions {
+                flex-direction: row;
+                flex-wrap: wrap;
+                width: 100%;
+              }
+              .incidente-actions button {
+                flex: 1;
+                justify-content: center;
+              }
+            }
+          `}</style>
           {filteredIncidentes.map((inc) => (
-            <div key={inc.documentId} style={{ backgroundColor: 'var(--bg-solid)', padding: '1.5rem', borderRadius: '1rem', border: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem' }}>
+            <div key={inc.documentId} className="incidente-card" style={{ backgroundColor: 'var(--bg-solid)', padding: '1.5rem', borderRadius: '1rem', border: '1px solid var(--border-subtle)' }}>
               <div>
                 <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '0.5rem' }}>
                   <span style={{ fontSize: '0.75rem', fontWeight: 700, padding: '0.125rem 0.5rem', borderRadius: '999px', backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }}>
@@ -347,7 +374,7 @@ function IncidentesTab({ jwt }: { jwt: string }) {
               </div>
               
               {subTab === 'pendientes' ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <div className="incidente-actions">
                   <button
                     disabled={actionLoading}
                     onClick={() => handleRevisar(inc.documentId, 'resuelto')}

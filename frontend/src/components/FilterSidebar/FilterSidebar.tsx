@@ -1,7 +1,7 @@
 'use client';
 
 import { Search, ChevronDown, AlertTriangle, Bug, Filter, X } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PasoFronterizo, FiltrosMapa } from '@/lib/types';
 import { regiones } from '@/lib/mockData';
 import styles from './FilterSidebar.module.css';
@@ -13,6 +13,7 @@ interface FilterSidebarProps {
   pasos: PasoFronterizo[];
   onSelectPaso: (p: PasoFronterizo) => void;
   selectedPasoId?: string;
+  isOpen?: boolean;
 }
 
 const estadoBadge: Record<string, { bg: string; text: string; label: string }> = {
@@ -27,13 +28,32 @@ export default function FilterSidebar({
   pasos,
   onSelectPaso,
   selectedPasoId,
+  isOpen,
 }: FilterSidebarProps) {
   const [isOpenMobile, setIsOpenMobile] = useState(false);
   const [incidenteOpen, setIncidenteOpen] = useState(false);
+  
+  const [mounted, setMounted] = useState(isOpen ?? true);
+  const [animateOpen, setAnimateOpen] = useState(false);
+
+  useEffect(() => {
+    if (isOpen === undefined) return;
+    if (isOpen) {
+      setMounted(true);
+      const frame = requestAnimationFrame(() => requestAnimationFrame(() => setAnimateOpen(true)));
+      return () => cancelAnimationFrame(frame);
+    } else {
+      setAnimateOpen(false);
+      const timer = setTimeout(() => setMounted(false), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
+
+  if (isOpen !== undefined && !mounted) return null;
 
   return (
     <>
-      <aside className={`${styles.sidebar} ${isOpenMobile ? styles.open : ''}`}>
+      <aside className={`${styles.sidebar} ${isOpenMobile ? styles.open : ''} ${isOpen !== undefined ? (animateOpen ? styles.desktopOpen : styles.desktopClosed) : ''}`}>
         {/* Mobile Toggle Button */}
         <button 
           className={styles.mobileToggle} 

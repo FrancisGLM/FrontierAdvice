@@ -1,11 +1,12 @@
 'use client';
+import { useState, useEffect } from 'react';
 
 import { 
   BrainCircuit, Clock, Snowflake, CloudRain, Wind, 
   CloudLightning, History, AlertTriangle, Mountain, 
   Construction, FileWarning, Check, ThermometerSnowflake, 
   Droplets, Tornado, Thermometer, CloudFog, CloudSnow, 
-  Droplet, CloudHail, ShieldAlert, Siren
+  Droplet, CloudHail, ShieldAlert, Siren, Info
 } from 'lucide-react';
 import { SenalPredictiva } from '@/lib/types';
 import styles from './PasoInfo.module.css';
@@ -106,6 +107,17 @@ function getMotivoIcon(motivo: string) {
 }
 
 export default function PredictionBadge({ senales }: PredictionBadgeProps) {
+  const [activeMotivo, setActiveMotivo] = useState<string | null>(null);
+  const [displayMotivo, setDisplayMotivo] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (activeMotivo) {
+      setDisplayMotivo(activeMotivo);
+      const timer = setTimeout(() => setActiveMotivo(null), 3500);
+      return () => clearTimeout(timer);
+    }
+  }, [activeMotivo]);
+
   if (!senales || senales.length === 0) return null;
 
   return (
@@ -148,7 +160,16 @@ export default function PredictionBadge({ senales }: PredictionBadgeProps) {
                 {s.motivoResumen && s.motivoResumen !== 'sin señales relevantes' ? (
                   <div style={{ display: 'flex', gap: '0.375rem', flexWrap: 'wrap', justifyContent: 'center' }}>
                     {s.motivoResumen.split(',').map((motivoStr, i) => (
-                      <span key={i} title={motivoStr.trim()} style={{ display: 'inline-block', cursor: 'help' }}>
+                      <span 
+                        key={i} 
+                        title={motivoStr.trim()} 
+                        style={{ display: 'inline-block', cursor: 'help' }}
+                        onClick={() => {
+                          // Clear active and reset timer if clicking the same icon
+                          setActiveMotivo(null);
+                          setTimeout(() => setActiveMotivo(motivoStr.trim()), 50);
+                        }}
+                      >
                         {getMotivoIcon(motivoStr.trim())}
                       </span>
                     ))}
@@ -162,6 +183,13 @@ export default function PredictionBadge({ senales }: PredictionBadgeProps) {
             </div>
           );
         })}
+      </div>
+      
+      <div className={`${styles.tooltipContainer} ${activeMotivo ? styles.tooltipOpen : ''}`}>
+        <div className={styles.tooltipInner}>
+          <Info size={14} style={{ flexShrink: 0, marginTop: '0.1rem', color: 'var(--text-primary)' }} />
+          <span style={{ textTransform: 'capitalize' }}>{displayMotivo}</span>
+        </div>
       </div>
     </div>
   );
