@@ -1,6 +1,5 @@
 'use client';
 
-import { N8N_WEBHOOK_URL } from '@/lib/config';
 import { useState, useCallback } from 'react';
 import type { OrsResponse, N8nDobleRutaResponse, N8nMensaje } from '@/lib/types';
 import { N8N_WEBHOOK_URL } from '@/lib/config';
