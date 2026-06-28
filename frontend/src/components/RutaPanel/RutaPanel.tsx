@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRutaContext } from '@/lib/RutaContext';
 import { MapPin, Flag, Car, ChevronDown, ChevronLeft, ChevronRight, Navigation, Check, Truck, Lightbulb, AlertTriangle, Trash2, Route } from 'lucide-react';
 import type { DireccionEstructurada, Pais, TipoVehiculo, SubtipoCamion } from '@/lib/hooks/useCalcularRuta';
