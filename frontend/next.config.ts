@@ -16,6 +16,7 @@ const withPWA = withPWAInit({
 const nextConfig: NextConfig = {
   allowedDevOrigins: ['frontieradvice.tech', 'strapi.frontieradvice.tech'],
   turbopack: {},
+  devIndicators: false,
 };
 
 export default withPWA(nextConfig);

@@ -18,7 +18,7 @@ const estadoConfig = {
   cerrado: { label: 'CERRADO', bg: 'var(--status-closed-bg)', text: 'var(--status-closed)' },
 };
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 function getBorderCountry(nombre: string): 'AR' | 'BO' | 'PE' {
   const n = nombre.toLowerCase();
@@ -67,24 +67,36 @@ function CountryFlag({ country }: { country: 'CL' | 'AR' | 'BO' | 'PE' }) {
 
 export default function PasoInfoPanel({ paso, onClose }: PasoInfoPanelProps) {
   const [activePaso, setActivePaso] = useState<PasoFronterizo | null>(paso);
-  const [touchStartY, setTouchStartY] = useState<number | null>(null);
-  const [translateY, setTranslateY] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  
+  // Refs para alto rendimiento en mobile (evitar re-renders)
+  const panelRef = useRef<HTMLElement>(null);
+  const backdropRef = useRef<HTMLDivElement>(null);
+  const touchStartY = useRef<number | null>(null);
+  const currentDiff = useRef<number>(0);
 
   useEffect(() => {
     if (paso) {
       setActivePaso(paso);
-      setTranslateY(0);
-      setIsDragging(false);
-      // Wait for DOM paint before adding .open class to trigger CSS transition
+      currentDiff.current = 0;
+      
+      // Limpiar estilos manuales anteriores
+      if (panelRef.current) {
+        panelRef.current.style.transform = '';
+        panelRef.current.style.transition = '';
+      }
+      if (backdropRef.current) {
+        backdropRef.current.style.opacity = '';
+        backdropRef.current.style.transition = '';
+      }
+
       const frameId = requestAnimationFrame(() => {
         requestAnimationFrame(() => setIsMounted(true));
       });
       return () => cancelAnimationFrame(frameId);
     } else {
       setIsMounted(false);
-      const timer = setTimeout(() => setActivePaso(null), 400); // match transition duration
+      const timer = setTimeout(() => setActivePaso(null), 400);
       return () => clearTimeout(timer);
     }
   }, [paso]);
@@ -94,42 +106,50 @@ export default function PasoInfoPanel({ paso, onClose }: PasoInfoPanelProps) {
   if (!displayPaso) return null;
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchStartY(e.touches[0].clientY);
-    setIsDragging(true);
+    touchStartY.current = e.touches[0].clientY;
+    if (panelRef.current) panelRef.current.style.transition = 'none';
+    if (backdropRef.current) backdropRef.current.style.transition = 'none';
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (touchStartY === null) return;
-    const currentY = e.touches[0].clientY;
-    const diff = currentY - touchStartY;
+    if (touchStartY.current === null) return;
+    const diff = e.touches[0].clientY - touchStartY.current;
+    
     if (diff > 0) {
-      setTranslateY(diff);
+      currentDiff.current = diff;
+      if (panelRef.current) {
+        panelRef.current.style.transform = `translateY(${diff}px)`;
+      }
+      if (backdropRef.current) {
+        backdropRef.current.style.opacity = String(Math.max(0, 1 - (diff / 250)));
+      }
     }
   };
 
   const handleTouchEnd = () => {
-    setIsDragging(false);
-    if (translateY > 120) {
-      // Clearing translateY lets the CSS transition take over and animate it offscreen
-      setTranslateY(0);
+    if (panelRef.current) panelRef.current.style.transition = '';
+    if (backdropRef.current) backdropRef.current.style.transition = '';
+
+    if (currentDiff.current > 120) {
+      currentDiff.current = 0;
       onClose();
     } else {
-      // Snap back to 0 smoothly
-      setTranslateY(0);
+      // Volver a la posicion inicial
+      currentDiff.current = 0;
+      if (panelRef.current) panelRef.current.style.transform = '';
+      if (backdropRef.current) backdropRef.current.style.opacity = '';
     }
-    setTouchStartY(null);
+    touchStartY.current = null;
   };
 
   const cfg = estadoConfig[displayPaso.estado];
   const diario = displayPaso.estado_diarios;
 
-  // Helper for vehicle status
   const getVehicleStatus = (type: string) => {
     if (!diario || !diario.tipo_vehiculos) return 'red';
     const isAllowed = diario.tipo_vehiculos.includes(type);
     if (!isAllowed) return 'red';
     
-    // Check if chains are mentioned
     const msg = ((diario.mensaje_original || '') + ' ' + (diario.motivo_estado || '')).toLowerCase();
     if (msg.includes('cadena') || msg.includes('porte obligatorio')) {
       return 'yellow';
@@ -142,24 +162,17 @@ export default function PasoInfoPanel({ paso, onClose }: PasoInfoPanelProps) {
     yellow: { bg: '#fef9c3', text: '#854d0e', icon: '#eab308' },
     red: { bg: '#fee2e2', text: '#991b1b', icon: '#ef4444' }
   };
-  
-  // Calculate dynamic opacity for the backdrop during drag
-  const backdropOpacity = Math.max(0, 1 - (translateY / 250));
 
   return (
     <>
       <aside 
+        ref={panelRef}
         className={`${styles.panel} ${isMounted ? styles.open : ''}`}
-        style={{ 
-          transform: translateY > 0 ? `translateY(${translateY}px)` : undefined,
-          transition: isDragging ? 'none' : undefined 
-        }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
         <div className={styles.pullHandle} />
-        {/* Header */}
         <div className={styles.header}>
           <h2 className={styles.title}>Información del Paso</h2>
           <button onClick={onClose} className={styles.closeButton} title="Cerrar panel">
@@ -275,11 +288,8 @@ export default function PasoInfoPanel({ paso, onClose }: PasoInfoPanelProps) {
 
       {/* Mobile Backdrop */}
       <div 
-        className={`md:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-[55] transition-opacity ${paso ? 'pointer-events-auto' : 'pointer-events-none'}`}
-        style={{ 
-          opacity: paso ? backdropOpacity : 0,
-          transition: isDragging ? 'none' : 'opacity 0.4s ease'
-        }}
+        ref={backdropRef}
+        className={`md:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-[55] transition-opacity ${paso ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}
         onClick={onClose}
       />
     </>
