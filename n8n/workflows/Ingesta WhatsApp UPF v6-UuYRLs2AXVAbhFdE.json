@@ -173,7 +173,6 @@
     }
   },
   "createdAt": "2026-05-12T05:37:32.263Z",
-  "description": null,
   "id": "UuYRLs2AXVAbhFdE",
   "isArchived": true,
   "meta": {
@@ -619,7 +618,6 @@
       "name": "Schedule Trigger"
     }
   ],
-  "pinData": {},
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
@@ -630,17 +628,7 @@
       "createdAt": "2026-05-12T05:37:32.270Z",
       "role": "workflow:owner",
       "workflowId": "UuYRLs2AXVAbhFdE",
-      "projectId": "0mwVSLULhlB6ku2N",
-      "project": {
-        "updatedAt": "2026-05-08T10:08:26.296Z",
-        "createdAt": "2026-05-08T08:11:46.302Z",
-        "id": "0mwVSLULhlB6ku2N",
-        "name": "Nyxu Infinity <nyxuofficial@gmail.com>",
-        "type": "personal",
-        "icon": null,
-        "description": null,
-        "creatorId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
-      }
+      "projectId": "0mwVSLULhlB6ku2N"
     }
   ],
   "staticData": {
@@ -660,6 +648,5 @@
   ],
   "triggerCount": 1,
   "updatedAt": "2026-06-28T13:13:44.000Z",
-  "versionCounter": 333,
   "versionId": "42dc94dc-c4f0-4a35-bcc5-bae0b41aac17"
 }
