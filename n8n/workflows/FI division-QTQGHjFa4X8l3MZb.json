@@ -149,8 +149,9 @@
     }
   },
   "createdAt": "2026-05-22T04:21:57.463Z",
+  "description": null,
   "id": "QTQGHjFa4X8l3MZb",
-  "isArchived": false,
+  "isArchived": true,
   "meta": {
     "templateCredsSetupCompleted": true
   },
@@ -252,8 +253,8 @@
       "type": "n8n-nodes-base.httpRequestTool",
       "typeVersion": 4.4,
       "position": [
-        320,
-        96
+        304,
+        80
       ],
       "id": "5a7c4e21-5810-4039-958e-09b1afc2264c",
       "name": "Maps APi",
@@ -271,8 +272,8 @@
       "type": "@n8n/n8n-nodes-langchain.toolCode",
       "typeVersion": 1.3,
       "position": [
-        160,
-        112
+        144,
+        80
       ],
       "id": "5a6ef1d3-e42a-42f1-9fbe-d2460f5d42bd",
       "name": "MOCK Data"
@@ -284,7 +285,7 @@
       "type": "n8n-nodes-base.httpRequestTool",
       "typeVersion": 4.4,
       "position": [
-        224,
+        208,
         272
       ],
       "id": "4dcc1972-4e85-4a6f-a457-c9b84696c35e",
@@ -379,6 +380,7 @@
       "disabled": true
     }
   ],
+  "pinData": {},
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
@@ -389,12 +391,30 @@
       "createdAt": "2026-05-22T04:21:57.467Z",
       "role": "workflow:owner",
       "workflowId": "QTQGHjFa4X8l3MZb",
-      "projectId": "EyuFxRt8AgWPBaxB"
+      "projectId": "EyuFxRt8AgWPBaxB",
+      "project": {
+        "updatedAt": "2026-05-08T12:20:49.684Z",
+        "createdAt": "2026-05-08T12:12:30.737Z",
+        "id": "EyuFxRt8AgWPBaxB",
+        "name": "Franco Ingravallo <fingravallo2002@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "34c88ee8-ca63-418a-a5b5-63b4ead3ae7d"
+      }
     }
   ],
   "staticData": null,
-  "tags": [],
+  "tags": [
+    {
+      "updatedAt": "2026-06-28T13:13:21.105Z",
+      "createdAt": "2026-06-28T13:13:21.105Z",
+      "id": "ziQ1ls4i4ACweoOR",
+      "name": "deprecated"
+    }
+  ],
   "triggerCount": 0,
-  "updatedAt": "2026-05-22T05:15:15.640Z",
-  "versionId": "c3451024-aa5d-4203-841b-afdf7c580749"
+  "updatedAt": "2026-06-28T13:14:10.000Z",
+  "versionCounter": 111,
+  "versionId": "10901050-dee7-465f-82f5-90ad665d49ee"
 }
