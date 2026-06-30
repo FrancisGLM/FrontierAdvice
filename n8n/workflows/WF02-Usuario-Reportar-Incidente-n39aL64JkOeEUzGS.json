@@ -1,0 +1,688 @@
+{
+  "active": true,
+  "activeVersion": {
+    "updatedAt": "2026-06-26T11:58:43.000Z",
+    "createdAt": "2026-06-26T11:54:15.551Z",
+    "versionId": "6355ad3e-422e-4b5b-90f7-69cdf3035fa9",
+    "workflowId": "n39aL64JkOeEUzGS",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "public/reportar-incidente",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "id": "e9c1c79c-f25d-4add-94c4-845a2db2896a",
+        "name": "Webhook Reportar Incidente",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -1328,
+          112
+        ],
+        "webhookId": "da227991-3fd9-406e-8938-cae7e0ac8928"
+      },
+      {
+        "parameters": {
+          "jsCode": "const headers = $json.headers || {};\nconst source = $json.body && Object.keys($json.body).length ? $json.body : $json;\nconst paso_documentId = (source.paso_documentId || '').toString().trim();\nconst tipo_incidente = (source.tipo_incidente || '').toString().trim();\nconst descripcion = (source.descripcion || '').toString().trim();\nconst email_contacto = (source.email_contacto || '').toString().trim();\nconst ip = (headers['x-forwarded-for'] || '').toString();\nconst user_agent = (headers['user-agent'] || '').toString();\nconst errores = [];\nif (!paso_documentId) errores.push('Falta paso_documentId');\nif (!tipo_incidente) errores.push('Falta tipo_incidente');\nif (!descripcion || descripcion.length < 15) errores.push('descripcion muy corta');\nif (descripcion.length > 500) errores.push('descripcion supera 500 caracteres');\nreturn [{ json: { paso_documentId, tipo_incidente, descripcion, email_contacto, ip, user_agent, errores, entrada_valida: errores.length === 0 } }];"
+        },
+        "id": "9abbc402-1a1b-4588-bbc9-d205b4030af0",
+        "name": "Validar Entrada",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1104,
+          112
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "leftValue": "={{ $json.entrada_valida }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "eb0805be-4a0e-4b84-9672-fb46ab6a9bb5",
+        "name": "Entrada Valida?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          -880,
+          112
+        ]
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "={{ { ok: false, error: 'Parametros invalidos', detalle: $json.errores } }}",
+          "options": {
+            "responseCode": 400
+          }
+        },
+        "id": "c5670838-6bb3-4fe2-b824-88e07aeb5c41",
+        "name": "Responder 400",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          -656,
+          208
+        ]
+      },
+      {
+        "parameters": {
+          "url": "=https://strapi.frontieradvice.tech/api/paso-fronterizos",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "strapiTokenApi",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "filters[documentId][$eq]",
+                "value": "={{ $('Validar Entrada').item.json.paso_documentId }}"
+              },
+              {
+                "name": "pagination[pageSize]",
+                "value": "1"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "8a301033-2c72-4239-bcd1-3edf4c3c6f6c",
+        "name": "GET Paso",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -656,
+          16
+        ],
+        "credentials": {
+          "strapiTokenApi": {
+            "id": "eUSeEuEvTFDfOYVR",
+            "name": "Strapi FrontierAdvice"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const paso = $json.data?.[0] || null;\nreturn [{ json: { existe: !!paso, paso } }];"
+        },
+        "id": "c697385b-dc95-4ca8-9b3a-a02a24489a87",
+        "name": "Evaluar Paso",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -432,
+          16
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "leftValue": "={{ $json.existe }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "5185b589-6055-449c-baf3-207b4f602a63",
+        "name": "Paso Existe?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          -208,
+          16
+        ]
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "={{ { ok: false, error: 'Paso fronterizo inexistente' } }}",
+          "options": {
+            "responseCode": 404
+          }
+        },
+        "id": "0e1d33b8-7164-4ecb-9588-4ac952da3337",
+        "name": "Responder 404",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          16,
+          112
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://strapi.frontieradvice.tech/api/reporte-incidentes",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "strapiTokenApi",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ { data: { id_paso: { connect: [{ documentId: $('Validar Entrada').item.json.paso_documentId }] }, tipo_incidente: $('Validar Entrada').item.json.tipo_incidente, descripcion: $('Validar Entrada').item.json.descripcion, email_contacto: $('Validar Entrada').item.json.email_contacto || null, estado_revision: 'pendiente', fuente_reporte: 'usuario_web', ip_origen: $('Validar Entrada').item.json.ip || null, user_agent: $('Validar Entrada').item.json.user_agent || null, fecha_reporte: new Date().toISOString() } } }}",
+          "options": {}
+        },
+        "id": "afb94154-ad70-4223-8263-55897864050c",
+        "name": "POST Incidente",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          16,
+          -80
+        ],
+        "credentials": {
+          "strapiTokenApi": {
+            "id": "eUSeEuEvTFDfOYVR",
+            "name": "Strapi FrontierAdvice"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "={{ { ok: true, mensaje: 'Reporte recibido correctamente', reporte_documentId: $json.data?.documentId || null } }}",
+          "options": {
+            "responseCode": 201
+          }
+        },
+        "id": "a43ce74c-5729-434a-b548-d5ffe3f66167",
+        "name": "Responder 201",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          240,
+          -80
+        ]
+      }
+    ],
+    "connections": {
+      "Webhook Reportar Incidente": {
+        "main": [
+          [
+            {
+              "node": "Validar Entrada",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Validar Entrada": {
+        "main": [
+          [
+            {
+              "node": "Entrada Valida?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Entrada Valida?": {
+        "main": [
+          [
+            {
+              "node": "GET Paso",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Responder 400",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GET Paso": {
+        "main": [
+          [
+            {
+              "node": "Evaluar Paso",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Evaluar Paso": {
+        "main": [
+          [
+            {
+              "node": "Paso Existe?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Paso Existe?": {
+        "main": [
+          [
+            {
+              "node": "POST Incidente",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Responder 404",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "POST Incidente": {
+        "main": [
+          [
+            {
+              "node": "Responder 201",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Nyxu Infinity",
+    "name": "Version 6355ad3e",
+    "description": "",
+    "autosaved": true,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-06-26T11:58:43.564Z",
+        "id": 124,
+        "workflowId": "n39aL64JkOeEUzGS",
+        "versionId": "6355ad3e-422e-4b5b-90f7-69cdf3035fa9",
+        "event": "activated",
+        "userId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
+      }
+    ]
+  },
+  "activeVersionId": "6355ad3e-422e-4b5b-90f7-69cdf3035fa9",
+  "connections": {
+    "Webhook Reportar Incidente": {
+      "main": [
+        [
+          {
+            "node": "Validar Entrada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Entrada": {
+      "main": [
+        [
+          {
+            "node": "Entrada Valida?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Entrada Valida?": {
+      "main": [
+        [
+          {
+            "node": "GET Paso",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder 400",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET Paso": {
+      "main": [
+        [
+          {
+            "node": "Evaluar Paso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evaluar Paso": {
+      "main": [
+        [
+          {
+            "node": "Paso Existe?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Paso Existe?": {
+      "main": [
+        [
+          {
+            "node": "POST Incidente",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder 404",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST Incidente": {
+      "main": [
+        [
+          {
+            "node": "Responder 201",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-06-26T11:53:58.384Z",
+  "description": null,
+  "id": "n39aL64JkOeEUzGS",
+  "isArchived": false,
+  "meta": null,
+  "name": "WF02-Usuario-Reportar-Incidente",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "public/reportar-incidente",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "e9c1c79c-f25d-4add-94c4-845a2db2896a",
+      "name": "Webhook Reportar Incidente",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1328,
+        112
+      ],
+      "webhookId": "da227991-3fd9-406e-8938-cae7e0ac8928"
+    },
+    {
+      "parameters": {
+        "jsCode": "const headers = $json.headers || {};\nconst source = $json.body && Object.keys($json.body).length ? $json.body : $json;\nconst paso_documentId = (source.paso_documentId || '').toString().trim();\nconst tipo_incidente = (source.tipo_incidente || '').toString().trim();\nconst descripcion = (source.descripcion || '').toString().trim();\nconst email_contacto = (source.email_contacto || '').toString().trim();\nconst ip = (headers['x-forwarded-for'] || '').toString();\nconst user_agent = (headers['user-agent'] || '').toString();\nconst errores = [];\nif (!paso_documentId) errores.push('Falta paso_documentId');\nif (!tipo_incidente) errores.push('Falta tipo_incidente');\nif (!descripcion || descripcion.length < 15) errores.push('descripcion muy corta');\nif (descripcion.length > 500) errores.push('descripcion supera 500 caracteres');\nreturn [{ json: { paso_documentId, tipo_incidente, descripcion, email_contacto, ip, user_agent, errores, entrada_valida: errores.length === 0 } }];"
+      },
+      "id": "9abbc402-1a1b-4588-bbc9-d205b4030af0",
+      "name": "Validar Entrada",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1104,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.entrada_valida }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "eb0805be-4a0e-4b84-9672-fb46ab6a9bb5",
+      "name": "Entrada Valida?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -880,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: false, error: 'Parametros invalidos', detalle: $json.errores } }}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "id": "c5670838-6bb3-4fe2-b824-88e07aeb5c41",
+      "name": "Responder 400",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        -656,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://strapi.frontieradvice.tech/api/paso-fronterizos",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filters[documentId][$eq]",
+              "value": "={{ $('Validar Entrada').item.json.paso_documentId }}"
+            },
+            {
+              "name": "pagination[pageSize]",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8a301033-2c72-4239-bcd1-3edf4c3c6f6c",
+      "name": "GET Paso",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -656,
+        16
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const paso = $json.data?.[0] || null;\nreturn [{ json: { existe: !!paso, paso } }];"
+      },
+      "id": "c697385b-dc95-4ca8-9b3a-a02a24489a87",
+      "name": "Evaluar Paso",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -432,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.existe }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "5185b589-6055-449c-baf3-207b4f602a63",
+      "name": "Paso Existe?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -208,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: false, error: 'Paso fronterizo inexistente' } }}",
+        "options": {
+          "responseCode": 404
+        }
+      },
+      "id": "0e1d33b8-7164-4ecb-9588-4ac952da3337",
+      "name": "Responder 404",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        16,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://strapi.frontieradvice.tech/api/reporte-incidentes",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { data: { id_paso: { connect: [{ documentId: $('Validar Entrada').item.json.paso_documentId }] }, tipo_incidente: $('Validar Entrada').item.json.tipo_incidente, descripcion: $('Validar Entrada').item.json.descripcion, email_contacto: $('Validar Entrada').item.json.email_contacto || null, estado_revision: 'pendiente', fuente_reporte: 'usuario_web', ip_origen: $('Validar Entrada').item.json.ip || null, user_agent: $('Validar Entrada').item.json.user_agent || null, fecha_reporte: new Date().toISOString() } } }}",
+        "options": {}
+      },
+      "id": "afb94154-ad70-4223-8263-55897864050c",
+      "name": "POST Incidente",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        16,
+        -80
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: true, mensaje: 'Reporte recibido correctamente', reporte_documentId: $json.data?.documentId || null } }}",
+        "options": {
+          "responseCode": 201
+        }
+      },
+      "id": "a43ce74c-5729-434a-b548-d5ffe3f66167",
+      "name": "Responder 201",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        -80
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-06-26T11:53:58.388Z",
+      "createdAt": "2026-06-26T11:53:58.388Z",
+      "role": "workflow:owner",
+      "workflowId": "n39aL64JkOeEUzGS",
+      "projectId": "0mwVSLULhlB6ku2N",
+      "project": {
+        "updatedAt": "2026-05-08T10:08:26.296Z",
+        "createdAt": "2026-05-08T08:11:46.302Z",
+        "id": "0mwVSLULhlB6ku2N",
+        "name": "Nyxu Infinity <nyxuofficial@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
+      }
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2026-06-26T11:54:49.113Z",
+  "versionCounter": 17,
+  "versionId": "6355ad3e-422e-4b5b-90f7-69cdf3035fa9"
+}
