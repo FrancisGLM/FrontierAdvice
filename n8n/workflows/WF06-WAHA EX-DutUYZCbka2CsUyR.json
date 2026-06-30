@@ -1,9 +1,9 @@
 {
   "active": true,
   "activeVersion": {
-    "updatedAt": "2026-06-28T20:09:19.000Z",
-    "createdAt": "2026-06-28T20:09:13.324Z",
-    "versionId": "34996412-c1d5-44b2-9ba8-976895705d73",
+    "updatedAt": "2026-06-30T11:57:36.000Z",
+    "createdAt": "2026-06-30T11:57:26.743Z",
+    "versionId": "9656bff9-ca58-4443-8dd4-692f68f98ce3",
     "workflowId": "DutUYZCbka2CsUyR",
     "nodes": [
       {
@@ -34,7 +34,7 @@
           },
           "sendBody": true,
           "specifyBody": "json",
-          "jsonBody": "={{ {\n  data: {\n    id_estado: { connect: [ { documentId: $json.data.documentId } ] },\n    msg_id_waha: $('Loop Novedades').item.json.waha_id,\n    msg_fecha_iso: new Date().toISOString(),\n    procesado: true,\n    relevante: true,\n    fuente: \"WhatsApp UPF\"\n  }\n} }}",
+          "jsonBody": "={{ {\n  data: {\n    id_estado: { connect: [ { documentId: $json.data.documentId } ] },\n    msg_fecha_iso: new Date().toISOString(),\n    procesado: true,\n    relevante: true,\n    fuente: \"WhatsApp UPF\"\n  }\n} }}",
           "options": {}
         },
         "id": "979db99a-638b-43cc-bb63-fd0a78767977",
@@ -70,7 +70,7 @@
           },
           "sendBody": true,
           "specifyBody": "json",
-          "jsonBody": "={{ {\n  data: {\n    id_paso: { connect: [ { documentId: $json.documentId } ] },\n    fecha_reporte: new Date().toISOString(),\n    estado_general: $json.estado_general,\n    fuente: \"WhatsApp UPF\",\n    mensaje_original: $json.mensaje_original,\n    origen_tipo: \"waha\",\n    motivo_estado: $json.detalles,\n    msg_id_waha: $json.waha_id,\n    confianza_extraccion: 0.95,\n    es_programado: false\n  }\n} }}",
+          "jsonBody": "={{ {\n  data: {\n    id_paso: { connect: [ { documentId: $json.documentId } ] },\n    fecha_reporte: new Date().toISOString(),\n    estado_general: $json.estado_general,\n    fuente: \"WhatsApp UPF\",\n    mensaje_original: $json.mensaje_original,\n    origen_tipo: \"waha\",\n    motivo_estado: $json.detalles,\n    confianza_extraccion: 0.95,\n    es_programado: false\n  }\n} }}",
           "options": {}
         },
         "id": "fa2dd315-408f-4a07-a044-782dbe2c9f66",
@@ -327,11 +327,11 @@
       }
     },
     "authors": "Nyxu Infinity",
-    "name": "Version 34996412",
+    "name": "Version 9656bff9",
     "description": "",
     "autosaved": true
   },
-  "activeVersionId": "34996412-c1d5-44b2-9ba8-976895705d73",
+  "activeVersionId": "9656bff9-ca58-4443-8dd4-692f68f98ce3",
   "connections": {
     "POST MensajeWAHA": {
       "main": [
@@ -461,7 +461,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ {\n  data: {\n    id_estado: { connect: [ { documentId: $json.data.documentId } ] },\n    msg_id_waha: $('Loop Novedades').item.json.waha_id,\n    msg_fecha_iso: new Date().toISOString(),\n    procesado: true,\n    relevante: true,\n    fuente: \"WhatsApp UPF\"\n  }\n} }}",
+        "jsonBody": "={{ {\n  data: {\n    id_estado: { connect: [ { documentId: $json.data.documentId } ] },\n    msg_fecha_iso: new Date().toISOString(),\n    procesado: true,\n    relevante: true,\n    fuente: \"WhatsApp UPF\"\n  }\n} }}",
         "options": {}
       },
       "id": "979db99a-638b-43cc-bb63-fd0a78767977",
@@ -497,7 +497,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ {\n  data: {\n    id_paso: { connect: [ { documentId: $json.documentId } ] },\n    fecha_reporte: new Date().toISOString(),\n    estado_general: $json.estado_general,\n    fuente: \"WhatsApp UPF\",\n    mensaje_original: $json.mensaje_original,\n    origen_tipo: \"waha\",\n    motivo_estado: $json.detalles,\n    msg_id_waha: $json.waha_id,\n    confianza_extraccion: 0.95,\n    es_programado: false\n  }\n} }}",
+        "jsonBody": "={{ {\n  data: {\n    id_paso: { connect: [ { documentId: $json.documentId } ] },\n    fecha_reporte: new Date().toISOString(),\n    estado_general: $json.estado_general,\n    fuente: \"WhatsApp UPF\",\n    mensaje_original: $json.mensaje_original,\n    origen_tipo: \"waha\",\n    motivo_estado: $json.detalles,\n    confianza_extraccion: 0.95,\n    es_programado: false\n  }\n} }}",
         "options": {}
       },
       "id": "fa2dd315-408f-4a07-a044-782dbe2c9f66",
@@ -676,6 +676,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2026-06-28T20:09:13.323Z",
-  "versionId": "34996412-c1d5-44b2-9ba8-976895705d73"
+  "updatedAt": "2026-06-30T11:57:44.691Z",
+  "versionId": "9656bff9-ca58-4443-8dd4-692f68f98ce3"
 }
