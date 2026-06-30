@@ -47,6 +47,12 @@
       "relation": "oneToMany",
       "target": "api::reporte-incidente.reporte-incidente",
       "mappedBy": "id_paso"
+    },
+    "estado_diarios": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::estado-diario.estado-diario",
+      "mappedBy": "id_paso"
     }
   }
 }

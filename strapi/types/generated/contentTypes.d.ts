@@ -514,42 +514,6 @@ export interface ApiAdminLogAdminLog extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiAlertaEventoAlertaEvento
-  extends Struct.CollectionTypeSchema {
-  collectionName: 'alerta_eventos';
-  info: {
-    displayName: 'AlertaEvento';
-    pluralName: 'alerta-eventos';
-    singularName: 'alerta-evento';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    descripcion: Schema.Attribute.Text;
-    fecha_evento: Schema.Attribute.DateTime;
-    fuente: Schema.Attribute.String;
-    idpaso: Schema.Attribute.Relation<
-      'oneToOne',
-      'api::paso-fronterizo.paso-fronterizo'
-    >;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::alerta-evento.alerta-evento'
-    > &
-      Schema.Attribute.Private;
-    publishedAt: Schema.Attribute.DateTime;
-    tipo_alerta: Schema.Attribute.String;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
 export interface ApiClimaActualClimaActual extends Struct.CollectionTypeSchema {
   collectionName: 'clima_actuals';
   info: {
@@ -605,7 +569,6 @@ export interface ApiEstadoDiarioEstadoDiario
   };
   attributes: {
     confianza_extraccion: Schema.Attribute.Decimal;
-    creado_en: Schema.Attribute.DateTime;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -619,7 +582,7 @@ export interface ApiEstadoDiarioEstadoDiario
     horario_apertura: Schema.Attribute.String;
     horario_cierre: Schema.Attribute.String;
     id_paso: Schema.Attribute.Relation<
-      'oneToOne',
+      'manyToOne',
       'api::paso-fronterizo.paso-fronterizo'
     >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
@@ -630,12 +593,6 @@ export interface ApiEstadoDiarioEstadoDiario
       Schema.Attribute.Private;
     mensaje_original: Schema.Attribute.Text;
     motivo_estado: Schema.Attribute.String;
-    msg_id_waha: Schema.Attribute.String;
-    msg_server_id: Schema.Attribute.Integer;
-    msg_timestamp: Schema.Attribute.BigInteger;
-    nivel_riesgo_calc: Schema.Attribute.Enumeration<
-      ['alto', 'medio', 'bajo', 'null']
-    >;
     origen_tipo: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     tipo_vehiculos: Schema.Attribute.JSON;
@@ -671,7 +628,7 @@ export interface ApiMensajeWahaMensajeWaha extends Struct.CollectionTypeSchema {
       'api::mensaje-waha.mensaje-waha'
     > &
       Schema.Attribute.Private;
-    msg_body: Schema.Attribute.BigInteger;
+    msg_body: Schema.Attribute.Text;
     msg_fecha_iso: Schema.Attribute.DateTime;
     msg_id_waha: Schema.Attribute.String;
     msg_row_id: Schema.Attribute.Integer;
@@ -708,6 +665,10 @@ export interface ApiPasoFronterizoPasoFronterizo
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    estado_diarios: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::estado-diario.estado-diario'
+    >;
     habilitado_para: Schema.Attribute.JSON;
     latitud: Schema.Attribute.Float;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
@@ -775,39 +736,6 @@ export interface ApiReporteIncidenteReporteIncidente
   };
 }
 
-export interface ApiRestriccionRestriccion extends Struct.CollectionTypeSchema {
-  collectionName: 'restriccions';
-  info: {
-    displayName: 'Restriccion';
-    pluralName: 'restriccions';
-    singularName: 'restriccion';
-  };
-  options: {
-    draftAndPublish: false;
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    descripcion: Schema.Attribute.Text;
-    id_estado: Schema.Attribute.Relation<
-      'oneToOne',
-      'api::estado-diario.estado-diario'
-    >;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::restriccion.restriccion'
-    > &
-      Schema.Attribute.Private;
-    publishedAt: Schema.Attribute.DateTime;
-    tipo_restriccion: Schema.Attribute.String;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
 export interface ApiSenalPredictivaSenalPredictiva
   extends Struct.CollectionTypeSchema {
   collectionName: 'senal_predictivas';
@@ -859,7 +787,7 @@ export interface ApiTweetXTweetX extends Struct.CollectionTypeSchema {
     singularName: 'tweet-x';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
@@ -1398,13 +1326,11 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::admin-log.admin-log': ApiAdminLogAdminLog;
-      'api::alerta-evento.alerta-evento': ApiAlertaEventoAlertaEvento;
       'api::clima-actual.clima-actual': ApiClimaActualClimaActual;
       'api::estado-diario.estado-diario': ApiEstadoDiarioEstadoDiario;
       'api::mensaje-waha.mensaje-waha': ApiMensajeWahaMensajeWaha;
       'api::paso-fronterizo.paso-fronterizo': ApiPasoFronterizoPasoFronterizo;
       'api::reporte-incidente.reporte-incidente': ApiReporteIncidenteReporteIncidente;
-      'api::restriccion.restriccion': ApiRestriccionRestriccion;
       'api::senal-predictiva.senal-predictiva': ApiSenalPredictivaSenalPredictiva;
       'api::tweet-x.tweet-x': ApiTweetXTweetX;
       'plugin::content-releases.release': PluginContentReleasesRelease;

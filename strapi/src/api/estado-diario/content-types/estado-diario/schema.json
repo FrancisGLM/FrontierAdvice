@@ -23,13 +23,11 @@
     "mensaje_original": {
       "type": "text"
     },
-    "creado_en": {
-      "type": "datetime"
-    },
     "id_paso": {
       "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::paso-fronterizo.paso-fronterizo"
+      "relation": "manyToOne",
+      "target": "api::paso-fronterizo.paso-fronterizo",
+      "inversedBy": "estado_diarios"
     },
     "origen_tipo": {
       "type": "string"
@@ -46,26 +44,8 @@
     "motivo_estado": {
       "type": "string"
     },
-    "nivel_riesgo_calc": {
-      "type": "enumeration",
-      "enum": [
-        "alto",
-        "medio",
-        "bajo",
-        "null"
-      ]
-    },
     "tipo_vehiculos": {
       "type": "json"
-    },
-    "msg_timestamp": {
-      "type": "biginteger"
-    },
-    "msg_id_waha": {
-      "type": "string"
-    },
-    "msg_server_id": {
-      "type": "integer"
     },
     "confianza_extraccion": {
       "type": "decimal"

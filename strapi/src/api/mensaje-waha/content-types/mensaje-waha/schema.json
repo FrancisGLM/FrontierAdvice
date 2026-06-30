@@ -15,9 +15,6 @@
       "type": "string",
       "unique": false
     },
-    "msg_body": {
-      "type": "biginteger"
-    },
     "msg_timestamp": {
       "type": "biginteger"
     },
@@ -45,6 +42,9 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::estado-diario.estado-diario"
+    },
+    "msg_body": {
+      "type": "text"
     }
   }
 }
