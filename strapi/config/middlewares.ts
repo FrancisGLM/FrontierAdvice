@@ -14,6 +14,11 @@ const config: Core.Config.Middlewares = [
           upgradeInsecureRequests: null,
         },
       },
+      hsts: {
+        maxAge: 31536000,
+        includeSubDomains: true,
+        preload: true,
+      },
     },
   },
   {
