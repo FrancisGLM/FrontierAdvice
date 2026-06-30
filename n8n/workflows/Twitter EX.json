@@ -275,7 +275,7 @@
       "credentials": {
         "httpBearerAuth": {
           "id": "GnIWw1xZZzhXRcXd",
-          "name": "Bearer Auth account"
+          "name": "Strapi Auth account"
         },
         "strapiTokenApi": {
           "id": "eUSeEuEvTFDfOYVR",

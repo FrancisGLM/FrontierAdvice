@@ -62,7 +62,7 @@
             },
             {
               "name": "Authorization",
-              "value": "=Bearer b4748a0ff4611d007369a5119c5d70450595cdee7e6f9431a3891b5c2a16c58d5fcdbfef2cb5c1dafc30c244f43a0769bf9aab2e3daf64d98bed68e33100e22cae1a03147cd754469246db07962c0a75becb3a187b6dcd4ac413921e822b96f0f6789c2749a4e77d82dbc88ccf10a7437b29c87c7dd4f9b6875627c62c3d03e2"
+              "value": "Bearer {{ $env.STRAPI_API_TOKEN }}"
             }
           ]
         },
@@ -122,7 +122,7 @@
             },
             {
               "name": "Authorization",
-              "value": "=Bearer b4748a0ff4611d007369a5119c5d70450595cdee7e6f9431a3891b5c2a16c58d5fcdbfef2cb5c1dafc30c244f43a0769bf9aab2e3daf64d98bed68e33100e22cae1a03147cd754469246db07962c0a75becb3a187b6dcd4ac413921e822b96f0f6789c2749a4e77d82dbc88ccf10a7437b29c87c7dd4f9b6875627c62c3d03e2"
+              "value": "Bearer {{ $env.STRAPI_API_TOKEN }}"
             }
           ]
         },
