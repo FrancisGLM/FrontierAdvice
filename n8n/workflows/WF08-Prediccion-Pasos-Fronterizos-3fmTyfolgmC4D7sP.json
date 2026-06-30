@@ -1,9 +1,9 @@
 {
   "active": true,
   "activeVersion": {
-    "updatedAt": "2026-06-30T07:38:56.000Z",
-    "createdAt": "2026-06-30T07:38:50.983Z",
-    "versionId": "fe35c240-3064-443c-be40-786053c59e06",
+    "updatedAt": "2026-06-30T11:30:31.000Z",
+    "createdAt": "2026-06-30T11:30:28.888Z",
+    "versionId": "e72324a3-4f7a-4891-993a-55e7451e602a",
     "workflowId": "3fmTyfolgmC4D7sP",
     "nodes": [
       {
@@ -79,6 +79,8 @@
       {
         "parameters": {
           "url": "=https://strapi.frontieradvice.tech/api/clima-actuals",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "strapiTokenApi",
           "sendQuery": true,
           "queryParameters": {
             "parameters": [
@@ -100,10 +102,6 @@
           "headerParameters": {
             "parameters": [
               {
-                "name": "Authorization",
-                "value": "=Bearer b4748a0ff4611d007369a5119c5d70450595cdee7e6f9431a3891b5c2a16c58d5fcdbfef2cb5c1dafc30c244f43a0769bf9aab2e3daf64d98bed68e33100e22cae1a03147cd754469246db07962c0a75becb3a187b6dcd4ac413921e822b96f0f6789c2749a4e77d82dbc88ccf10a7437b29c87c7dd4f9b6875627c62c3d03e2"
-              },
-              {
                 "name": "Content-Type",
                 "value": "application/json"
               }
@@ -117,12 +115,20 @@
         "typeVersion": 4.2,
         "position": [
           48,
-          -208
-        ]
+          -16
+        ],
+        "credentials": {
+          "strapiTokenApi": {
+            "id": "eUSeEuEvTFDfOYVR",
+            "name": "Strapi FrontierAdvice"
+          }
+        }
       },
       {
         "parameters": {
           "url": "=https://strapi.frontieradvice.tech/api/estado-diarios",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "strapiTokenApi",
           "sendQuery": true,
           "queryParameters": {
             "parameters": [
@@ -144,10 +150,6 @@
           "headerParameters": {
             "parameters": [
               {
-                "name": "Authorization",
-                "value": "=Bearer b4748a0ff4611d007369a5119c5d70450595cdee7e6f9431a3891b5c2a16c58d5fcdbfef2cb5c1dafc30c244f43a0769bf9aab2e3daf64d98bed68e33100e22cae1a03147cd754469246db07962c0a75becb3a187b6dcd4ac413921e822b96f0f6789c2749a4e77d82dbc88ccf10a7437b29c87c7dd4f9b6875627c62c3d03e2"
-              },
-              {
                 "name": "Content-Type",
                 "value": "application/json"
               }
@@ -161,64 +163,24 @@
         "typeVersion": 4.2,
         "position": [
           48,
-          -16
-        ]
-      },
-      {
-        "parameters": {
-          "url": "=https://strapi.frontieradvice.tech/api/alerta-eventos",
-          "sendQuery": true,
-          "queryParameters": {
-            "parameters": [
-              {
-                "name": "filters[idpaso][documentId][$eq]",
-                "value": "={{ $('Loop Pasos').item.json.paso_documentId }}"
-              },
-              {
-                "name": "sort[0]",
-                "value": "fecha_evento:desc"
-              },
-              {
-                "name": "pagination[pageSize]",
-                "value": "5"
-              }
-            ]
-          },
-          "sendHeaders": true,
-          "headerParameters": {
-            "parameters": [
-              {
-                "name": "Authorization",
-                "value": "=Bearer b4748a0ff4611d007369a5119c5d70450595cdee7e6f9431a3891b5c2a16c58d5fcdbfef2cb5c1dafc30c244f43a0769bf9aab2e3daf64d98bed68e33100e22cae1a03147cd754469246db07962c0a75becb3a187b6dcd4ac413921e822b96f0f6789c2749a4e77d82dbc88ccf10a7437b29c87c7dd4f9b6875627c62c3d03e2"
-              },
-              {
-                "name": "Content-Type",
-                "value": "application/json"
-              }
-            ]
-          },
-          "options": {}
-        },
-        "id": "f6b642df-e459-4fb6-9806-a554194b48e6",
-        "name": "GET Alertas Vigentes",
-        "type": "n8n-nodes-base.httpRequest",
-        "typeVersion": 4.2,
-        "position": [
-          48,
           176
-        ]
+        ],
+        "credentials": {
+          "strapiTokenApi": {
+            "id": "eUSeEuEvTFDfOYVR",
+            "name": "Strapi FrontierAdvice"
+          }
+        }
       },
       {
         "parameters": {
           "method": "POST",
           "url": "=https://strapi.frontieradvice.tech/api/senal-predictivas",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "strapiTokenApi",
           "sendHeaders": true,
           "headerParameters": {
             "parameters": [
-              {
-                "name": "Authorization",
-                "value": "=Bearer b4748a0ff4611d007369a5119c5d70450595cdee7e6f9431a3891b5c2a16c58d5fcdbfef2cb5c1dafc30c244f43a0769bf9aab2e3daf64d98bed68e33100e22cae1a03147cd754469246db07962c0a75becb3a187b6dcd4ac413921e822b96f0f6789c2749a4e77d82dbc88ccf10a7437b29c87c7dd4f9b6875627c62c3d03e2"
-              },
               {
                 "name": "Content-Type",
                 "value": "application/json"
@@ -237,7 +199,13 @@
         "position": [
           752,
           160
-        ]
+        ],
+        "credentials": {
+          "strapiTokenApi": {
+            "id": "eUSeEuEvTFDfOYVR",
+            "name": "Strapi FrontierAdvice"
+          }
+        }
       },
       {
         "parameters": {},
@@ -245,14 +213,14 @@
         "typeVersion": 1,
         "position": [
           48,
-          -928
+          -736
         ],
         "id": "6cc85932-1c6e-4c00-9dda-450899944263",
         "name": "done"
       },
       {
         "parameters": {
-          "jsCode": "// ============================================================\n// MODELO HÍBRIDO v6.1 (FAST) — FrontierAdvice Predicción\n// Optimizado para leer 3 nodos HTTP de historial paralelos\n// en vez de 1 rango continuo masivo de 4 años.\n// ============================================================\n\nconst paso         = $(\"Loop Pasos\").item?.json           || {};\nconst climaResp    = $(\"GET Clima Actual Paso\").item?.json || {};\nconst estadosResp  = $(\"GET Estados Recientes\").item?.json || {};\nconst alertasResp  = $(\"GET Alertas Vigentes\").item?.json  || {};\n\n// Leemos los 3 nodos paralelos\nconst hist1 = $(\"GET Clima Histórico -1 Año\").item?.json?.daily || {};\nconst hist2 = $(\"GET Clima Histórico -2 Años\").item?.json?.daily || {};\nconst hist3 = $(\"GET Clima Histórico -3 Años\").item?.json?.daily || {};\n\nconst clima    = climaResp?.data?.[0]             || null;\nconst estados  = Array.isArray(estadosResp?.data)  ? estadosResp.data  : [];\nconst alertas  = Array.isArray(alertasResp?.data)  ? alertasResp.data  : [];\n\n// ── Concatenar históricos ────────────────────────────────────────────────────\nconst histTimes = [\n  ...(Array.isArray(hist1.time) ? hist1.time : []),\n  ...(Array.isArray(hist2.time) ? hist2.time : []),\n  ...(Array.isArray(hist3.time) ? hist3.time : [])\n];\nconst histTempMin = [\n  ...(Array.isArray(hist1.temperature_2m_min) ? hist1.temperature_2m_min : []),\n  ...(Array.isArray(hist2.temperature_2m_min) ? hist2.temperature_2m_min : []),\n  ...(Array.isArray(hist3.temperature_2m_min) ? hist3.temperature_2m_min : [])\n];\nconst histPrecip = [\n  ...(Array.isArray(hist1.precipitation_sum) ? hist1.precipitation_sum : []),\n  ...(Array.isArray(hist2.precipitation_sum) ? hist2.precipitation_sum : []),\n  ...(Array.isArray(hist3.precipitation_sum) ? hist3.precipitation_sum : [])\n];\nconst histViento = [\n  ...(Array.isArray(hist1.windspeed_10m_max) ? hist1.windspeed_10m_max : []),\n  ...(Array.isArray(hist2.windspeed_10m_max) ? hist2.windspeed_10m_max : []),\n  ...(Array.isArray(hist3.windspeed_10m_max) ? hist3.windspeed_10m_max : [])\n];\nconst histWMO = [\n  ...(Array.isArray(hist1.weather_code) ? hist1.weather_code : []),\n  ...(Array.isArray(hist2.weather_code) ? hist2.weather_code : []),\n  ...(Array.isArray(hist3.weather_code) ? hist3.weather_code : [])\n];\n\nconst WMO_PELIGROSOS = new Set([66, 67, 71, 73, 75, 77, 85, 86, 95, 96, 99]);\n\nfunction stats(arr) {\n  const valid = arr.filter((v) => v !== null && v !== undefined && Number.isFinite(Number(v)));\n  if (valid.length === 0) return { mean: null, std: null, n: 0 };\n  const n    = valid.length;\n  const mean = valid.reduce((s, v) => s + Number(v), 0) / n;\n  const std  = Math.sqrt(valid.reduce((s, v) => s + Math.pow(Number(v) - mean, 2), 0) / n);\n  return { mean, std, n };\n}\n\n// Ahora buscamos en la colección de ~21 a 30 días concatenados\nfunction getHistoricoParaFecha(targetDateISO) {\n  const target = new Date(targetDateISO + \"T12:00:00Z\");\n  const targetMM = target.getUTCMonth() + 1;\n  const targetDD = target.getUTCDate();\n\n  const tempMins = [], precips = [], vientos = [], wmos = [];\n\n  for (let i = 0; i < histTimes.length; i++) {\n    const d = new Date(histTimes[i] + \"T12:00:00Z\");\n    if (d.getUTCMonth() + 1 === targetMM && d.getUTCDate() === targetDD) {\n      if (histTempMin[i]  !== null) tempMins.push(Number(histTempMin[i]));\n      if (histPrecip[i]   !== null) precips.push(Number(histPrecip[i]));\n      if (histViento[i]   !== null) vientos.push(Number(histViento[i]));\n      if (histWMO[i]      !== null) wmos.push(Number(histWMO[i]));\n    }\n  }\n\n  return { tempMins, precips, vientos, wmos };\n}\n\nfunction anomaliaSigma(valorActual, mean, std) {\n  if (mean === null || std === null || std === 0) return null;\n  return (valorActual - mean) / std;\n}\n\n// ── Utilidades generales ──────────────────────────────────────────────────────\nfunction clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }\nfunction sigmoid(x) { return 1 / (1 + Math.exp(-x)); }\nfunction normEstado(e) {\n  const raw = (e?.estado_normalizado || e?.estado_general || \"\").toString().toLowerCase();\n  if (raw.includes(\"cerr\") || raw.includes(\"suspend\")) return \"cerrado\";\n  if (raw.includes(\"precau\") || raw.includes(\"desconocido\")) return \"precaucion\";\n  if (raw.includes(\"hab\") || raw.includes(\"abierto\")) return \"abierto\";\n  return \"desconocido\";\n}\nfunction riskLabel(prob) {\n  if (prob >= 0.70) return \"Alto\";\n  if (prob >= 0.40) return \"Medio\";\n  return \"Bajo\";\n}\nfunction predictedState(prob, hardSignals = 0) {\n  if (prob >= 0.72 || hardSignals >= 2) return \"cerrado\";\n  if (prob >= 0.42) return \"precaucion\";\n  return \"abierto\";\n}\n\n// ── Tabla WMO ────────────────────────────────────────────────────────────────\nconst WMO_RISKS = {\n  45: { score: 8,  label: \"niebla\",                   hard: false },\n  48: { score: 10, label: \"niebla engelante\",          hard: false },\n  66: { score: 28, label: \"lluvia engelante moderada\", hard: true  },\n  67: { score: 34, label: \"lluvia engelante intensa\",  hard: true  },\n  71: { score: 16, label: \"nevada leve\",               hard: false },\n  73: { score: 22, label: \"nevada moderada\",           hard: true  },\n  75: { score: 28, label: \"nevada intensa\",            hard: true  },\n  77: { score: 14, label: \"granizo menudo\",            hard: false },\n  85: { score: 20, label: \"chubascos de nieve\",        hard: false },\n  86: { score: 30, label: \"chubascos de nieve intensos\", hard: true },\n  95: { score: 18, label: \"tormenta\",                  hard: false },\n  96: { score: 24, label: \"tormenta con granizo\",      hard: true  },\n  99: { score: 30, label: \"tormenta severa\",           hard: true  },\n  63: { score: 14, label: \"lluvia intensa\",            hard: false },\n  65: { score: 18, label: \"lluvia muy intensa\",        hard: true  },\n};\n\n// ── Pre-cálculo del historial operativo ──────────────────────────────────────\nconst now     = Date.now();\nconst hace24h = now - 1 * 24 * 60 * 60 * 1000;\nconst hace3d  = now - 3 * 24 * 60 * 60 * 1000;\nconst hace7d  = now - 7 * 24 * 60 * 60 * 1000;\n\nconst hist = estados\n  .map((e) => {\n    const fecha = new Date(e?.fecha_reporte).getTime();\n    const motivo = (e?.motivo_estado || e?.mensaje_original || \"\").toString().toLowerCase();\n    return { estado: normEstado(e), fecha: isNaN(fecha) ? 0 : fecha, motivo };\n  })\n  .filter((h) => h.fecha > 0)\n  .sort((a, b) => b.fecha - a.fecha);\n\nconst ultimoEstado  = hist[0]?.estado || \"desconocido\";\nconst ultimoMotivo  = hist[0]?.motivo || \"\";\n\n// Detección de cierres estructurales/estacionales prolongados\nconst isCierreEstructural = ultimoEstado === \"cerrado\" && (\n  ultimoMotivo.includes(\"temporada estival\") ||\n  ultimoMotivo.includes(\"temporada invernal\") ||\n  ultimoMotivo.includes(\"invierno\") ||\n  ultimoMotivo.includes(\"indefinido\") ||\n  ultimoMotivo.includes(\"reparación\") ||\n  ultimoMotivo.includes(\"mantenimiento\") ||\n  ultimoMotivo.includes(\"mantención\") ||\n  ultimoMotivo.includes(\"obras\") ||\n  ultimoMotivo.includes(\"sistema de agua\") ||\n  ultimoMotivo.includes(\"estructural\")\n);\n\nconst alertaVigente = alertas.length > 0;\nconst alertaAlta    = alertaVigente && alertas.some((a) => {\n    const txt = JSON.stringify(a).toLowerCase();\n    return txt.includes(\"alto\") || txt.includes(\"critico\") || txt.includes(\"emerg\");\n});\n\nconst rec24h = hist.filter((h) => h.fecha >= hace24h);\nconst rec3d  = hist.filter((h) => h.fecha >= hace3d);\nconst rec7d  = hist.filter((h) => h.fecha >= hace7d);\n\nconst cierres24h = rec24h.filter((h) => h.estado === \"cerrado\").length;\nconst cierres3d  = rec3d.filter((h)  => h.estado === \"cerrado\").length;\nconst cierres7d  = rec7d.filter((h)  => h.estado === \"cerrado\").length;\nconst prec7d     = rec7d.filter((h)  => h.estado === \"precaucion\").length;\n\nfunction calcHistoryScore(motivos) {\n  let score = 0;\n  \n  if (isCierreEstructural) {\n    score = 60; // Penalización masiva, sobreescribe el resto\n    motivos.push(\"cierre estructural/estacional prolongado\");\n    return score;\n  }\n\n  if (cierres24h >= 1)     { score += 22; motivos.push(\"cierre en las últimas 24h\"); }\n  else if (cierres3d >= 2) { score += 16; motivos.push(\"múltiples cierres en 3 días\"); }\n  else if (cierres7d >= 3) { score += 12; motivos.push(\"cierres frecuentes en 7 días\"); }\n  else if (cierres7d >= 1) { score += 6;  motivos.push(\"cierres recientes\"); }\n  if (prec7d >= 3)         { score += 8;  motivos.push(\"precauciones frecuentes\"); }\n  else if (prec7d >= 1)    { score += 4;  motivos.push(\"antecedentes de precaución\"); }\n  if (ultimoEstado === \"cerrado\")    { score += 18; motivos.push(\"último estado: cerrado\"); }\n  else if (ultimoEstado === \"precaucion\") { score += 10; motivos.push(\"último estado: precaución\"); }\n  return clamp(score, 0, 30);\n}\n\n// ── Pronóstico 3 días ─────────────────────────────────────────────────────────\nconst forecast = Array.isArray(clima?.pronostico_3dias) ? clima.pronostico_3dias : [];\n\nfunction addDays(date, days) {\n  const d = new Date(date);\n  d.setUTCDate(d.getUTCDate() + days);\n  return d.toISOString().slice(0, 10);\n}\n\nconst hoy = new Date().toISOString().slice(0, 10);\nconst dias = [\n  { h: 24, d: forecast[0] || null, horizonWeight: 1.00, fecha: addDays(hoy, 1) },\n  { h: 48, d: forecast[1] || null, horizonWeight: 0.85, fecha: addDays(hoy, 2) },\n  { h: 72, d: forecast[2] || null, horizonWeight: 0.72, fecha: addDays(hoy, 3) },\n];\n\nconst altitud = Number(paso?.altitud || 0);\nconst out = [];\n\nfor (const item of dias) {\n  const d = item.d || {};\n\n  const tempMin    = Number(d.temp_min      ?? clima?.temperatura_actual ?? 0);\n  const precip     = Number(d.precipitacion ?? clima?.precipitacion_actual ?? 0);\n  const viento     = Number(d.viento_max    ?? clima?.viento_actual ?? 0);\n  const weathercode = Number(d.weathercode  ?? clima?.weathercode ?? 0);\n\n  const motivos = [];\n  let hardSignals = 0;\n\n  // ── 1. Score Meteorológico ──────────────────────────────────\n  let meteoScore = 0;\n\n  const wmo = WMO_RISKS[weathercode];\n  if (wmo) {\n    meteoScore += wmo.score;\n    motivos.push(wmo.label);\n    if (wmo.hard) hardSignals++;\n  }\n\n  if (viento >= 100)      { meteoScore += 30; hardSignals++; motivos.push(\"viento extremo (>100 km/h)\"); }\n  else if (viento >= 80)  { meteoScore += 22; motivos.push(\"viento muy fuerte (80-100 km/h)\"); }\n  else if (viento >= 60)  { meteoScore += 14; motivos.push(\"viento fuerte (60-80 km/h)\"); }\n  else if (viento >= 40)  { meteoScore += 7;  motivos.push(\"viento moderado (40-60 km/h)\"); }\n\n  if (precip >= 20)       { meteoScore += 14; motivos.push(\"precipitación muy alta\"); }\n  else if (precip >= 12)  { meteoScore += 10; motivos.push(\"precipitación alta\"); }\n  else if (precip >= 5)   { meteoScore += 6;  motivos.push(\"precipitación moderada\"); }\n  else if (precip >= 2)   { meteoScore += 3;  motivos.push(\"precipitación leve\"); }\n\n  if (tempMin <= -10)     { meteoScore += 14; motivos.push(\"frío extremo (<-10°C)\"); }\n  else if (tempMin <= -5) { meteoScore += 10; motivos.push(\"temperatura muy baja (-10 a -5°C)\"); }\n  else if (tempMin <= 0)  { meteoScore += 6;  motivos.push(\"temperatura bajo cero\"); }\n  else if (tempMin <= 2)  { meteoScore += 3;  motivos.push(\"temperatura cercana a cero\"); }\n\n  if (altitud >= 2500 && meteoScore > 0) {\n    meteoScore *= 1.15;\n    motivos.push(\"amplificación alta montaña\");\n  }\n  meteoScore = clamp(meteoScore, 0, 60);\n\n  // ── 2. Score Anomalía Climática Histórica ──────────────────\n  let anomaliaScore = 0;\n  const historicoDia = getHistoricoParaFecha(item.fecha);\n\n  const stTempMin = stats(historicoDia.tempMins);\n  const stPrecip  = stats(historicoDia.precips);\n  const stViento  = stats(historicoDia.vientos);\n  const nHistDias = stTempMin.n;\n\n  const anomTempSigma = anomaliaSigma(tempMin, stTempMin.mean, stTempMin.std);\n  if (anomTempSigma !== null && anomTempSigma <= -2.0) {\n    anomaliaScore += 12; hardSignals++; motivos.push(\"temperatura anormalmente baja (>2σ)\");\n  } else if (anomTempSigma !== null && anomTempSigma <= -1.5) {\n    anomaliaScore += 8;  motivos.push(\"temperatura significativamente bajo lo normal\");\n  } else if (anomTempSigma !== null && anomTempSigma <= -1.0) {\n    anomaliaScore += 4;  motivos.push(\"temperatura bajo lo normal\");\n  }\n\n  const anomPrecipSigma = anomaliaSigma(precip, stPrecip.mean, stPrecip.std);\n  if (anomPrecipSigma !== null && anomPrecipSigma >= 2.0) {\n    anomaliaScore += 10; hardSignals++; motivos.push(\"precipitación anormalmente alta (>2σ)\");\n  } else if (anomPrecipSigma !== null && anomPrecipSigma >= 1.5) {\n    anomaliaScore += 6;  motivos.push(\"precipitación significativamente sobre lo normal\");\n  } else if (anomPrecipSigma !== null && anomPrecipSigma >= 1.0) {\n    anomaliaScore += 3;  motivos.push(\"precipitación sobre lo normal\");\n  }\n\n  const anomVientoSigma = anomaliaSigma(viento, stViento.mean, stViento.std);\n  if (anomVientoSigma !== null && anomVientoSigma >= 2.0) {\n    anomaliaScore += 8; motivos.push(\"viento anormalmente alto (>2σ)\");\n  } else if (anomVientoSigma !== null && anomVientoSigma >= 1.5) {\n    anomaliaScore += 4; motivos.push(\"viento sobre lo normal\");\n  }\n\n  const diasPeligrosos = historicoDia.wmos.filter((w) => WMO_PELIGROSOS.has(w)).length;\n  const pctEstacional  = historicoDia.wmos.length > 0 ? diasPeligrosos / historicoDia.wmos.length : 0;\n\n  if (pctEstacional >= 0.6) {\n    anomaliaScore += 8; motivos.push(\"semana de alto riesgo estacional histórico\");\n  } else if (pctEstacional >= 0.35) {\n    anomaliaScore += 4; motivos.push(\"semana de riesgo estacional moderado\");\n  }\n\n  anomaliaScore = clamp(anomaliaScore, 0, 25);\n\n  // ── 3. Score Altitud-Contexto ───────────────────────────────\n  let contextScore = 0;\n  if (altitud >= 3000)      { contextScore = 12; motivos.push(\"paso sobre 3000 m.s.n.m.\"); }\n  else if (altitud >= 2500) { contextScore = 8;  motivos.push(\"paso de alta montaña (>2500 m)\"); }\n  else if (altitud >= 1500) { contextScore = 4;  motivos.push(\"paso de montaña media\"); }\n\n  // ── 4. Score Historial Operativo ────────────────────────────\n  const historyScore = calcHistoryScore(motivos);\n  if (ultimoEstado === \"cerrado\") {\n    if (isCierreEstructural) hardSignals += 3; // Fuerza cierre seguro\n    else hardSignals++;\n  }\n\n  // ── 5. Score Alertas ───────────────────────────────────────\n  let alertScore = 0;\n  if (alertaAlta)      { alertScore = 15; hardSignals++; motivos.push(\"alerta de nivel alto vigente\"); }\n  else if (alertaVigente) { alertScore = 8; motivos.push(\"alerta vigente\"); }\n\n  // ── 6. Agregación ponderada ────────────────────────────────────────────────\n  const normMeteo    = (meteoScore    / 60)  * 100;\n  const normHistory  = (historyScore  / (isCierreEstructural ? 60 : 30))  * 100;\n  const normAnomalia = (anomaliaScore / 25)  * 100;\n  const normAlerts   = (alertScore    / 15)  * 100;\n  const normContext  = (contextScore  / 12)  * 100;\n\n  let weightedScore = 0;\n  \n  if (isCierreEstructural) {\n     weightedScore = 95; // Si está cerrado por temporada/estructural, la probabilidad global es altísima siempre.\n  } else {\n     weightedScore = clamp(\n      normMeteo    * 0.40 +\n      normHistory  * 0.25 +\n      normAnomalia * 0.20 +\n      normAlerts   * 0.10 +\n      normContext  * 0.05,\n      0, 100\n    );\n  }\n\n  const horizonAdjusted = weightedScore * item.horizonWeight;\n  const rawProb = sigmoid((horizonAdjusted - 42) / 12);\n  const prob    = clamp(rawProb, 0.05, 0.95);\n\n  let confidence = \"media\";\n  if (!clima || !item.d || nHistDias < 2)        confidence = \"baja\";\n  else if (forecast.length >= 3 && nHistDias >= 2 && hist.length >= 5) confidence = \"alta\";\n\n  out.push({\n    json: {\n      paso_id:         paso.paso_id,\n      paso_documentId: paso.paso_documentId,\n      nombre_oficial:  paso.nombre_oficial,\n      horizonte_horas: item.h,\n      probabilidad:    Number(prob.toFixed(2)),\n      nivel_riesgo:    riskLabel(prob),\n      estado_predicho: predictedState(prob, hardSignals),\n      motivo_resumen:  motivos.slice(0, 5).join(\", \") || \"sin señales relevantes\",\n      fecha_calculo:   new Date().toISOString(),\n      valido_desde:    new Date().toISOString(),\n      valido_hasta:    new Date(Date.now() + item.h * 60 * 60 * 1000).toISOString(),\n      modelo_version:  \"risk-v6-hybrid-fast\",\n      tipo_evento:     \"prediccion_operativa\",\n      confianza:       confidence,\n      score_desglose: {\n        meteo:              Math.round(meteoScore),\n        anomalia_climatica: Math.round(anomaliaScore),\n        historial:          Math.round(historyScore),\n        alertas:            Math.round(alertScore),\n        contexto:           Math.round(contextScore),\n        ponderado:          Math.round(weightedScore),\n        ajustado_horizonte: Math.round(horizonAdjusted),\n        hard_signals:       hardSignals,\n        dias_historicos:    nHistDias,\n        pct_estacional:     Math.round(pctEstacional * 100),\n      },\n      datos_entrada: {\n        altitud,\n        ultimo_estado:         ultimoEstado,\n        cierres_24h:           cierres24h,\n        cierres_3d:            cierres3d,\n        cierres_7d:            cierres7d,\n        precaucion_7d:         prec7d,\n        alerta_vigente:        alertaVigente,\n        alerta_alta:           alertaAlta,\n        weathercode,\n        temp_min:              tempMin,\n        precipitacion_total:   precip,\n        viento_max:            viento,\n        forecast_disponible:   !!item.d,\n        historico_temp_media:  stTempMin.mean !== null ? Number(stTempMin.mean.toFixed(1)) : null,\n        historico_precip_media: stPrecip.mean !== null ? Number(stPrecip.mean.toFixed(1)) : null,\n        anomalia_temp_sigma:   anomTempSigma  !== null ? Number(anomTempSigma.toFixed(2))  : null,\n        anomalia_precip_sigma: anomPrecipSigma !== null ? Number(anomPrecipSigma.toFixed(2)) : null,\n      },\n    },\n  });\n}\n\nreturn out;\n"
+          "jsCode": "// ============================================================\n// MODELO HÍBRIDO v6.2 (FAST) — FrontierAdvice Predicción\n// Optimizado para leer 3 nodos HTTP de historial paralelos\n// (Sin Alertas-Eventos)\n// ============================================================\n\nconst paso         = $(\"Loop Pasos\").item?.json           || {};\nconst climaResp    = $(\"GET Clima Actual Paso\").item?.json || {};\nconst estadosResp  = $(\"GET Estados Recientes\").item?.json || {};\n\n// Leemos los 3 nodos paralelos\nconst hist1 = $(\"GET Clima Histórico -1 Año\").item?.json?.daily || {};\nconst hist2 = $(\"GET Clima Histórico -2 Años\").item?.json?.daily || {};\nconst hist3 = $(\"GET Clima Histórico -3 Años\").item?.json?.daily || {};\n\nconst clima    = climaResp?.data?.[0]             || null;\nconst estados  = Array.isArray(estadosResp?.data)  ? estadosResp.data  : [];\n\n// ── Concatenar históricos ────────────────────────────────────────────────────\nconst histTimes = [\n  ...(Array.isArray(hist1.time) ? hist1.time : []),\n  ...(Array.isArray(hist2.time) ? hist2.time : []),\n  ...(Array.isArray(hist3.time) ? hist3.time : [])\n];\nconst histTempMin = [\n  ...(Array.isArray(hist1.temperature_2m_min) ? hist1.temperature_2m_min : []),\n  ...(Array.isArray(hist2.temperature_2m_min) ? hist2.temperature_2m_min : []),\n  ...(Array.isArray(hist3.temperature_2m_min) ? hist3.temperature_2m_min : [])\n];\nconst histPrecip = [\n  ...(Array.isArray(hist1.precipitation_sum) ? hist1.precipitation_sum : []),\n  ...(Array.isArray(hist2.precipitation_sum) ? hist2.precipitation_sum : []),\n  ...(Array.isArray(hist3.precipitation_sum) ? hist3.precipitation_sum : [])\n];\nconst histViento = [\n  ...(Array.isArray(hist1.windspeed_10m_max) ? hist1.windspeed_10m_max : []),\n  ...(Array.isArray(hist2.windspeed_10m_max) ? hist2.windspeed_10m_max : []),\n  ...(Array.isArray(hist3.windspeed_10m_max) ? hist3.windspeed_10m_max : [])\n];\nconst histWMO = [\n  ...(Array.isArray(hist1.weather_code) ? hist1.weather_code : []),\n  ...(Array.isArray(hist2.weather_code) ? hist2.weather_code : []),\n  ...(Array.isArray(hist3.weather_code) ? hist3.weather_code : [])\n];\n\nconst WMO_PELIGROSOS = new Set([66, 67, 71, 73, 75, 77, 85, 86, 95, 96, 99]);\n\nfunction stats(arr) {\n  const valid = arr.filter((v) => v !== null && v !== undefined && Number.isFinite(Number(v)));\n  if (valid.length === 0) return { mean: null, std: null, n: 0 };\n  const n    = valid.length;\n  const mean = valid.reduce((s, v) => s + Number(v), 0) / n;\n  const std  = Math.sqrt(valid.reduce((s, v) => s + Math.pow(Number(v) - mean, 2), 0) / n);\n  return { mean, std, n };\n}\n\n// Ahora buscamos en la colección de ~21 a 30 días concatenados\nfunction getHistoricoParaFecha(targetDateISO) {\n  const target = new Date(targetDateISO + \"T12:00:00Z\");\n  const targetMM = target.getUTCMonth() + 1;\n  const targetDD = target.getUTCDate();\n\n  const tempMins = [], precips = [], vientos = [], wmos = [];\n\n  for (let i = 0; i < histTimes.length; i++) {\n    const d = new Date(histTimes[i] + \"T12:00:00Z\");\n    if (d.getUTCMonth() + 1 === targetMM && d.getUTCDate() === targetDD) {\n      if (histTempMin[i]  !== null) tempMins.push(Number(histTempMin[i]));\n      if (histPrecip[i]   !== null) precips.push(Number(histPrecip[i]));\n      if (histViento[i]   !== null) vientos.push(Number(histViento[i]));\n      if (histWMO[i]      !== null) wmos.push(Number(histWMO[i]));\n    }\n  }\n\n  return { tempMins, precips, vientos, wmos };\n}\n\nfunction anomaliaSigma(valorActual, mean, std) {\n  if (mean === null || std === null || std === 0) return null;\n  return (valorActual - mean) / std;\n}\n\n// ── Utilidades generales ──────────────────────────────────────────────────────\nfunction clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }\nfunction sigmoid(x) { return 1 / (1 + Math.exp(-x)); }\nfunction normEstado(e) {\n  const raw = (e?.estado_normalizado || e?.estado_general || \"\").toString().toLowerCase();\n  if (raw.includes(\"cerr\") || raw.includes(\"suspend\")) return \"cerrado\";\n  if (raw.includes(\"precau\") || raw.includes(\"desconocido\")) return \"precaucion\";\n  if (raw.includes(\"hab\") || raw.includes(\"abierto\")) return \"abierto\";\n  return \"desconocido\";\n}\nfunction riskLabel(prob) {\n  if (prob >= 0.70) return \"Alto\";\n  if (prob >= 0.40) return \"Medio\";\n  return \"Bajo\";\n}\nfunction predictedState(prob, hardSignals = 0) {\n  if (prob >= 0.72 || hardSignals >= 2) return \"cerrado\";\n  if (prob >= 0.42) return \"precaucion\";\n  return \"abierto\";\n}\n\n// ── Tabla WMO ────────────────────────────────────────────────────────────────\nconst WMO_RISKS = {\n  45: { score: 8,  label: \"niebla\",                   hard: false },\n  48: { score: 10, label: \"niebla engelante\",          hard: false },\n  66: { score: 28, label: \"lluvia engelante moderada\", hard: true  },\n  67: { score: 34, label: \"lluvia engelante intensa\",  hard: true  },\n  71: { score: 16, label: \"nevada leve\",               hard: false },\n  73: { score: 22, label: \"nevada moderada\",           hard: true  },\n  75: { score: 28, label: \"nevada intensa\",            hard: true  },\n  77: { score: 14, label: \"granizo menudo\",            hard: false },\n  85: { score: 20, label: \"chubascos de nieve\",        hard: false },\n  86: { score: 30, label: \"chubascos de nieve intensos\", hard: true },\n  95: { score: 18, label: \"tormenta\",                  hard: false },\n  96: { score: 24, label: \"tormenta con granizo\",      hard: true  },\n  99: { score: 30, label: \"tormenta severa\",           hard: true  },\n  63: { score: 14, label: \"lluvia intensa\",            hard: false },\n  65: { score: 18, label: \"lluvia muy intensa\",        hard: true  },\n};\n\n// ── Pre-cálculo del historial operativo ──────────────────────────────────────\nconst now     = Date.now();\nconst hace24h = now - 1 * 24 * 60 * 60 * 1000;\nconst hace3d  = now - 3 * 24 * 60 * 60 * 1000;\nconst hace7d  = now - 7 * 24 * 60 * 60 * 1000;\n\nconst hist = estados\n  .map((e) => {\n    const fecha = new Date(e?.fecha_reporte).getTime();\n    const motivo = (e?.motivo_estado || e?.mensaje_original || \"\").toString().toLowerCase();\n    return { estado: normEstado(e), fecha: isNaN(fecha) ? 0 : fecha, motivo };\n  })\n  .filter((h) => h.fecha > 0)\n  .sort((a, b) => b.fecha - a.fecha);\n\nconst ultimoEstado  = hist[0]?.estado || \"desconocido\";\nconst ultimoMotivo  = hist[0]?.motivo || \"\";\n\n// Detección de cierres estructurales/estacionales prolongados\nconst isCierreEstructural = ultimoEstado === \"cerrado\" && (\n  ultimoMotivo.includes(\"temporada estival\") ||\n  ultimoMotivo.includes(\"temporada invernal\") ||\n  ultimoMotivo.includes(\"invierno\") ||\n  ultimoMotivo.includes(\"indefinido\") ||\n  ultimoMotivo.includes(\"reparación\") ||\n  ultimoMotivo.includes(\"mantenimiento\") ||\n  ultimoMotivo.includes(\"mantención\") ||\n  ultimoMotivo.includes(\"obras\") ||\n  ultimoMotivo.includes(\"sistema de agua\") ||\n  ultimoMotivo.includes(\"estructural\")\n);\n\nconst rec24h = hist.filter((h) => h.fecha >= hace24h);\nconst rec3d  = hist.filter((h) => h.fecha >= hace3d);\nconst rec7d  = hist.filter((h) => h.fecha >= hace7d);\n\nconst cierres24h = rec24h.filter((h) => h.estado === \"cerrado\").length;\nconst cierres3d  = rec3d.filter((h)  => h.estado === \"cerrado\").length;\nconst cierres7d  = rec7d.filter((h)  => h.estado === \"cerrado\").length;\nconst prec7d     = rec7d.filter((h)  => h.estado === \"precaucion\").length;\n\nfunction calcHistoryScore(motivos) {\n  let score = 0;\n  \n  if (isCierreEstructural) {\n    score = 60; // Penalización masiva, sobreescribe el resto\n    motivos.push(\"cierre estructural/estacional prolongado\");\n    return score;\n  }\n\n  if (cierres24h >= 1)     { score += 22; motivos.push(\"cierre en las últimas 24h\"); }\n  else if (cierres3d >= 2) { score += 16; motivos.push(\"múltiples cierres en 3 días\"); }\n  else if (cierres7d >= 3) { score += 12; motivos.push(\"cierres frecuentes en 7 días\"); }\n  else if (cierres7d >= 1) { score += 6;  motivos.push(\"cierres recientes\"); }\n  if (prec7d >= 3)         { score += 8;  motivos.push(\"precauciones frecuentes\"); }\n  else if (prec7d >= 1)    { score += 4;  motivos.push(\"antecedentes de precaución\"); }\n  if (ultimoEstado === \"cerrado\")    { score += 18; motivos.push(\"último estado: cerrado\"); }\n  else if (ultimoEstado === \"precaucion\") { score += 10; motivos.push(\"último estado: precaución\"); }\n  return clamp(score, 0, 30);\n}\n\n// ── Pronóstico 3 días ─────────────────────────────────────────────────────────\nconst forecast = Array.isArray(clima?.pronostico_3dias) ? clima.pronostico_3dias : [];\n\nfunction addDays(date, days) {\n  const d = new Date(date);\n  d.setUTCDate(d.getUTCDate() + days);\n  return d.toISOString().slice(0, 10);\n}\n\nconst hoy = new Date().toISOString().slice(0, 10);\nconst dias = [\n  { h: 24, d: forecast[0] || null, horizonWeight: 1.00, fecha: addDays(hoy, 1) },\n  { h: 48, d: forecast[1] || null, horizonWeight: 0.85, fecha: addDays(hoy, 2) },\n  { h: 72, d: forecast[2] || null, horizonWeight: 0.72, fecha: addDays(hoy, 3) },\n];\n\nconst altitud = Number(paso?.altitud || 0);\nconst out = [];\n\nfor (const item of dias) {\n  const d = item.d || {};\n\n  const tempMin    = Number(d.temp_min      ?? clima?.temperatura_actual ?? 0);\n  const precip     = Number(d.precipitacion ?? clima?.precipitacion_actual ?? 0);\n  const viento     = Number(d.viento_max    ?? clima?.viento_actual ?? 0);\n  const weathercode = Number(d.weathercode  ?? clima?.weathercode ?? 0);\n\n  const motivos = [];\n  let hardSignals = 0;\n\n  // ── 1. Score Meteorológico ──────────────────────────────────\n  let meteoScore = 0;\n\n  const wmo = WMO_RISKS[weathercode];\n  if (wmo) {\n    meteoScore += wmo.score;\n    motivos.push(wmo.label);\n    if (wmo.hard) hardSignals++;\n  }\n\n  if (viento >= 100)      { meteoScore += 30; hardSignals++; motivos.push(\"viento extremo (>100 km/h)\"); }\n  else if (viento >= 80)  { meteoScore += 22; motivos.push(\"viento muy fuerte (80-100 km/h)\"); }\n  else if (viento >= 60)  { meteoScore += 14; motivos.push(\"viento fuerte (60-80 km/h)\"); }\n  else if (viento >= 40)  { meteoScore += 7;  motivos.push(\"viento moderado (40-60 km/h)\"); }\n\n  if (precip >= 20)       { meteoScore += 14; motivos.push(\"precipitación muy alta\"); }\n  else if (precip >= 12)  { meteoScore += 10; motivos.push(\"precipitación alta\"); }\n  else if (precip >= 5)   { meteoScore += 6;  motivos.push(\"precipitación moderada\"); }\n  else if (precip >= 2)   { meteoScore += 3;  motivos.push(\"precipitación leve\"); }\n\n  if (tempMin <= -10)     { meteoScore += 14; motivos.push(\"frío extremo (<-10°C)\"); }\n  else if (tempMin <= -5) { meteoScore += 10; motivos.push(\"temperatura muy baja (-10 a -5°C)\"); }\n  else if (tempMin <= 0)  { meteoScore += 6;  motivos.push(\"temperatura bajo cero\"); }\n  else if (tempMin <= 2)  { meteoScore += 3;  motivos.push(\"temperatura cercana a cero\"); }\n\n  if (altitud >= 2500 && meteoScore > 0) {\n    meteoScore *= 1.15;\n    motivos.push(\"amplificación alta montaña\");\n  }\n  meteoScore = clamp(meteoScore, 0, 60);\n\n  // ── 2. Score Anomalía Climática Histórica ──────────────────\n  let anomaliaScore = 0;\n  const historicoDia = getHistoricoParaFecha(item.fecha);\n\n  const stTempMin = stats(historicoDia.tempMins);\n  const stPrecip  = stats(historicoDia.precips);\n  const stViento  = stats(historicoDia.vientos);\n  const nHistDias = stTempMin.n;\n\n  const anomTempSigma = anomaliaSigma(tempMin, stTempMin.mean, stTempMin.std);\n  if (anomTempSigma !== null && anomTempSigma <= -2.0) {\n    anomaliaScore += 12; hardSignals++; motivos.push(\"temperatura anormalmente baja (>2σ)\");\n  } else if (anomTempSigma !== null && anomTempSigma <= -1.5) {\n    anomaliaScore += 8;  motivos.push(\"temperatura significativamente bajo lo normal\");\n  } else if (anomTempSigma !== null && anomTempSigma <= -1.0) {\n    anomaliaScore += 4;  motivos.push(\"temperatura bajo lo normal\");\n  }\n\n  const anomPrecipSigma = anomaliaSigma(precip, stPrecip.mean, stPrecip.std);\n  if (anomPrecipSigma !== null && anomPrecipSigma >= 2.0) {\n    anomaliaScore += 10; hardSignals++; motivos.push(\"precipitación anormalmente alta (>2σ)\");\n  } else if (anomPrecipSigma !== null && anomPrecipSigma >= 1.5) {\n    anomaliaScore += 6;  motivos.push(\"precipitación significativamente sobre lo normal\");\n  } else if (anomPrecipSigma !== null && anomPrecipSigma >= 1.0) {\n    anomaliaScore += 3;  motivos.push(\"precipitación sobre lo normal\");\n  }\n\n  const anomVientoSigma = anomaliaSigma(viento, stViento.mean, stViento.std);\n  if (anomVientoSigma !== null && anomVientoSigma >= 2.0) {\n    anomaliaScore += 8; motivos.push(\"viento anormalmente alto (>2σ)\");\n  } else if (anomVientoSigma !== null && anomVientoSigma >= 1.5) {\n    anomaliaScore += 4; motivos.push(\"viento sobre lo normal\");\n  }\n\n  const diasPeligrosos = historicoDia.wmos.filter((w) => WMO_PELIGROSOS.has(w)).length;\n  const pctEstacional  = historicoDia.wmos.length > 0 ? diasPeligrosos / historicoDia.wmos.length : 0;\n\n  if (pctEstacional >= 0.6) {\n    anomaliaScore += 8; motivos.push(\"semana de alto riesgo estacional histórico\");\n  } else if (pctEstacional >= 0.35) {\n    anomaliaScore += 4; motivos.push(\"semana de riesgo estacional moderado\");\n  }\n\n  anomaliaScore = clamp(anomaliaScore, 0, 25);\n\n  // ── 3. Score Altitud-Contexto ───────────────────────────────\n  let contextScore = 0;\n  if (altitud >= 3000)      { contextScore = 12; motivos.push(\"paso sobre 3000 m.s.n.m.\"); }\n  else if (altitud >= 2500) { contextScore = 8;  motivos.push(\"paso de alta montaña (>2500 m)\"); }\n  else if (altitud >= 1500) { contextScore = 4;  motivos.push(\"paso de montaña media\"); }\n\n  // ── 4. Score Historial Operativo ────────────────────────────\n  const historyScore = calcHistoryScore(motivos);\n  if (ultimoEstado === \"cerrado\") {\n    if (isCierreEstructural) hardSignals += 3; // Fuerza cierre seguro\n    else hardSignals++;\n  }\n\n  // ── 5. Agregación ponderada (Sin Alertas) ──────────────────────────────────\n  const normMeteo    = (meteoScore    / 60)  * 100;\n  const normHistory  = (historyScore  / (isCierreEstructural ? 60 : 30))  * 100;\n  const normAnomalia = (anomaliaScore / 25)  * 100;\n  const normContext  = (contextScore  / 12)  * 100;\n\n  let weightedScore = 0;\n  \n  if (isCierreEstructural) {\n     weightedScore = 95; // Si está cerrado por temporada/estructural, la probabilidad global es altísima siempre.\n  } else {\n     weightedScore = clamp(\n      normMeteo    * 0.45 +\n      normHistory  * 0.30 +\n      normAnomalia * 0.20 +\n      normContext  * 0.05,\n      0, 100\n    );\n  }\n\n  const horizonAdjusted = weightedScore * item.horizonWeight;\n  const rawProb = sigmoid((horizonAdjusted - 42) / 12);\n  const prob    = clamp(rawProb, 0.05, 0.95);\n\n  let confidence = \"media\";\n  if (!clima || !item.d || nHistDias < 2)        confidence = \"baja\";\n  else if (forecast.length >= 3 && nHistDias >= 2 && hist.length >= 5) confidence = \"alta\";\n\n  out.push({\n    json: {\n      paso_id:         paso.paso_id,\n      paso_documentId: paso.paso_documentId,\n      nombre_oficial:  paso.nombre_oficial,\n      horizonte_horas: item.h,\n      probabilidad:    Number(prob.toFixed(2)),\n      nivel_riesgo:    riskLabel(prob),\n      estado_predicho: predictedState(prob, hardSignals),\n      motivo_resumen:  motivos.slice(0, 5).join(\", \") || \"sin señales relevantes\",\n      fecha_calculo:   new Date().toISOString(),\n      valido_desde:    new Date().toISOString(),\n      valido_hasta:    new Date(Date.now() + item.h * 60 * 60 * 1000).toISOString(),\n      modelo_version:  \"risk-v6.2-hybrid-fast\",\n      tipo_evento:     \"prediccion_operativa\",\n      confianza:       confidence,\n      score_desglose: {\n        meteo:              Math.round(meteoScore),\n        anomalia_climatica: Math.round(anomaliaScore),\n        historial:          Math.round(historyScore),\n        contexto:           Math.round(contextScore),\n        ponderado:          Math.round(weightedScore),\n        ajustado_horizonte: Math.round(horizonAdjusted),\n        hard_signals:       hardSignals,\n        dias_historicos:    nHistDias,\n        pct_estacional:     Math.round(pctEstacional * 100),\n      },\n      datos_entrada: {\n        altitud,\n        ultimo_estado:         ultimoEstado,\n        cierres_24h:           cierres24h,\n        cierres_3d:            cierres3d,\n        cierres_7d:            cierres7d,\n        precaucion_7d:         prec7d,\n        weathercode,\n        temp_min:              tempMin,\n        precipitacion_total:   precip,\n        viento_max:            viento,\n        forecast_disponible:   !!item.d,\n        historico_temp_media:  stTempMin.mean !== null ? Number(stTempMin.mean.toFixed(1)) : null,\n        historico_precip_media: stPrecip.mean !== null ? Number(stPrecip.mean.toFixed(1)) : null,\n        anomalia_temp_sigma:   anomTempSigma  !== null ? Number(anomTempSigma.toFixed(2))  : null,\n        anomalia_precip_sigma: anomPrecipSigma !== null ? Number(anomPrecipSigma.toFixed(2)) : null,\n      },\n    },\n  });\n}\n\nreturn out;\n"
         },
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
@@ -275,7 +243,7 @@
         "typeVersion": 3.2,
         "position": [
           272,
-          -608
+          -416
         ]
       },
       {
@@ -290,7 +258,7 @@
         "typeVersion": 3.2,
         "position": [
           272,
-          -416
+          -224
         ]
       },
       {
@@ -350,7 +318,7 @@
         "typeVersion": 4.4,
         "position": [
           48,
-          -784
+          -592
         ],
         "id": "a4af0abb-f025-4c77-b56b-c1a025aaf209",
         "name": "GET Clima Histórico -1 Año",
@@ -394,7 +362,7 @@
         "typeVersion": 4.4,
         "position": [
           48,
-          -592
+          -400
         ],
         "id": "124335c2-fee4-467b-9c35-4d9a599d4af2",
         "name": "GET Clima Histórico -2 Años",
@@ -438,7 +406,7 @@
         "typeVersion": 4.4,
         "position": [
           48,
-          -400
+          -208
         ],
         "id": "97b2aabf-8194-48f6-ab5d-0a0e0222483e",
         "name": "GET Clima Histórico -3 Años",
@@ -456,7 +424,7 @@
         "typeVersion": 3.2,
         "position": [
           272,
-          -32
+          160
         ]
       },
       {
@@ -471,25 +439,8 @@
         "typeVersion": 3.2,
         "position": [
           272,
-          -224
+          -32
         ]
-      },
-      {
-        "parameters": {
-          "mode": "combine",
-          "combineBy": "combineAll",
-          "options": {
-            "fuzzyCompare": false
-          }
-        },
-        "type": "n8n-nodes-base.merge",
-        "typeVersion": 3.2,
-        "position": [
-          272,
-          160
-        ],
-        "id": "1c4ef8cc-aca5-4106-b0a9-47db4bad499d",
-        "name": "Combinar Datos Paso 6"
       }
     ],
     "connections": {
@@ -536,11 +487,6 @@
               "index": 0
             },
             {
-              "node": "GET Alertas Vigentes",
-              "type": "main",
-              "index": 0
-            },
-            {
               "node": "GET Clima Histórico -3 Años",
               "type": "main",
               "index": 0
@@ -574,17 +520,6 @@
           [
             {
               "node": "Combinar Datos Paso 5",
-              "type": "main",
-              "index": 1
-            }
-          ]
-        ]
-      },
-      "GET Alertas Vigentes": {
-        "main": [
-          [
-            {
-              "node": "Combinar Datos Paso 6",
               "type": "main",
               "index": 1
             }
@@ -683,7 +618,7 @@
         "main": [
           [
             {
-              "node": "Combinar Datos Paso 6",
+              "node": "Calcular Prediccion v6",
               "type": "main",
               "index": 0
             }
@@ -700,25 +635,14 @@
             }
           ]
         ]
-      },
-      "Combinar Datos Paso 6": {
-        "main": [
-          [
-            {
-              "node": "Calcular Prediccion v6",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
       }
     },
     "authors": "Nyxu Infinity",
-    "name": "Version fe35c240",
+    "name": "Version e72324a3",
     "description": "",
     "autosaved": true
   },
-  "activeVersionId": "fe35c240-3064-443c-be40-786053c59e06",
+  "activeVersionId": "e72324a3-4f7a-4891-993a-55e7451e602a",
   "connections": {
     "GET Pasos Activos": {
       "main": [
@@ -763,11 +687,6 @@
             "index": 0
           },
           {
-            "node": "GET Alertas Vigentes",
-            "type": "main",
-            "index": 0
-          },
-          {
             "node": "GET Clima Histórico -3 Años",
             "type": "main",
             "index": 0
@@ -801,17 +720,6 @@
         [
           {
             "node": "Combinar Datos Paso 5",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "GET Alertas Vigentes": {
-      "main": [
-        [
-          {
-            "node": "Combinar Datos Paso 6",
             "type": "main",
             "index": 1
           }
@@ -910,7 +818,7 @@
       "main": [
         [
           {
-            "node": "Combinar Datos Paso 6",
+            "node": "Calcular Prediccion v6",
             "type": "main",
             "index": 0
           }
@@ -922,17 +830,6 @@
         [
           {
             "node": "Combinar Datos Paso 5",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Combinar Datos Paso 6": {
-      "main": [
-        [
-          {
-            "node": "Calcular Prediccion v6",
             "type": "main",
             "index": 0
           }
@@ -1019,6 +916,8 @@
     {
       "parameters": {
         "url": "=https://strapi.frontieradvice.tech/api/clima-actuals",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
@@ -1040,10 +939,6 @@
         "headerParameters": {
           "parameters": [
             {
-              "name": "Authorization",
-              "value": "=Bearer b4748a0ff4611d007369a5119c5d70450595cdee7e6f9431a3891b5c2a16c58d5fcdbfef2cb5c1dafc30c244f43a0769bf9aab2e3daf64d98bed68e33100e22cae1a03147cd754469246db07962c0a75becb3a187b6dcd4ac413921e822b96f0f6789c2749a4e77d82dbc88ccf10a7437b29c87c7dd4f9b6875627c62c3d03e2"
-            },
-            {
               "name": "Content-Type",
               "value": "application/json"
             }
@@ -1057,12 +952,20 @@
       "typeVersion": 4.2,
       "position": [
         48,
-        -208
-      ]
+        -16
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
     },
     {
       "parameters": {
         "url": "=https://strapi.frontieradvice.tech/api/estado-diarios",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
@@ -1084,10 +987,6 @@
         "headerParameters": {
           "parameters": [
             {
-              "name": "Authorization",
-              "value": "=Bearer b4748a0ff4611d007369a5119c5d70450595cdee7e6f9431a3891b5c2a16c58d5fcdbfef2cb5c1dafc30c244f43a0769bf9aab2e3daf64d98bed68e33100e22cae1a03147cd754469246db07962c0a75becb3a187b6dcd4ac413921e822b96f0f6789c2749a4e77d82dbc88ccf10a7437b29c87c7dd4f9b6875627c62c3d03e2"
-            },
-            {
               "name": "Content-Type",
               "value": "application/json"
             }
@@ -1101,64 +1000,24 @@
       "typeVersion": 4.2,
       "position": [
         48,
-        -16
-      ]
-    },
-    {
-      "parameters": {
-        "url": "=https://strapi.frontieradvice.tech/api/alerta-eventos",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {
-              "name": "filters[idpaso][documentId][$eq]",
-              "value": "={{ $('Loop Pasos').item.json.paso_documentId }}"
-            },
-            {
-              "name": "sort[0]",
-              "value": "fecha_evento:desc"
-            },
-            {
-              "name": "pagination[pageSize]",
-              "value": "5"
-            }
-          ]
-        },
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Authorization",
-              "value": "=Bearer b4748a0ff4611d007369a5119c5d70450595cdee7e6f9431a3891b5c2a16c58d5fcdbfef2cb5c1dafc30c244f43a0769bf9aab2e3daf64d98bed68e33100e22cae1a03147cd754469246db07962c0a75becb3a187b6dcd4ac413921e822b96f0f6789c2749a4e77d82dbc88ccf10a7437b29c87c7dd4f9b6875627c62c3d03e2"
-            },
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "f6b642df-e459-4fb6-9806-a554194b48e6",
-      "name": "GET Alertas Vigentes",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        48,
         176
-      ]
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
     },
     {
       "parameters": {
         "method": "POST",
         "url": "=https://strapi.frontieradvice.tech/api/senal-predictivas",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            {
-              "name": "Authorization",
-              "value": "=Bearer b4748a0ff4611d007369a5119c5d70450595cdee7e6f9431a3891b5c2a16c58d5fcdbfef2cb5c1dafc30c244f43a0769bf9aab2e3daf64d98bed68e33100e22cae1a03147cd754469246db07962c0a75becb3a187b6dcd4ac413921e822b96f0f6789c2749a4e77d82dbc88ccf10a7437b29c87c7dd4f9b6875627c62c3d03e2"
-            },
             {
               "name": "Content-Type",
               "value": "application/json"
@@ -1177,7 +1036,13 @@
       "position": [
         752,
         160
-      ]
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
     },
     {
       "parameters": {},
@@ -1185,14 +1050,14 @@
       "typeVersion": 1,
       "position": [
         48,
-        -928
+        -736
       ],
       "id": "6cc85932-1c6e-4c00-9dda-450899944263",
       "name": "done"
     },
     {
       "parameters": {
-        "jsCode": "// ============================================================\n// MODELO HÍBRIDO v6.1 (FAST) — FrontierAdvice Predicción\n// Optimizado para leer 3 nodos HTTP de historial paralelos\n// en vez de 1 rango continuo masivo de 4 años.\n// ============================================================\n\nconst paso         = $(\"Loop Pasos\").item?.json           || {};\nconst climaResp    = $(\"GET Clima Actual Paso\").item?.json || {};\nconst estadosResp  = $(\"GET Estados Recientes\").item?.json || {};\nconst alertasResp  = $(\"GET Alertas Vigentes\").item?.json  || {};\n\n// Leemos los 3 nodos paralelos\nconst hist1 = $(\"GET Clima Histórico -1 Año\").item?.json?.daily || {};\nconst hist2 = $(\"GET Clima Histórico -2 Años\").item?.json?.daily || {};\nconst hist3 = $(\"GET Clima Histórico -3 Años\").item?.json?.daily || {};\n\nconst clima    = climaResp?.data?.[0]             || null;\nconst estados  = Array.isArray(estadosResp?.data)  ? estadosResp.data  : [];\nconst alertas  = Array.isArray(alertasResp?.data)  ? alertasResp.data  : [];\n\n// ── Concatenar históricos ────────────────────────────────────────────────────\nconst histTimes = [\n  ...(Array.isArray(hist1.time) ? hist1.time : []),\n  ...(Array.isArray(hist2.time) ? hist2.time : []),\n  ...(Array.isArray(hist3.time) ? hist3.time : [])\n];\nconst histTempMin = [\n  ...(Array.isArray(hist1.temperature_2m_min) ? hist1.temperature_2m_min : []),\n  ...(Array.isArray(hist2.temperature_2m_min) ? hist2.temperature_2m_min : []),\n  ...(Array.isArray(hist3.temperature_2m_min) ? hist3.temperature_2m_min : [])\n];\nconst histPrecip = [\n  ...(Array.isArray(hist1.precipitation_sum) ? hist1.precipitation_sum : []),\n  ...(Array.isArray(hist2.precipitation_sum) ? hist2.precipitation_sum : []),\n  ...(Array.isArray(hist3.precipitation_sum) ? hist3.precipitation_sum : [])\n];\nconst histViento = [\n  ...(Array.isArray(hist1.windspeed_10m_max) ? hist1.windspeed_10m_max : []),\n  ...(Array.isArray(hist2.windspeed_10m_max) ? hist2.windspeed_10m_max : []),\n  ...(Array.isArray(hist3.windspeed_10m_max) ? hist3.windspeed_10m_max : [])\n];\nconst histWMO = [\n  ...(Array.isArray(hist1.weather_code) ? hist1.weather_code : []),\n  ...(Array.isArray(hist2.weather_code) ? hist2.weather_code : []),\n  ...(Array.isArray(hist3.weather_code) ? hist3.weather_code : [])\n];\n\nconst WMO_PELIGROSOS = new Set([66, 67, 71, 73, 75, 77, 85, 86, 95, 96, 99]);\n\nfunction stats(arr) {\n  const valid = arr.filter((v) => v !== null && v !== undefined && Number.isFinite(Number(v)));\n  if (valid.length === 0) return { mean: null, std: null, n: 0 };\n  const n    = valid.length;\n  const mean = valid.reduce((s, v) => s + Number(v), 0) / n;\n  const std  = Math.sqrt(valid.reduce((s, v) => s + Math.pow(Number(v) - mean, 2), 0) / n);\n  return { mean, std, n };\n}\n\n// Ahora buscamos en la colección de ~21 a 30 días concatenados\nfunction getHistoricoParaFecha(targetDateISO) {\n  const target = new Date(targetDateISO + \"T12:00:00Z\");\n  const targetMM = target.getUTCMonth() + 1;\n  const targetDD = target.getUTCDate();\n\n  const tempMins = [], precips = [], vientos = [], wmos = [];\n\n  for (let i = 0; i < histTimes.length; i++) {\n    const d = new Date(histTimes[i] + \"T12:00:00Z\");\n    if (d.getUTCMonth() + 1 === targetMM && d.getUTCDate() === targetDD) {\n      if (histTempMin[i]  !== null) tempMins.push(Number(histTempMin[i]));\n      if (histPrecip[i]   !== null) precips.push(Number(histPrecip[i]));\n      if (histViento[i]   !== null) vientos.push(Number(histViento[i]));\n      if (histWMO[i]      !== null) wmos.push(Number(histWMO[i]));\n    }\n  }\n\n  return { tempMins, precips, vientos, wmos };\n}\n\nfunction anomaliaSigma(valorActual, mean, std) {\n  if (mean === null || std === null || std === 0) return null;\n  return (valorActual - mean) / std;\n}\n\n// ── Utilidades generales ──────────────────────────────────────────────────────\nfunction clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }\nfunction sigmoid(x) { return 1 / (1 + Math.exp(-x)); }\nfunction normEstado(e) {\n  const raw = (e?.estado_normalizado || e?.estado_general || \"\").toString().toLowerCase();\n  if (raw.includes(\"cerr\") || raw.includes(\"suspend\")) return \"cerrado\";\n  if (raw.includes(\"precau\") || raw.includes(\"desconocido\")) return \"precaucion\";\n  if (raw.includes(\"hab\") || raw.includes(\"abierto\")) return \"abierto\";\n  return \"desconocido\";\n}\nfunction riskLabel(prob) {\n  if (prob >= 0.70) return \"Alto\";\n  if (prob >= 0.40) return \"Medio\";\n  return \"Bajo\";\n}\nfunction predictedState(prob, hardSignals = 0) {\n  if (prob >= 0.72 || hardSignals >= 2) return \"cerrado\";\n  if (prob >= 0.42) return \"precaucion\";\n  return \"abierto\";\n}\n\n// ── Tabla WMO ────────────────────────────────────────────────────────────────\nconst WMO_RISKS = {\n  45: { score: 8,  label: \"niebla\",                   hard: false },\n  48: { score: 10, label: \"niebla engelante\",          hard: false },\n  66: { score: 28, label: \"lluvia engelante moderada\", hard: true  },\n  67: { score: 34, label: \"lluvia engelante intensa\",  hard: true  },\n  71: { score: 16, label: \"nevada leve\",               hard: false },\n  73: { score: 22, label: \"nevada moderada\",           hard: true  },\n  75: { score: 28, label: \"nevada intensa\",            hard: true  },\n  77: { score: 14, label: \"granizo menudo\",            hard: false },\n  85: { score: 20, label: \"chubascos de nieve\",        hard: false },\n  86: { score: 30, label: \"chubascos de nieve intensos\", hard: true },\n  95: { score: 18, label: \"tormenta\",                  hard: false },\n  96: { score: 24, label: \"tormenta con granizo\",      hard: true  },\n  99: { score: 30, label: \"tormenta severa\",           hard: true  },\n  63: { score: 14, label: \"lluvia intensa\",            hard: false },\n  65: { score: 18, label: \"lluvia muy intensa\",        hard: true  },\n};\n\n// ── Pre-cálculo del historial operativo ──────────────────────────────────────\nconst now     = Date.now();\nconst hace24h = now - 1 * 24 * 60 * 60 * 1000;\nconst hace3d  = now - 3 * 24 * 60 * 60 * 1000;\nconst hace7d  = now - 7 * 24 * 60 * 60 * 1000;\n\nconst hist = estados\n  .map((e) => {\n    const fecha = new Date(e?.fecha_reporte).getTime();\n    const motivo = (e?.motivo_estado || e?.mensaje_original || \"\").toString().toLowerCase();\n    return { estado: normEstado(e), fecha: isNaN(fecha) ? 0 : fecha, motivo };\n  })\n  .filter((h) => h.fecha > 0)\n  .sort((a, b) => b.fecha - a.fecha);\n\nconst ultimoEstado  = hist[0]?.estado || \"desconocido\";\nconst ultimoMotivo  = hist[0]?.motivo || \"\";\n\n// Detección de cierres estructurales/estacionales prolongados\nconst isCierreEstructural = ultimoEstado === \"cerrado\" && (\n  ultimoMotivo.includes(\"temporada estival\") ||\n  ultimoMotivo.includes(\"temporada invernal\") ||\n  ultimoMotivo.includes(\"invierno\") ||\n  ultimoMotivo.includes(\"indefinido\") ||\n  ultimoMotivo.includes(\"reparación\") ||\n  ultimoMotivo.includes(\"mantenimiento\") ||\n  ultimoMotivo.includes(\"mantención\") ||\n  ultimoMotivo.includes(\"obras\") ||\n  ultimoMotivo.includes(\"sistema de agua\") ||\n  ultimoMotivo.includes(\"estructural\")\n);\n\nconst alertaVigente = alertas.length > 0;\nconst alertaAlta    = alertaVigente && alertas.some((a) => {\n    const txt = JSON.stringify(a).toLowerCase();\n    return txt.includes(\"alto\") || txt.includes(\"critico\") || txt.includes(\"emerg\");\n});\n\nconst rec24h = hist.filter((h) => h.fecha >= hace24h);\nconst rec3d  = hist.filter((h) => h.fecha >= hace3d);\nconst rec7d  = hist.filter((h) => h.fecha >= hace7d);\n\nconst cierres24h = rec24h.filter((h) => h.estado === \"cerrado\").length;\nconst cierres3d  = rec3d.filter((h)  => h.estado === \"cerrado\").length;\nconst cierres7d  = rec7d.filter((h)  => h.estado === \"cerrado\").length;\nconst prec7d     = rec7d.filter((h)  => h.estado === \"precaucion\").length;\n\nfunction calcHistoryScore(motivos) {\n  let score = 0;\n  \n  if (isCierreEstructural) {\n    score = 60; // Penalización masiva, sobreescribe el resto\n    motivos.push(\"cierre estructural/estacional prolongado\");\n    return score;\n  }\n\n  if (cierres24h >= 1)     { score += 22; motivos.push(\"cierre en las últimas 24h\"); }\n  else if (cierres3d >= 2) { score += 16; motivos.push(\"múltiples cierres en 3 días\"); }\n  else if (cierres7d >= 3) { score += 12; motivos.push(\"cierres frecuentes en 7 días\"); }\n  else if (cierres7d >= 1) { score += 6;  motivos.push(\"cierres recientes\"); }\n  if (prec7d >= 3)         { score += 8;  motivos.push(\"precauciones frecuentes\"); }\n  else if (prec7d >= 1)    { score += 4;  motivos.push(\"antecedentes de precaución\"); }\n  if (ultimoEstado === \"cerrado\")    { score += 18; motivos.push(\"último estado: cerrado\"); }\n  else if (ultimoEstado === \"precaucion\") { score += 10; motivos.push(\"último estado: precaución\"); }\n  return clamp(score, 0, 30);\n}\n\n// ── Pronóstico 3 días ─────────────────────────────────────────────────────────\nconst forecast = Array.isArray(clima?.pronostico_3dias) ? clima.pronostico_3dias : [];\n\nfunction addDays(date, days) {\n  const d = new Date(date);\n  d.setUTCDate(d.getUTCDate() + days);\n  return d.toISOString().slice(0, 10);\n}\n\nconst hoy = new Date().toISOString().slice(0, 10);\nconst dias = [\n  { h: 24, d: forecast[0] || null, horizonWeight: 1.00, fecha: addDays(hoy, 1) },\n  { h: 48, d: forecast[1] || null, horizonWeight: 0.85, fecha: addDays(hoy, 2) },\n  { h: 72, d: forecast[2] || null, horizonWeight: 0.72, fecha: addDays(hoy, 3) },\n];\n\nconst altitud = Number(paso?.altitud || 0);\nconst out = [];\n\nfor (const item of dias) {\n  const d = item.d || {};\n\n  const tempMin    = Number(d.temp_min      ?? clima?.temperatura_actual ?? 0);\n  const precip     = Number(d.precipitacion ?? clima?.precipitacion_actual ?? 0);\n  const viento     = Number(d.viento_max    ?? clima?.viento_actual ?? 0);\n  const weathercode = Number(d.weathercode  ?? clima?.weathercode ?? 0);\n\n  const motivos = [];\n  let hardSignals = 0;\n\n  // ── 1. Score Meteorológico ──────────────────────────────────\n  let meteoScore = 0;\n\n  const wmo = WMO_RISKS[weathercode];\n  if (wmo) {\n    meteoScore += wmo.score;\n    motivos.push(wmo.label);\n    if (wmo.hard) hardSignals++;\n  }\n\n  if (viento >= 100)      { meteoScore += 30; hardSignals++; motivos.push(\"viento extremo (>100 km/h)\"); }\n  else if (viento >= 80)  { meteoScore += 22; motivos.push(\"viento muy fuerte (80-100 km/h)\"); }\n  else if (viento >= 60)  { meteoScore += 14; motivos.push(\"viento fuerte (60-80 km/h)\"); }\n  else if (viento >= 40)  { meteoScore += 7;  motivos.push(\"viento moderado (40-60 km/h)\"); }\n\n  if (precip >= 20)       { meteoScore += 14; motivos.push(\"precipitación muy alta\"); }\n  else if (precip >= 12)  { meteoScore += 10; motivos.push(\"precipitación alta\"); }\n  else if (precip >= 5)   { meteoScore += 6;  motivos.push(\"precipitación moderada\"); }\n  else if (precip >= 2)   { meteoScore += 3;  motivos.push(\"precipitación leve\"); }\n\n  if (tempMin <= -10)     { meteoScore += 14; motivos.push(\"frío extremo (<-10°C)\"); }\n  else if (tempMin <= -5) { meteoScore += 10; motivos.push(\"temperatura muy baja (-10 a -5°C)\"); }\n  else if (tempMin <= 0)  { meteoScore += 6;  motivos.push(\"temperatura bajo cero\"); }\n  else if (tempMin <= 2)  { meteoScore += 3;  motivos.push(\"temperatura cercana a cero\"); }\n\n  if (altitud >= 2500 && meteoScore > 0) {\n    meteoScore *= 1.15;\n    motivos.push(\"amplificación alta montaña\");\n  }\n  meteoScore = clamp(meteoScore, 0, 60);\n\n  // ── 2. Score Anomalía Climática Histórica ──────────────────\n  let anomaliaScore = 0;\n  const historicoDia = getHistoricoParaFecha(item.fecha);\n\n  const stTempMin = stats(historicoDia.tempMins);\n  const stPrecip  = stats(historicoDia.precips);\n  const stViento  = stats(historicoDia.vientos);\n  const nHistDias = stTempMin.n;\n\n  const anomTempSigma = anomaliaSigma(tempMin, stTempMin.mean, stTempMin.std);\n  if (anomTempSigma !== null && anomTempSigma <= -2.0) {\n    anomaliaScore += 12; hardSignals++; motivos.push(\"temperatura anormalmente baja (>2σ)\");\n  } else if (anomTempSigma !== null && anomTempSigma <= -1.5) {\n    anomaliaScore += 8;  motivos.push(\"temperatura significativamente bajo lo normal\");\n  } else if (anomTempSigma !== null && anomTempSigma <= -1.0) {\n    anomaliaScore += 4;  motivos.push(\"temperatura bajo lo normal\");\n  }\n\n  const anomPrecipSigma = anomaliaSigma(precip, stPrecip.mean, stPrecip.std);\n  if (anomPrecipSigma !== null && anomPrecipSigma >= 2.0) {\n    anomaliaScore += 10; hardSignals++; motivos.push(\"precipitación anormalmente alta (>2σ)\");\n  } else if (anomPrecipSigma !== null && anomPrecipSigma >= 1.5) {\n    anomaliaScore += 6;  motivos.push(\"precipitación significativamente sobre lo normal\");\n  } else if (anomPrecipSigma !== null && anomPrecipSigma >= 1.0) {\n    anomaliaScore += 3;  motivos.push(\"precipitación sobre lo normal\");\n  }\n\n  const anomVientoSigma = anomaliaSigma(viento, stViento.mean, stViento.std);\n  if (anomVientoSigma !== null && anomVientoSigma >= 2.0) {\n    anomaliaScore += 8; motivos.push(\"viento anormalmente alto (>2σ)\");\n  } else if (anomVientoSigma !== null && anomVientoSigma >= 1.5) {\n    anomaliaScore += 4; motivos.push(\"viento sobre lo normal\");\n  }\n\n  const diasPeligrosos = historicoDia.wmos.filter((w) => WMO_PELIGROSOS.has(w)).length;\n  const pctEstacional  = historicoDia.wmos.length > 0 ? diasPeligrosos / historicoDia.wmos.length : 0;\n\n  if (pctEstacional >= 0.6) {\n    anomaliaScore += 8; motivos.push(\"semana de alto riesgo estacional histórico\");\n  } else if (pctEstacional >= 0.35) {\n    anomaliaScore += 4; motivos.push(\"semana de riesgo estacional moderado\");\n  }\n\n  anomaliaScore = clamp(anomaliaScore, 0, 25);\n\n  // ── 3. Score Altitud-Contexto ───────────────────────────────\n  let contextScore = 0;\n  if (altitud >= 3000)      { contextScore = 12; motivos.push(\"paso sobre 3000 m.s.n.m.\"); }\n  else if (altitud >= 2500) { contextScore = 8;  motivos.push(\"paso de alta montaña (>2500 m)\"); }\n  else if (altitud >= 1500) { contextScore = 4;  motivos.push(\"paso de montaña media\"); }\n\n  // ── 4. Score Historial Operativo ────────────────────────────\n  const historyScore = calcHistoryScore(motivos);\n  if (ultimoEstado === \"cerrado\") {\n    if (isCierreEstructural) hardSignals += 3; // Fuerza cierre seguro\n    else hardSignals++;\n  }\n\n  // ── 5. Score Alertas ───────────────────────────────────────\n  let alertScore = 0;\n  if (alertaAlta)      { alertScore = 15; hardSignals++; motivos.push(\"alerta de nivel alto vigente\"); }\n  else if (alertaVigente) { alertScore = 8; motivos.push(\"alerta vigente\"); }\n\n  // ── 6. Agregación ponderada ────────────────────────────────────────────────\n  const normMeteo    = (meteoScore    / 60)  * 100;\n  const normHistory  = (historyScore  / (isCierreEstructural ? 60 : 30))  * 100;\n  const normAnomalia = (anomaliaScore / 25)  * 100;\n  const normAlerts   = (alertScore    / 15)  * 100;\n  const normContext  = (contextScore  / 12)  * 100;\n\n  let weightedScore = 0;\n  \n  if (isCierreEstructural) {\n     weightedScore = 95; // Si está cerrado por temporada/estructural, la probabilidad global es altísima siempre.\n  } else {\n     weightedScore = clamp(\n      normMeteo    * 0.40 +\n      normHistory  * 0.25 +\n      normAnomalia * 0.20 +\n      normAlerts   * 0.10 +\n      normContext  * 0.05,\n      0, 100\n    );\n  }\n\n  const horizonAdjusted = weightedScore * item.horizonWeight;\n  const rawProb = sigmoid((horizonAdjusted - 42) / 12);\n  const prob    = clamp(rawProb, 0.05, 0.95);\n\n  let confidence = \"media\";\n  if (!clima || !item.d || nHistDias < 2)        confidence = \"baja\";\n  else if (forecast.length >= 3 && nHistDias >= 2 && hist.length >= 5) confidence = \"alta\";\n\n  out.push({\n    json: {\n      paso_id:         paso.paso_id,\n      paso_documentId: paso.paso_documentId,\n      nombre_oficial:  paso.nombre_oficial,\n      horizonte_horas: item.h,\n      probabilidad:    Number(prob.toFixed(2)),\n      nivel_riesgo:    riskLabel(prob),\n      estado_predicho: predictedState(prob, hardSignals),\n      motivo_resumen:  motivos.slice(0, 5).join(\", \") || \"sin señales relevantes\",\n      fecha_calculo:   new Date().toISOString(),\n      valido_desde:    new Date().toISOString(),\n      valido_hasta:    new Date(Date.now() + item.h * 60 * 60 * 1000).toISOString(),\n      modelo_version:  \"risk-v6-hybrid-fast\",\n      tipo_evento:     \"prediccion_operativa\",\n      confianza:       confidence,\n      score_desglose: {\n        meteo:              Math.round(meteoScore),\n        anomalia_climatica: Math.round(anomaliaScore),\n        historial:          Math.round(historyScore),\n        alertas:            Math.round(alertScore),\n        contexto:           Math.round(contextScore),\n        ponderado:          Math.round(weightedScore),\n        ajustado_horizonte: Math.round(horizonAdjusted),\n        hard_signals:       hardSignals,\n        dias_historicos:    nHistDias,\n        pct_estacional:     Math.round(pctEstacional * 100),\n      },\n      datos_entrada: {\n        altitud,\n        ultimo_estado:         ultimoEstado,\n        cierres_24h:           cierres24h,\n        cierres_3d:            cierres3d,\n        cierres_7d:            cierres7d,\n        precaucion_7d:         prec7d,\n        alerta_vigente:        alertaVigente,\n        alerta_alta:           alertaAlta,\n        weathercode,\n        temp_min:              tempMin,\n        precipitacion_total:   precip,\n        viento_max:            viento,\n        forecast_disponible:   !!item.d,\n        historico_temp_media:  stTempMin.mean !== null ? Number(stTempMin.mean.toFixed(1)) : null,\n        historico_precip_media: stPrecip.mean !== null ? Number(stPrecip.mean.toFixed(1)) : null,\n        anomalia_temp_sigma:   anomTempSigma  !== null ? Number(anomTempSigma.toFixed(2))  : null,\n        anomalia_precip_sigma: anomPrecipSigma !== null ? Number(anomPrecipSigma.toFixed(2)) : null,\n      },\n    },\n  });\n}\n\nreturn out;\n"
+        "jsCode": "// ============================================================\n// MODELO HÍBRIDO v6.2 (FAST) — FrontierAdvice Predicción\n// Optimizado para leer 3 nodos HTTP de historial paralelos\n// (Sin Alertas-Eventos)\n// ============================================================\n\nconst paso         = $(\"Loop Pasos\").item?.json           || {};\nconst climaResp    = $(\"GET Clima Actual Paso\").item?.json || {};\nconst estadosResp  = $(\"GET Estados Recientes\").item?.json || {};\n\n// Leemos los 3 nodos paralelos\nconst hist1 = $(\"GET Clima Histórico -1 Año\").item?.json?.daily || {};\nconst hist2 = $(\"GET Clima Histórico -2 Años\").item?.json?.daily || {};\nconst hist3 = $(\"GET Clima Histórico -3 Años\").item?.json?.daily || {};\n\nconst clima    = climaResp?.data?.[0]             || null;\nconst estados  = Array.isArray(estadosResp?.data)  ? estadosResp.data  : [];\n\n// ── Concatenar históricos ────────────────────────────────────────────────────\nconst histTimes = [\n  ...(Array.isArray(hist1.time) ? hist1.time : []),\n  ...(Array.isArray(hist2.time) ? hist2.time : []),\n  ...(Array.isArray(hist3.time) ? hist3.time : [])\n];\nconst histTempMin = [\n  ...(Array.isArray(hist1.temperature_2m_min) ? hist1.temperature_2m_min : []),\n  ...(Array.isArray(hist2.temperature_2m_min) ? hist2.temperature_2m_min : []),\n  ...(Array.isArray(hist3.temperature_2m_min) ? hist3.temperature_2m_min : [])\n];\nconst histPrecip = [\n  ...(Array.isArray(hist1.precipitation_sum) ? hist1.precipitation_sum : []),\n  ...(Array.isArray(hist2.precipitation_sum) ? hist2.precipitation_sum : []),\n  ...(Array.isArray(hist3.precipitation_sum) ? hist3.precipitation_sum : [])\n];\nconst histViento = [\n  ...(Array.isArray(hist1.windspeed_10m_max) ? hist1.windspeed_10m_max : []),\n  ...(Array.isArray(hist2.windspeed_10m_max) ? hist2.windspeed_10m_max : []),\n  ...(Array.isArray(hist3.windspeed_10m_max) ? hist3.windspeed_10m_max : [])\n];\nconst histWMO = [\n  ...(Array.isArray(hist1.weather_code) ? hist1.weather_code : []),\n  ...(Array.isArray(hist2.weather_code) ? hist2.weather_code : []),\n  ...(Array.isArray(hist3.weather_code) ? hist3.weather_code : [])\n];\n\nconst WMO_PELIGROSOS = new Set([66, 67, 71, 73, 75, 77, 85, 86, 95, 96, 99]);\n\nfunction stats(arr) {\n  const valid = arr.filter((v) => v !== null && v !== undefined && Number.isFinite(Number(v)));\n  if (valid.length === 0) return { mean: null, std: null, n: 0 };\n  const n    = valid.length;\n  const mean = valid.reduce((s, v) => s + Number(v), 0) / n;\n  const std  = Math.sqrt(valid.reduce((s, v) => s + Math.pow(Number(v) - mean, 2), 0) / n);\n  return { mean, std, n };\n}\n\n// Ahora buscamos en la colección de ~21 a 30 días concatenados\nfunction getHistoricoParaFecha(targetDateISO) {\n  const target = new Date(targetDateISO + \"T12:00:00Z\");\n  const targetMM = target.getUTCMonth() + 1;\n  const targetDD = target.getUTCDate();\n\n  const tempMins = [], precips = [], vientos = [], wmos = [];\n\n  for (let i = 0; i < histTimes.length; i++) {\n    const d = new Date(histTimes[i] + \"T12:00:00Z\");\n    if (d.getUTCMonth() + 1 === targetMM && d.getUTCDate() === targetDD) {\n      if (histTempMin[i]  !== null) tempMins.push(Number(histTempMin[i]));\n      if (histPrecip[i]   !== null) precips.push(Number(histPrecip[i]));\n      if (histViento[i]   !== null) vientos.push(Number(histViento[i]));\n      if (histWMO[i]      !== null) wmos.push(Number(histWMO[i]));\n    }\n  }\n\n  return { tempMins, precips, vientos, wmos };\n}\n\nfunction anomaliaSigma(valorActual, mean, std) {\n  if (mean === null || std === null || std === 0) return null;\n  return (valorActual - mean) / std;\n}\n\n// ── Utilidades generales ──────────────────────────────────────────────────────\nfunction clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }\nfunction sigmoid(x) { return 1 / (1 + Math.exp(-x)); }\nfunction normEstado(e) {\n  const raw = (e?.estado_normalizado || e?.estado_general || \"\").toString().toLowerCase();\n  if (raw.includes(\"cerr\") || raw.includes(\"suspend\")) return \"cerrado\";\n  if (raw.includes(\"precau\") || raw.includes(\"desconocido\")) return \"precaucion\";\n  if (raw.includes(\"hab\") || raw.includes(\"abierto\")) return \"abierto\";\n  return \"desconocido\";\n}\nfunction riskLabel(prob) {\n  if (prob >= 0.70) return \"Alto\";\n  if (prob >= 0.40) return \"Medio\";\n  return \"Bajo\";\n}\nfunction predictedState(prob, hardSignals = 0) {\n  if (prob >= 0.72 || hardSignals >= 2) return \"cerrado\";\n  if (prob >= 0.42) return \"precaucion\";\n  return \"abierto\";\n}\n\n// ── Tabla WMO ────────────────────────────────────────────────────────────────\nconst WMO_RISKS = {\n  45: { score: 8,  label: \"niebla\",                   hard: false },\n  48: { score: 10, label: \"niebla engelante\",          hard: false },\n  66: { score: 28, label: \"lluvia engelante moderada\", hard: true  },\n  67: { score: 34, label: \"lluvia engelante intensa\",  hard: true  },\n  71: { score: 16, label: \"nevada leve\",               hard: false },\n  73: { score: 22, label: \"nevada moderada\",           hard: true  },\n  75: { score: 28, label: \"nevada intensa\",            hard: true  },\n  77: { score: 14, label: \"granizo menudo\",            hard: false },\n  85: { score: 20, label: \"chubascos de nieve\",        hard: false },\n  86: { score: 30, label: \"chubascos de nieve intensos\", hard: true },\n  95: { score: 18, label: \"tormenta\",                  hard: false },\n  96: { score: 24, label: \"tormenta con granizo\",      hard: true  },\n  99: { score: 30, label: \"tormenta severa\",           hard: true  },\n  63: { score: 14, label: \"lluvia intensa\",            hard: false },\n  65: { score: 18, label: \"lluvia muy intensa\",        hard: true  },\n};\n\n// ── Pre-cálculo del historial operativo ──────────────────────────────────────\nconst now     = Date.now();\nconst hace24h = now - 1 * 24 * 60 * 60 * 1000;\nconst hace3d  = now - 3 * 24 * 60 * 60 * 1000;\nconst hace7d  = now - 7 * 24 * 60 * 60 * 1000;\n\nconst hist = estados\n  .map((e) => {\n    const fecha = new Date(e?.fecha_reporte).getTime();\n    const motivo = (e?.motivo_estado || e?.mensaje_original || \"\").toString().toLowerCase();\n    return { estado: normEstado(e), fecha: isNaN(fecha) ? 0 : fecha, motivo };\n  })\n  .filter((h) => h.fecha > 0)\n  .sort((a, b) => b.fecha - a.fecha);\n\nconst ultimoEstado  = hist[0]?.estado || \"desconocido\";\nconst ultimoMotivo  = hist[0]?.motivo || \"\";\n\n// Detección de cierres estructurales/estacionales prolongados\nconst isCierreEstructural = ultimoEstado === \"cerrado\" && (\n  ultimoMotivo.includes(\"temporada estival\") ||\n  ultimoMotivo.includes(\"temporada invernal\") ||\n  ultimoMotivo.includes(\"invierno\") ||\n  ultimoMotivo.includes(\"indefinido\") ||\n  ultimoMotivo.includes(\"reparación\") ||\n  ultimoMotivo.includes(\"mantenimiento\") ||\n  ultimoMotivo.includes(\"mantención\") ||\n  ultimoMotivo.includes(\"obras\") ||\n  ultimoMotivo.includes(\"sistema de agua\") ||\n  ultimoMotivo.includes(\"estructural\")\n);\n\nconst rec24h = hist.filter((h) => h.fecha >= hace24h);\nconst rec3d  = hist.filter((h) => h.fecha >= hace3d);\nconst rec7d  = hist.filter((h) => h.fecha >= hace7d);\n\nconst cierres24h = rec24h.filter((h) => h.estado === \"cerrado\").length;\nconst cierres3d  = rec3d.filter((h)  => h.estado === \"cerrado\").length;\nconst cierres7d  = rec7d.filter((h)  => h.estado === \"cerrado\").length;\nconst prec7d     = rec7d.filter((h)  => h.estado === \"precaucion\").length;\n\nfunction calcHistoryScore(motivos) {\n  let score = 0;\n  \n  if (isCierreEstructural) {\n    score = 60; // Penalización masiva, sobreescribe el resto\n    motivos.push(\"cierre estructural/estacional prolongado\");\n    return score;\n  }\n\n  if (cierres24h >= 1)     { score += 22; motivos.push(\"cierre en las últimas 24h\"); }\n  else if (cierres3d >= 2) { score += 16; motivos.push(\"múltiples cierres en 3 días\"); }\n  else if (cierres7d >= 3) { score += 12; motivos.push(\"cierres frecuentes en 7 días\"); }\n  else if (cierres7d >= 1) { score += 6;  motivos.push(\"cierres recientes\"); }\n  if (prec7d >= 3)         { score += 8;  motivos.push(\"precauciones frecuentes\"); }\n  else if (prec7d >= 1)    { score += 4;  motivos.push(\"antecedentes de precaución\"); }\n  if (ultimoEstado === \"cerrado\")    { score += 18; motivos.push(\"último estado: cerrado\"); }\n  else if (ultimoEstado === \"precaucion\") { score += 10; motivos.push(\"último estado: precaución\"); }\n  return clamp(score, 0, 30);\n}\n\n// ── Pronóstico 3 días ─────────────────────────────────────────────────────────\nconst forecast = Array.isArray(clima?.pronostico_3dias) ? clima.pronostico_3dias : [];\n\nfunction addDays(date, days) {\n  const d = new Date(date);\n  d.setUTCDate(d.getUTCDate() + days);\n  return d.toISOString().slice(0, 10);\n}\n\nconst hoy = new Date().toISOString().slice(0, 10);\nconst dias = [\n  { h: 24, d: forecast[0] || null, horizonWeight: 1.00, fecha: addDays(hoy, 1) },\n  { h: 48, d: forecast[1] || null, horizonWeight: 0.85, fecha: addDays(hoy, 2) },\n  { h: 72, d: forecast[2] || null, horizonWeight: 0.72, fecha: addDays(hoy, 3) },\n];\n\nconst altitud = Number(paso?.altitud || 0);\nconst out = [];\n\nfor (const item of dias) {\n  const d = item.d || {};\n\n  const tempMin    = Number(d.temp_min      ?? clima?.temperatura_actual ?? 0);\n  const precip     = Number(d.precipitacion ?? clima?.precipitacion_actual ?? 0);\n  const viento     = Number(d.viento_max    ?? clima?.viento_actual ?? 0);\n  const weathercode = Number(d.weathercode  ?? clima?.weathercode ?? 0);\n\n  const motivos = [];\n  let hardSignals = 0;\n\n  // ── 1. Score Meteorológico ──────────────────────────────────\n  let meteoScore = 0;\n\n  const wmo = WMO_RISKS[weathercode];\n  if (wmo) {\n    meteoScore += wmo.score;\n    motivos.push(wmo.label);\n    if (wmo.hard) hardSignals++;\n  }\n\n  if (viento >= 100)      { meteoScore += 30; hardSignals++; motivos.push(\"viento extremo (>100 km/h)\"); }\n  else if (viento >= 80)  { meteoScore += 22; motivos.push(\"viento muy fuerte (80-100 km/h)\"); }\n  else if (viento >= 60)  { meteoScore += 14; motivos.push(\"viento fuerte (60-80 km/h)\"); }\n  else if (viento >= 40)  { meteoScore += 7;  motivos.push(\"viento moderado (40-60 km/h)\"); }\n\n  if (precip >= 20)       { meteoScore += 14; motivos.push(\"precipitación muy alta\"); }\n  else if (precip >= 12)  { meteoScore += 10; motivos.push(\"precipitación alta\"); }\n  else if (precip >= 5)   { meteoScore += 6;  motivos.push(\"precipitación moderada\"); }\n  else if (precip >= 2)   { meteoScore += 3;  motivos.push(\"precipitación leve\"); }\n\n  if (tempMin <= -10)     { meteoScore += 14; motivos.push(\"frío extremo (<-10°C)\"); }\n  else if (tempMin <= -5) { meteoScore += 10; motivos.push(\"temperatura muy baja (-10 a -5°C)\"); }\n  else if (tempMin <= 0)  { meteoScore += 6;  motivos.push(\"temperatura bajo cero\"); }\n  else if (tempMin <= 2)  { meteoScore += 3;  motivos.push(\"temperatura cercana a cero\"); }\n\n  if (altitud >= 2500 && meteoScore > 0) {\n    meteoScore *= 1.15;\n    motivos.push(\"amplificación alta montaña\");\n  }\n  meteoScore = clamp(meteoScore, 0, 60);\n\n  // ── 2. Score Anomalía Climática Histórica ──────────────────\n  let anomaliaScore = 0;\n  const historicoDia = getHistoricoParaFecha(item.fecha);\n\n  const stTempMin = stats(historicoDia.tempMins);\n  const stPrecip  = stats(historicoDia.precips);\n  const stViento  = stats(historicoDia.vientos);\n  const nHistDias = stTempMin.n;\n\n  const anomTempSigma = anomaliaSigma(tempMin, stTempMin.mean, stTempMin.std);\n  if (anomTempSigma !== null && anomTempSigma <= -2.0) {\n    anomaliaScore += 12; hardSignals++; motivos.push(\"temperatura anormalmente baja (>2σ)\");\n  } else if (anomTempSigma !== null && anomTempSigma <= -1.5) {\n    anomaliaScore += 8;  motivos.push(\"temperatura significativamente bajo lo normal\");\n  } else if (anomTempSigma !== null && anomTempSigma <= -1.0) {\n    anomaliaScore += 4;  motivos.push(\"temperatura bajo lo normal\");\n  }\n\n  const anomPrecipSigma = anomaliaSigma(precip, stPrecip.mean, stPrecip.std);\n  if (anomPrecipSigma !== null && anomPrecipSigma >= 2.0) {\n    anomaliaScore += 10; hardSignals++; motivos.push(\"precipitación anormalmente alta (>2σ)\");\n  } else if (anomPrecipSigma !== null && anomPrecipSigma >= 1.5) {\n    anomaliaScore += 6;  motivos.push(\"precipitación significativamente sobre lo normal\");\n  } else if (anomPrecipSigma !== null && anomPrecipSigma >= 1.0) {\n    anomaliaScore += 3;  motivos.push(\"precipitación sobre lo normal\");\n  }\n\n  const anomVientoSigma = anomaliaSigma(viento, stViento.mean, stViento.std);\n  if (anomVientoSigma !== null && anomVientoSigma >= 2.0) {\n    anomaliaScore += 8; motivos.push(\"viento anormalmente alto (>2σ)\");\n  } else if (anomVientoSigma !== null && anomVientoSigma >= 1.5) {\n    anomaliaScore += 4; motivos.push(\"viento sobre lo normal\");\n  }\n\n  const diasPeligrosos = historicoDia.wmos.filter((w) => WMO_PELIGROSOS.has(w)).length;\n  const pctEstacional  = historicoDia.wmos.length > 0 ? diasPeligrosos / historicoDia.wmos.length : 0;\n\n  if (pctEstacional >= 0.6) {\n    anomaliaScore += 8; motivos.push(\"semana de alto riesgo estacional histórico\");\n  } else if (pctEstacional >= 0.35) {\n    anomaliaScore += 4; motivos.push(\"semana de riesgo estacional moderado\");\n  }\n\n  anomaliaScore = clamp(anomaliaScore, 0, 25);\n\n  // ── 3. Score Altitud-Contexto ───────────────────────────────\n  let contextScore = 0;\n  if (altitud >= 3000)      { contextScore = 12; motivos.push(\"paso sobre 3000 m.s.n.m.\"); }\n  else if (altitud >= 2500) { contextScore = 8;  motivos.push(\"paso de alta montaña (>2500 m)\"); }\n  else if (altitud >= 1500) { contextScore = 4;  motivos.push(\"paso de montaña media\"); }\n\n  // ── 4. Score Historial Operativo ────────────────────────────\n  const historyScore = calcHistoryScore(motivos);\n  if (ultimoEstado === \"cerrado\") {\n    if (isCierreEstructural) hardSignals += 3; // Fuerza cierre seguro\n    else hardSignals++;\n  }\n\n  // ── 5. Agregación ponderada (Sin Alertas) ──────────────────────────────────\n  const normMeteo    = (meteoScore    / 60)  * 100;\n  const normHistory  = (historyScore  / (isCierreEstructural ? 60 : 30))  * 100;\n  const normAnomalia = (anomaliaScore / 25)  * 100;\n  const normContext  = (contextScore  / 12)  * 100;\n\n  let weightedScore = 0;\n  \n  if (isCierreEstructural) {\n     weightedScore = 95; // Si está cerrado por temporada/estructural, la probabilidad global es altísima siempre.\n  } else {\n     weightedScore = clamp(\n      normMeteo    * 0.45 +\n      normHistory  * 0.30 +\n      normAnomalia * 0.20 +\n      normContext  * 0.05,\n      0, 100\n    );\n  }\n\n  const horizonAdjusted = weightedScore * item.horizonWeight;\n  const rawProb = sigmoid((horizonAdjusted - 42) / 12);\n  const prob    = clamp(rawProb, 0.05, 0.95);\n\n  let confidence = \"media\";\n  if (!clima || !item.d || nHistDias < 2)        confidence = \"baja\";\n  else if (forecast.length >= 3 && nHistDias >= 2 && hist.length >= 5) confidence = \"alta\";\n\n  out.push({\n    json: {\n      paso_id:         paso.paso_id,\n      paso_documentId: paso.paso_documentId,\n      nombre_oficial:  paso.nombre_oficial,\n      horizonte_horas: item.h,\n      probabilidad:    Number(prob.toFixed(2)),\n      nivel_riesgo:    riskLabel(prob),\n      estado_predicho: predictedState(prob, hardSignals),\n      motivo_resumen:  motivos.slice(0, 5).join(\", \") || \"sin señales relevantes\",\n      fecha_calculo:   new Date().toISOString(),\n      valido_desde:    new Date().toISOString(),\n      valido_hasta:    new Date(Date.now() + item.h * 60 * 60 * 1000).toISOString(),\n      modelo_version:  \"risk-v6.2-hybrid-fast\",\n      tipo_evento:     \"prediccion_operativa\",\n      confianza:       confidence,\n      score_desglose: {\n        meteo:              Math.round(meteoScore),\n        anomalia_climatica: Math.round(anomaliaScore),\n        historial:          Math.round(historyScore),\n        contexto:           Math.round(contextScore),\n        ponderado:          Math.round(weightedScore),\n        ajustado_horizonte: Math.round(horizonAdjusted),\n        hard_signals:       hardSignals,\n        dias_historicos:    nHistDias,\n        pct_estacional:     Math.round(pctEstacional * 100),\n      },\n      datos_entrada: {\n        altitud,\n        ultimo_estado:         ultimoEstado,\n        cierres_24h:           cierres24h,\n        cierres_3d:            cierres3d,\n        cierres_7d:            cierres7d,\n        precaucion_7d:         prec7d,\n        weathercode,\n        temp_min:              tempMin,\n        precipitacion_total:   precip,\n        viento_max:            viento,\n        forecast_disponible:   !!item.d,\n        historico_temp_media:  stTempMin.mean !== null ? Number(stTempMin.mean.toFixed(1)) : null,\n        historico_precip_media: stPrecip.mean !== null ? Number(stPrecip.mean.toFixed(1)) : null,\n        anomalia_temp_sigma:   anomTempSigma  !== null ? Number(anomTempSigma.toFixed(2))  : null,\n        anomalia_precip_sigma: anomPrecipSigma !== null ? Number(anomPrecipSigma.toFixed(2)) : null,\n      },\n    },\n  });\n}\n\nreturn out;\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1215,7 +1080,7 @@
       "typeVersion": 3.2,
       "position": [
         272,
-        -608
+        -416
       ]
     },
     {
@@ -1230,7 +1095,7 @@
       "typeVersion": 3.2,
       "position": [
         272,
-        -416
+        -224
       ]
     },
     {
@@ -1290,7 +1155,7 @@
       "typeVersion": 4.4,
       "position": [
         48,
-        -784
+        -592
       ],
       "id": "a4af0abb-f025-4c77-b56b-c1a025aaf209",
       "name": "GET Clima Histórico -1 Año",
@@ -1334,7 +1199,7 @@
       "typeVersion": 4.4,
       "position": [
         48,
-        -592
+        -400
       ],
       "id": "124335c2-fee4-467b-9c35-4d9a599d4af2",
       "name": "GET Clima Histórico -2 Años",
@@ -1378,7 +1243,7 @@
       "typeVersion": 4.4,
       "position": [
         48,
-        -400
+        -208
       ],
       "id": "97b2aabf-8194-48f6-ab5d-0a0e0222483e",
       "name": "GET Clima Histórico -3 Años",
@@ -1396,7 +1261,7 @@
       "typeVersion": 3.2,
       "position": [
         272,
-        -32
+        160
       ]
     },
     {
@@ -1411,25 +1276,8 @@
       "typeVersion": 3.2,
       "position": [
         272,
-        -224
+        -32
       ]
-    },
-    {
-      "parameters": {
-        "mode": "combine",
-        "combineBy": "combineAll",
-        "options": {
-          "fuzzyCompare": false
-        }
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        272,
-        160
-      ],
-      "id": "1c4ef8cc-aca5-4106-b0a9-47db4bad499d",
-      "name": "Combinar Datos Paso 6"
     }
   ],
   "settings": {
@@ -1457,6 +1305,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2026-06-30T07:38:50.980Z",
-  "versionId": "fe35c240-3064-443c-be40-786053c59e06"
+  "updatedAt": "2026-06-30T11:30:28.886Z",
+  "versionId": "e72324a3-4f7a-4891-993a-55e7451e602a"
 }
