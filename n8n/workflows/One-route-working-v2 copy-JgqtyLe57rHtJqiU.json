@@ -315,6 +315,7 @@
     }
   },
   "createdAt": "2026-06-25T01:16:37.433Z",
+  "description": null,
   "id": "JgqtyLe57rHtJqiU",
   "isArchived": true,
   "meta": null,
@@ -2063,6 +2064,2764 @@
       "name": "Respond to Webhook"
     }
   ],
+  "pinData": {
+    "Gmail Trigger": [
+      {
+        "json": {
+          "id": "19ee83c8c7c7fa94",
+          "threadId": "19ee83c8c7c7fa94",
+          "labelIds": [
+            "UNREAD",
+            "IMPORTANT",
+            "CATEGORY_PERSONAL",
+            "INBOX"
+          ],
+          "sizeEstimate": 8430,
+          "headers": {
+            "delivered-to": "Delivered-To: fingravallot@gmail.com",
+            "received": "Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])\r\n        by mx.google.com with SMTPS id a640c23a62f3a-c0c5e49d3a1sor75484966b.7.2026.06.20.20.32.22\r\n        for <fingravallot@gmail.com>\r\n        (Google Transport Security);\r\n        Sat, 20 Jun 2026 20:32:22 -0700 (PDT)",
+            "x-received": "X-Received: by 2002:a17:907:e158:b0:c0d:a1e4:882a with SMTP id\r\n a640c23a62f3a-c0da1e48cc1mr38939166b.5.1782012742171; Sat, 20 Jun 2026\r\n 20:32:22 -0700 (PDT)",
+            "arc-seal": "ARC-Seal: i=1; a=rsa-sha256; t=1782012742; cv=none;\r\n        d=google.com; s=arc-20240605;\r\n        b=LSL52whElCWOp+K+3RVtOA1654fVQ2beq5GrElDnh/lsODV1z9sZXtPXT9mIlD1v25\r\n         kMIQH7RAQKhcHVLWZxNAhzSCtalIK7gV+l6jEgaQ3RaGvgdzJSNBILBAKM7xxw70p+wc\r\n         ZisCViZJPsT0NCJ7SQ3PWDXq0TVeht3EyZAlAHadpi+qmQ5c5B3YNQR4gTGy0vwQKQmH\r\n         2uuVZBa33NqSIIwaCx4Snn3qKIuHN02alzsCNRuVl6tEkGPPTA9c7nsDKMso2hgKXsgc\r\n         vLN8sqB+SHeTqz/97nzsvKc/zG4m7q9J1Qf5Z/z0BpzxIR1l46SGRTghsWIcjXs8CnKF\r\n         Ba7w==",
+            "arc-message-signature": "ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;\r\n        h=to:subject:message-id:date:from:mime-version:dkim-signature;\r\n        bh=bqG+ReQbDdFXsGl7oi19UbtYa8UApXU8DB446Y7uqcE=;\r\n        fh=kuYUI6KimHDoEMBM3DdTw643DnzF/blpbLXvk1UWz0A=;\r\n        b=dxqVc8z8dIW6Wv3xEFjSYmzjIVb4ZE8yCAE2pGbC+97kM25nJ2I6vbooBBwu7gsxTl\r\n         A5HMQm9Ok80PE6OhxWdDEIK1ckOAsYoVrnzdug/XMlQDTjroJFUEYjvIjSvW3mPLMXHM\r\n         6ihEHPxxWMU1ao0W7bc488v8YrtmXyjagmncm12lNDFjZdA0hPr5wc/Q16O6TUPRggIm\r\n         Am0zezbfRKrvNKa2VT7df0iWMexQElNXiUKTdK78WaXayDvAx++++bVze1wM+IjM12cg\r\n         26KNRidhrh3v7IvkYFl1gmiNzM39lWEj55Hj4SJrmyhCKxA3GoiVATVmRP70nNMDBd8Y\r\n         J6XA==;\r\n        dara=google.com",
+            "arc-authentication-results": "ARC-Authentication-Results: i=1; mx.google.com; arc=none",
+            "return-path": "Return-Path: <fingravallo2002@gmail.com>",
+            "received-spf": "Received-SPF: pass (google.com: domain of fingravallo2002@gmail.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;",
+            "authentication-results": "Authentication-Results: mx.google.com;\r\n       dkim=pass header.i=@gmail.com header.s=20251104 header.b=gQBF48s2;\r\n       arc=pass (i=1);\r\n       spf=pass (google.com: domain of fingravallo2002@gmail.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=fingravallo2002@gmail.com;\r\n       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com;\r\n       dara=pass header.i=@gmail.com",
+            "dkim-signature": "DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;\r\n        d=gmail.com; s=20251104; t=1782012742; x=1782617542; dara=google.com;\r\n        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject\r\n         :date:message-id:reply-to;\r\n        bh=bqG+ReQbDdFXsGl7oi19UbtYa8UApXU8DB446Y7uqcE=;\r\n        b=gQBF48s20Awiw7tsrWsXcp6vfhJZ4YpAHlf47o7AAIhxnOupQUWqIBWbjo6IjXNwi4\r\n         TMFe9yhN5Wz267pa6Hc98fh85u4BbJ/BAhXVUmKW6S+KHCzS6O7UfA5h6urD5EopmRvM\r\n         B8Io59M9CoHGqGMyRltqSAISplgyif3Yz4THb5vKQi6Z1pxmzyVW4U/n3ZGAQqFI4Ld7\r\n         x5JCg+g4/heBIirkBPSwLB5OqmkXljsFwp4wpmPrIB4Eple5AbFVsFsjL4bnciyDDS/8\r\n         aHl0a+LB6EPiHZJu3lpltPscW2DJGjrOEusNFraBlsX3xBHYAuwtOvZOCsjggSegLO3t\r\n         csqw==",
+            "x-google-dkim-signature": "X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;\r\n        d=1e100.net; s=20251104; t=1782012742; x=1782617542;\r\n        h=to:subject:message-id:date:from:mime-version:x-gm-gg\r\n         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;\r\n        bh=bqG+ReQbDdFXsGl7oi19UbtYa8UApXU8DB446Y7uqcE=;\r\n        b=j437aFo9s1lPtPLzFGk5OiFZd9yAflYpDgR086cTxResws/0u+5epXaYZlmKiFsgYL\r\n         /ijk2obwse6/QdUiv31j+kwpomAQBLIO+PwQFPcSDUfFHZPk//QTzy4LPoWuhC43nvei\r\n         PdO/P2t5IPUj7tJrj3gVVIAGmQ4YKk3vbx1yNFsJlHCN+gMLeu+bcQl+lz4egczw+q5j\r\n         zAokkq4ah+0s2C81XuGh2G6H+gS9c9DFiUL/vZbrzi56QidmA1JSBGaw3hQ8yiTWOCxJ\r\n         PC0pSMJjH/B+KgBQDUIPefS8ELZELScl8hk41cfyXy58XTEpjTNrT+sp2lMHNiiqmL0P\r\n         Q35A==",
+            "x-gm-message-state": "X-Gm-Message-State: AOJu0YysTWPa9OldxvzZuMUCesgWaR/s4x5HOn/Hkpb8NIKl5exwGiwt\r\n\tKVB2JoMm9ovJQnG+Qg51vNnCUEphw1erjZ7XCZHQjjv2eLMLpRroKW0vR2jO/Xfogf5ER9CAugR\r\n\tA1nR3Yy3UDO4N+72Wm/vIgUurF6KIwHXF23gf",
+            "x-gm-gg": "X-Gm-Gg: AfdE7clVFTtnYo7BErpRM2IzfDBXVmz5ElYmhHMjxMCSZqRKciJC7yh+R0St/aCTWMa\r\n\tHqq2VPLrmQIMbdHwIsw6/ZbPqna3A0Ok0JiQ8+uB5+TJAPEzAWpKhxdnwrY9Z7uhmHmMMEVghYc\r\n\txU+6LoVyp9xrbtx5mz+5+l8V6sJaAYFtXiSUmZU88npp5PilHCvVH7pPNIfWUVO8Nw7VJqdLeUL\r\n\tXHDpLvWTvzz7hFpHcygGEADOCeETeVKcLy0tGbW5OL4NuJNr0F1PnMjOLJLadFCYl+6CE9ArGmy\r\n\ticjV5Lrn",
+            "mime-version": "MIME-Version: 1.0",
+            "from": "From: Franco Ingravallo <fingravallo2002@gmail.com>",
+            "date": "Date: Sat, 20 Jun 2026 23:32:08 -0400",
+            "x-gm-features": "X-Gm-Features: AVVi8Cd6CMNzoirQI3Z_HZ_vxYUBvjTqio94bKKWvp2knboN15Ueh9XcNtIZ6JE",
+            "message-id": "Message-ID: <CAJTW8sbnKMwQMm+4Exh8o2vDS75LNTuuq0jmkyX73B2xBqcKOg@mail.gmail.com>",
+            "subject": "Subject: Pickup Request - Delivery to E.Leclerc Store 124 on 24/09",
+            "to": "To: \"fingravallot@gmail.com\" <fingravallot@gmail.com>",
+            "content-type": "Content-Type: multipart/alternative; boundary=\"0000000000007b80f30654bb2c20\""
+          },
+          "html": "<div dir=\"ltr\">Bonjour,<br><br>Please arrange the pickup and delivery for the following shipment:<br><br>. Shipment Number: 15487-PLO<br><br>. Pickup Location: Centre de Distribution Leclerc<br><br>. Pickup Address: 77 Rue Albert Garry, 94450 Limeil-Brevannes<br><br>. Expected Pickup Time: 24-09-2024, 09:00:00<br><br>. Temperature Control: Chilled<br><br>. Quantity: 12 pallets<br><br>Destination:<br><br>. Store Name: E.Leclerc Store 124<br><br>. Destination Address: 43-45 Quai Jules Guesde, 94405 Vitry-sur-Seine<br><br>. Expected Delivery Date: 24-09-2024, 18:00:00<br><br>Let us know once the transport is scheduled.<br><br>Best regards,<br>Nathalie Durand<br>Logistics Coordinator<br>E.Leclerc - Île-de-France</div>\n",
+          "text": "Bonjour,\n\nPlease arrange the pickup and delivery for the following shipment:\n\n. Shipment Number: 15487-PLO\n\n. Pickup Location: Centre de Distribution Leclerc\n\n. Pickup Address: 77 Rue Albert Garry, 94450 Limeil-Brevannes\n\n. Expected Pickup Time: 24-09-2024, 09:00:00\n\n. Temperature Control: Chilled\n\n. Quantity: 12 pallets\n\nDestination:\n\n. Store Name: E.Leclerc Store 124\n\n. Destination Address: 43-45 Quai Jules Guesde, 94405 Vitry-sur-Seine\n\n. Expected Delivery Date: 24-09-2024, 18:00:00\n\nLet us know once the transport is scheduled.\n\nBest regards,\nNathalie Durand\nLogistics Coordinator\nE.Leclerc - Île-de-France\n",
+          "textAsHtml": "<p>Bonjour,</p><p>Please arrange the pickup and delivery for the following shipment:</p><p>. Shipment Number: 15487-PLO</p><p>. Pickup Location: Centre de Distribution Leclerc</p><p>. Pickup Address: 77 Rue Albert Garry, 94450 Limeil-Brevannes</p><p>. Expected Pickup Time: 24-09-2024, 09:00:00</p><p>. Temperature Control: Chilled</p><p>. Quantity: 12 pallets</p><p>Destination:</p><p>. Store Name: <a href=\"http://E.Leclerc\">E.Leclerc</a> Store 124</p><p>. Destination Address: 43-45 Quai Jules Guesde, 94405 Vitry-sur-Seine</p><p>. Expected Delivery Date: 24-09-2024, 18:00:00</p><p>Let us know once the transport is scheduled.</p><p>Best regards,<br/>Nathalie Durand<br/>Logistics Coordinator<br/><a href=\"http://E.Leclerc\">E.Leclerc</a> - &Icirc;le-de-France</p>",
+          "subject": "Pickup Request - Delivery to E.Leclerc Store 124 on 24/09",
+          "date": "2026-06-21T03:32:08.000Z",
+          "to": {
+            "value": [
+              {
+                "address": "fingravallot@gmail.com",
+                "name": ""
+              }
+            ],
+            "html": "<span class=\"mp_address_group\"><a href=\"mailto:fingravallot@gmail.com\" class=\"mp_address_email\">fingravallot@gmail.com</a></span>",
+            "text": "fingravallot@gmail.com"
+          },
+          "from": {
+            "value": [
+              {
+                "address": "fingravallo2002@gmail.com",
+                "name": "Franco Ingravallo"
+              }
+            ],
+            "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">Franco Ingravallo</span> &lt;<a href=\"mailto:fingravallo2002@gmail.com\" class=\"mp_address_email\">fingravallo2002@gmail.com</a>&gt;</span>",
+            "text": "\"Franco Ingravallo\" <fingravallo2002@gmail.com>"
+          },
+          "messageId": "<CAJTW8sbnKMwQMm+4Exh8o2vDS75LNTuuq0jmkyX73B2xBqcKOg@mail.gmail.com>"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Code in JavaScript1": [
+      {
+        "json": {
+          "subject": "Pickup Request - Delivery to E.Leclerc Store 124 on 24/09",
+          "text": "Bonjour,\n\nPlease arrange the pickup and delivery for the following shipment:\n\n. Shipment Number: 15487-PLO\n\n. Pickup Location: Centre de Distribution Leclerc\n\n. Pickup Address: 77 Rue Albert Garry, 94450 Limeil-Brevannes\n\n. Expected Pickup Time: 24-09-2024, 09:00:00\n\n. Temperature Control: Chilled\n\n. Quantity: 12 pallets\n\nDestination:\n\n. Store Name: E.Leclerc Store 124\n\n. Destination Address: 43-45 Quai Jules Guesde, 94405 Vitry-sur-Seine\n\n. Expected Delivery Date: 24-09-2024, 18:00:00\n\nLet us know once the transport is scheduled.\n\nBest regards,\nNathalie Durand\nLogistics Coordinator\nE.Leclerc - Île-de-France"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "AI Agent Parser": [
+      {
+        "json": {
+          "output": {
+            "shipment_number": "15487-PLO",
+            "pickup_location": "Centre de Distribution Leclerc",
+            "pickup_address": "77 Rue Albert Garry, 94450 Limeil-Brevannes",
+            "expected_pickup_time": "24-09-2024, 09:00:00",
+            "temperature_control": "Chilled",
+            "quantity": "12 pallets",
+            "destination_store_name": "E.Leclerc Store 124",
+            "destination_address": "43-45 Quai Jules Guesde, 94405 Vitry-sur-Seine",
+            "expected_delivery_time": "24-09-2024, 18:00:00",
+            "sender_name": "Nathalie Durand",
+            "sender_company": "E.Leclerc - Île-de-France"
+          }
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Record Email Content": [
+      {
+        "json": {
+          "pickup_address": "77 Rue Albert Garry, 94450 Limeil-Brevannes",
+          "pickup_location": "Centre de Distribution Leclerc",
+          "shipment_number": "15487-PLO",
+          "destination_address": "43-45 Quai Jules Guesde, 94405 Vitry-sur-Seine",
+          "temperature_control": "Chilled",
+          "expected_pickup_time": "24-09-2024, 09:00:00",
+          "destination_store_name": "E.Leclerc Store 124",
+          "expected_delivery_time": "24-09-2024, 18:00:00"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Collect Addresses": [
+      {
+        "json": {
+          "row_number": 2,
+          "shipment_number": "15487-PLO",
+          "pickup_location": "Centre de Distribution Leclerc",
+          "pickup_address": "77 Rue Albert Garry, 94450 Limeil-Brevannes",
+          "pickup_longitude": "",
+          "pickup_latitude": "",
+          "expected_pickup_time": "24-09-2024, 09:00:00",
+          "temperature_control": "Chilled",
+          "destination_store_name": "E.Leclerc Store 124",
+          "destination_address": "43-45 Quai Jules Guesde, 94405 Vitry-sur-Seine",
+          "destination_longitude": "",
+          "destination_latitude": "",
+          "expected_delivery_time": "24-09-2024, 18:00:00",
+          "driving_distance": "",
+          "driving_time": ""
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Query Open Route API Pickup": [
+      {
+        "json": {
+          "geocoding": {
+            "version": "0.2",
+            "attribution": "https://openrouteservice.org/terms-of-service/#attribution-geocode",
+            "query": {
+              "text": "77 Rue Albert Garry, 94450 Limeil-Brevannes",
+              "size": 1,
+              "sources": [
+                "openstreetmap"
+              ],
+              "private": false,
+              "boundary.country": [
+                "FRA"
+              ],
+              "lang": {
+                "name": "English",
+                "iso6391": "en",
+                "iso6393": "eng",
+                "via": "default",
+                "defaulted": true
+              },
+              "querySize": 20,
+              "parser": "libpostal",
+              "parsed_text": {
+                "housenumber": "77",
+                "street": "rue albert garry",
+                "postalcode": "94450",
+                "city": "limeil-brevannes"
+              }
+            },
+            "engine": {
+              "name": "Pelias",
+              "author": "Mapzen",
+              "version": "1.0"
+            },
+            "timestamp": 1782014838692
+          },
+          "type": "FeatureCollection",
+          "features": [
+            {
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  2.480438,
+                  48.755105
+                ]
+              },
+              "properties": {
+                "id": "polyline:6358739",
+                "gid": "openstreetmap:street:polyline:6358739",
+                "layer": "street",
+                "source": "openstreetmap",
+                "source_id": "polyline:6358739",
+                "name": "Rue Albert Garry",
+                "street": "Rue Albert Garry",
+                "confidence": 0.8,
+                "match_type": "fallback",
+                "accuracy": "centroid",
+                "country": "France",
+                "country_gid": "whosonfirst:country:85633147",
+                "country_a": "FRA",
+                "macroregion": "Ile-of-France",
+                "macroregion_gid": "whosonfirst:macroregion:404227465",
+                "macroregion_a": "IF",
+                "region": "Val-de-Marne",
+                "region_gid": "whosonfirst:region:85683459",
+                "region_a": "VM",
+                "macrocounty": "Creteil",
+                "macrocounty_gid": "whosonfirst:macrocounty:404227793",
+                "county": "Boissy-Saint-Leger",
+                "county_gid": "whosonfirst:county:102064535",
+                "localadmin": "Limeil-Brevannes",
+                "localadmin_gid": "whosonfirst:localadmin:404404969",
+                "locality": "Limeil-Brévannes",
+                "locality_gid": "whosonfirst:locality:101749735",
+                "continent": "Europe",
+                "continent_gid": "whosonfirst:continent:102191581",
+                "label": "Rue Albert Garry, Limeil-Brévannes, France"
+              },
+              "bbox": [
+                2.477542,
+                48.754243,
+                2.483047,
+                48.756302
+              ]
+            }
+          ],
+          "bbox": [
+            2.477542,
+            48.754243,
+            2.483047,
+            48.756302
+          ]
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Save Pickup GPS": [
+      {
+        "json": {
+          "pickup_longitude": "2.480438",
+          "pickup_latitude": "48.755105",
+          "shipment_number": "15487-PLO"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Query Open Route API Delivery": [
+      {
+        "json": {
+          "geocoding": {
+            "version": "0.2",
+            "attribution": "https://openrouteservice.org/terms-of-service/#attribution-geocode",
+            "query": {
+              "text": "43-45 Quai Jules Guesde, 94405 Vitry-sur-Seine",
+              "size": 1,
+              "sources": [
+                "openstreetmap"
+              ],
+              "private": false,
+              "boundary.country": [
+                "FRA"
+              ],
+              "lang": {
+                "name": "English",
+                "iso6391": "en",
+                "iso6393": "eng",
+                "via": "default",
+                "defaulted": true
+              },
+              "querySize": 20,
+              "parser": "libpostal",
+              "parsed_text": {
+                "housenumber": "43-45",
+                "street": "quai jules guesde",
+                "postalcode": "94405",
+                "city": "vitry-sur-seine"
+              }
+            },
+            "engine": {
+              "name": "Pelias",
+              "author": "Mapzen",
+              "version": "1.0"
+            },
+            "timestamp": 1782015263195
+          },
+          "type": "FeatureCollection",
+          "features": [
+            {
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  2.417805,
+                  48.794847
+                ]
+              },
+              "properties": {
+                "id": "polyline:27600896",
+                "gid": "openstreetmap:street:polyline:27600896",
+                "layer": "street",
+                "source": "openstreetmap",
+                "source_id": "polyline:27600896",
+                "name": "Quai Jules Guesde",
+                "street": "Quai Jules Guesde",
+                "confidence": 0.8,
+                "match_type": "fallback",
+                "accuracy": "centroid",
+                "country": "France",
+                "country_gid": "whosonfirst:country:85633147",
+                "country_a": "FRA",
+                "macroregion": "Ile-of-France",
+                "macroregion_gid": "whosonfirst:macroregion:404227465",
+                "macroregion_a": "IF",
+                "region": "Val-de-Marne",
+                "region_gid": "whosonfirst:region:85683459",
+                "region_a": "VM",
+                "macrocounty": "Creteil",
+                "macrocounty_gid": "whosonfirst:macrocounty:404227793",
+                "county": "Vitry-Sur-Seine",
+                "county_gid": "whosonfirst:county:102072427",
+                "localadmin": "Vitry-sur-Seine",
+                "localadmin_gid": "whosonfirst:localadmin:1159322273",
+                "locality": "Vitry-sur-Seine",
+                "locality_gid": "whosonfirst:locality:101751103",
+                "continent": "Europe",
+                "continent_gid": "whosonfirst:continent:102191581",
+                "label": "Quai Jules Guesde, Vitry-sur-Seine, France"
+              },
+              "bbox": [
+                2.416652,
+                48.793942,
+                2.419264,
+                48.796135
+              ]
+            }
+          ],
+          "bbox": [
+            2.416652,
+            48.793942,
+            2.419264,
+            48.796135
+          ]
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "GPS Delivery": [
+      {
+        "json": {
+          "longitude": "2.417805",
+          "latitude": "48.794847",
+          "borough": null,
+          "neighbourhood": null,
+          "localadmin": "Vitry-sur-Seine"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Save Delivery GPS": [
+      {
+        "json": {
+          "shipment_number": "15487-PLO",
+          "destination_longitude": "2.417805",
+          "destination_latitude": "48.794847"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "GPS Pickup": [
+      {
+        "json": {
+          "longitude": "2.480438",
+          "latitude": "48.755105",
+          "borough": null,
+          "neighbourhood": null,
+          "localadmin": "Limeil-Brevannes"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "5 sec": [
+      {
+        "json": {
+          "pickup_longitude": "2.480438",
+          "pickup_latitude": "48.755105",
+          "shipment_number": "15487-PLO"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Collect Coordinates": [
+      {
+        "json": {
+          "row_number": 2,
+          "shipment_number": "15487-PLO",
+          "pickup_location": "Centre de Distribution Leclerc",
+          "pickup_address": "77 Rue Albert Garry, 94450 Limeil-Brevannes",
+          "pickup_longitude": 2.480438,
+          "pickup_latitude": 48.755105,
+          "expected_pickup_time": "24-09-2024, 09:00:00",
+          "temperature_control": "Chilled",
+          "destination_store_name": "E.Leclerc Store 124",
+          "destination_address": "43-45 Quai Jules Guesde, 94405 Vitry-sur-Seine",
+          "destination_longitude": 2.417805,
+          "destination_latitude": 48.794847,
+          "expected_delivery_time": "24-09-2024, 18:00:00",
+          "driving_distance": "",
+          "driving_time": ""
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Request Open Route API": [
+      {
+        "json": {
+          "type": "FeatureCollection",
+          "bbox": [
+            2.416352,
+            48.752956,
+            2.485108,
+            48.798229
+          ],
+          "features": [
+            {
+              "bbox": [
+                2.416352,
+                48.752956,
+                2.485108,
+                48.798229
+              ],
+              "type": "Feature",
+              "properties": {
+                "segments": [
+                  {
+                    "distance": 9611.3,
+                    "duration": 1066.7,
+                    "steps": [
+                      {
+                        "distance": 85.7,
+                        "duration": 20.6,
+                        "type": 11,
+                        "instruction": "Head northeast on Rue Albert Garry",
+                        "name": "Rue Albert Garry",
+                        "way_points": [
+                          0,
+                          2
+                        ]
+                      },
+                      {
+                        "distance": 297.8,
+                        "duration": 71.5,
+                        "type": 1,
+                        "instruction": "Turn right onto Rue Jean-Marie Prugnot",
+                        "name": "Rue Jean-Marie Prugnot",
+                        "way_points": [
+                          2,
+                          7
+                        ]
+                      },
+                      {
+                        "distance": 44.7,
+                        "duration": 10.7,
+                        "type": 7,
+                        "instruction": "Enter the roundabout and take the 3rd exit onto Avenue des Deux Clochers",
+                        "name": "Avenue des Deux Clochers",
+                        "exit_number": 3,
+                        "way_points": [
+                          7,
+                          14
+                        ]
+                      },
+                      {
+                        "distance": 164.5,
+                        "duration": 39.5,
+                        "type": 6,
+                        "instruction": "Continue straight onto Avenue des Deux Clochers",
+                        "name": "Avenue des Deux Clochers",
+                        "way_points": [
+                          14,
+                          16
+                        ]
+                      },
+                      {
+                        "distance": 325.6,
+                        "duration": 34.7,
+                        "type": 0,
+                        "instruction": "Turn left onto Avenue Gabriel Péri, D 205",
+                        "name": "Avenue Gabriel Péri, D 205",
+                        "way_points": [
+                          16,
+                          24
+                        ]
+                      },
+                      {
+                        "distance": 44.2,
+                        "duration": 10.6,
+                        "type": 7,
+                        "instruction": "Enter the roundabout and take the 3rd exit onto Rue Pierre Semard, D 101",
+                        "name": "Rue Pierre Semard, D 101",
+                        "exit_number": 3,
+                        "way_points": [
+                          24,
+                          28
+                        ]
+                      },
+                      {
+                        "distance": 754.8,
+                        "duration": 86.7,
+                        "type": 6,
+                        "instruction": "Continue straight onto Rue Pierre Semard, D 101",
+                        "name": "Rue Pierre Semard, D 101",
+                        "way_points": [
+                          28,
+                          44
+                        ]
+                      },
+                      {
+                        "distance": 35.3,
+                        "duration": 9.5,
+                        "type": 12,
+                        "instruction": "Keep left onto Carrefour Simone de Beauvoir",
+                        "name": "Carrefour Simone de Beauvoir",
+                        "way_points": [
+                          44,
+                          47
+                        ]
+                      },
+                      {
+                        "distance": 2610,
+                        "duration": 185.2,
+                        "type": 0,
+                        "instruction": "Turn left onto Carrefour Simone de Beauvoir, D 60",
+                        "name": "Carrefour Simone de Beauvoir, D 60",
+                        "way_points": [
+                          47,
+                          79
+                        ]
+                      },
+                      {
+                        "distance": 589.2,
+                        "duration": 56.3,
+                        "type": 13,
+                        "instruction": "Keep right",
+                        "name": "-",
+                        "way_points": [
+                          79,
+                          92
+                        ]
+                      },
+                      {
+                        "distance": 237.8,
+                        "duration": 25.2,
+                        "type": 12,
+                        "instruction": "Keep left",
+                        "name": "-",
+                        "way_points": [
+                          92,
+                          97
+                        ]
+                      },
+                      {
+                        "distance": 55.3,
+                        "duration": 15.9,
+                        "type": 7,
+                        "instruction": "Enter the roundabout and take the 2nd exit",
+                        "name": "-",
+                        "exit_number": 2,
+                        "way_points": [
+                          97,
+                          103
+                        ]
+                      },
+                      {
+                        "distance": 1085.5,
+                        "duration": 121.6,
+                        "type": 6,
+                        "instruction": "Continue straight",
+                        "name": "-",
+                        "way_points": [
+                          103,
+                          118
+                        ]
+                      },
+                      {
+                        "distance": 30.2,
+                        "duration": 2.7,
+                        "type": 7,
+                        "instruction": "Enter the roundabout and take the 2nd exit onto Avenue du Maréchal Foch, D 6",
+                        "name": "Avenue du Maréchal Foch, D 6",
+                        "exit_number": 2,
+                        "way_points": [
+                          118,
+                          122
+                        ]
+                      },
+                      {
+                        "distance": 1456.9,
+                        "duration": 141.6,
+                        "type": 6,
+                        "instruction": "Continue straight onto Avenue du Maréchal Foch, D 6",
+                        "name": "Avenue du Maréchal Foch, D 6",
+                        "way_points": [
+                          122,
+                          151
+                        ]
+                      },
+                      {
+                        "distance": 45.8,
+                        "duration": 8.2,
+                        "type": 0,
+                        "instruction": "Turn left onto Place Gallieni",
+                        "name": "Place Gallieni",
+                        "way_points": [
+                          151,
+                          153
+                        ]
+                      },
+                      {
+                        "distance": 9.7,
+                        "duration": 3.5,
+                        "type": 0,
+                        "instruction": "Turn left onto Place Gallieni",
+                        "name": "Place Gallieni",
+                        "way_points": [
+                          153,
+                          154
+                        ]
+                      },
+                      {
+                        "distance": 783.2,
+                        "duration": 83.7,
+                        "type": 1,
+                        "instruction": "Turn right onto Boulevard Gallieni",
+                        "name": "Boulevard Gallieni",
+                        "way_points": [
+                          154,
+                          168
+                        ]
+                      },
+                      {
+                        "distance": 113.4,
+                        "duration": 15.3,
+                        "type": 1,
+                        "instruction": "Turn right onto Quai Jean-Baptiste Clément, D 138",
+                        "name": "Quai Jean-Baptiste Clément, D 138",
+                        "way_points": [
+                          168,
+                          172
+                        ]
+                      },
+                      {
+                        "distance": 268.1,
+                        "duration": 24.1,
+                        "type": 1,
+                        "instruction": "Turn right onto Quai Jean-Baptiste Clément, D 138",
+                        "name": "Quai Jean-Baptiste Clément, D 138",
+                        "way_points": [
+                          172,
+                          179
+                        ]
+                      },
+                      {
+                        "distance": 376.9,
+                        "duration": 64.8,
+                        "type": 0,
+                        "instruction": "Turn left onto D 148",
+                        "name": "D 148",
+                        "way_points": [
+                          179,
+                          187
+                        ]
+                      },
+                      {
+                        "distance": 47.8,
+                        "duration": 13.3,
+                        "type": 0,
+                        "instruction": "Turn left onto Quai Jules Guesde, D 152",
+                        "name": "Quai Jules Guesde, D 152",
+                        "way_points": [
+                          187,
+                          190
+                        ]
+                      },
+                      {
+                        "distance": 149,
+                        "duration": 21.5,
+                        "type": 13,
+                        "instruction": "Keep right onto Quai Jules Guesde, D 152",
+                        "name": "Quai Jules Guesde, D 152",
+                        "way_points": [
+                          190,
+                          192
+                        ]
+                      },
+                      {
+                        "distance": 0,
+                        "duration": 0,
+                        "type": 10,
+                        "instruction": "Arrive at Quai Jules Guesde, D 152, straight ahead",
+                        "name": "-",
+                        "way_points": [
+                          192,
+                          192
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "way_points": [
+                  0,
+                  192
+                ],
+                "summary": {
+                  "distance": 9611.3,
+                  "duration": 1066.7
+                }
+              },
+              "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                  [
+                    2.480436,
+                    48.755108
+                  ],
+                  [
+                    2.481009,
+                    48.75533
+                  ],
+                  [
+                    2.481378,
+                    48.755556
+                  ],
+                  [
+                    2.481462,
+                    48.755466
+                  ],
+                  [
+                    2.481958,
+                    48.75472
+                  ],
+                  [
+                    2.482118,
+                    48.754474
+                  ],
+                  [
+                    2.482468,
+                    48.753946
+                  ],
+                  [
+                    2.483046,
+                    48.753115
+                  ],
+                  [
+                    2.482988,
+                    48.753077
+                  ],
+                  [
+                    2.482992,
+                    48.752997
+                  ],
+                  [
+                    2.483085,
+                    48.752956
+                  ],
+                  [
+                    2.48316,
+                    48.752965
+                  ],
+                  [
+                    2.483219,
+                    48.753007
+                  ],
+                  [
+                    2.483229,
+                    48.753035
+                  ],
+                  [
+                    2.483204,
+                    48.75309
+                  ],
+                  [
+                    2.483734,
+                    48.753303
+                  ],
+                  [
+                    2.485108,
+                    48.753873
+                  ],
+                  [
+                    2.484837,
+                    48.7543
+                  ],
+                  [
+                    2.484545,
+                    48.75476
+                  ],
+                  [
+                    2.483896,
+                    48.755783
+                  ],
+                  [
+                    2.483855,
+                    48.756018
+                  ],
+                  [
+                    2.483829,
+                    48.756106
+                  ],
+                  [
+                    2.483689,
+                    48.756329
+                  ],
+                  [
+                    2.483511,
+                    48.756545
+                  ],
+                  [
+                    2.4835,
+                    48.756588
+                  ],
+                  [
+                    2.483537,
+                    48.756706
+                  ],
+                  [
+                    2.483487,
+                    48.756802
+                  ],
+                  [
+                    2.483401,
+                    48.756859
+                  ],
+                  [
+                    2.483266,
+                    48.756893
+                  ],
+                  [
+                    2.483153,
+                    48.756943
+                  ],
+                  [
+                    2.483048,
+                    48.757013
+                  ],
+                  [
+                    2.482911,
+                    48.757171
+                  ],
+                  [
+                    2.482386,
+                    48.757693
+                  ],
+                  [
+                    2.482357,
+                    48.75772
+                  ],
+                  [
+                    2.481978,
+                    48.758094
+                  ],
+                  [
+                    2.481247,
+                    48.758829
+                  ],
+                  [
+                    2.4793,
+                    48.760795
+                  ],
+                  [
+                    2.479172,
+                    48.760942
+                  ],
+                  [
+                    2.47906,
+                    48.761127
+                  ],
+                  [
+                    2.479029,
+                    48.761364
+                  ],
+                  [
+                    2.479045,
+                    48.761557
+                  ],
+                  [
+                    2.479097,
+                    48.761705
+                  ],
+                  [
+                    2.479216,
+                    48.761921
+                  ],
+                  [
+                    2.479504,
+                    48.762423
+                  ],
+                  [
+                    2.479687,
+                    48.762767
+                  ],
+                  [
+                    2.479615,
+                    48.762944
+                  ],
+                  [
+                    2.479572,
+                    48.762993
+                  ],
+                  [
+                    2.479502,
+                    48.763055
+                  ],
+                  [
+                    2.479147,
+                    48.762883
+                  ],
+                  [
+                    2.478963,
+                    48.762816
+                  ],
+                  [
+                    2.478616,
+                    48.762719
+                  ],
+                  [
+                    2.478249,
+                    48.762646
+                  ],
+                  [
+                    2.477561,
+                    48.762555
+                  ],
+                  [
+                    2.471813,
+                    48.761798
+                  ],
+                  [
+                    2.470702,
+                    48.761652
+                  ],
+                  [
+                    2.470166,
+                    48.761619
+                  ],
+                  [
+                    2.469647,
+                    48.76163
+                  ],
+                  [
+                    2.469188,
+                    48.761671
+                  ],
+                  [
+                    2.468534,
+                    48.761806
+                  ],
+                  [
+                    2.467719,
+                    48.762083
+                  ],
+                  [
+                    2.467057,
+                    48.762453
+                  ],
+                  [
+                    2.466145,
+                    48.763033
+                  ],
+                  [
+                    2.46588,
+                    48.763183
+                  ],
+                  [
+                    2.465304,
+                    48.763497
+                  ],
+                  [
+                    2.465103,
+                    48.763551
+                  ],
+                  [
+                    2.464318,
+                    48.763923
+                  ],
+                  [
+                    2.463458,
+                    48.764291
+                  ],
+                  [
+                    2.462461,
+                    48.764621
+                  ],
+                  [
+                    2.461102,
+                    48.765016
+                  ],
+                  [
+                    2.458896,
+                    48.765544
+                  ],
+                  [
+                    2.457094,
+                    48.766022
+                  ],
+                  [
+                    2.455803,
+                    48.766394
+                  ],
+                  [
+                    2.45395,
+                    48.767113
+                  ],
+                  [
+                    2.453723,
+                    48.767236
+                  ],
+                  [
+                    2.452376,
+                    48.767872
+                  ],
+                  [
+                    2.451405,
+                    48.768389
+                  ],
+                  [
+                    2.450828,
+                    48.768717
+                  ],
+                  [
+                    2.450383,
+                    48.768993
+                  ],
+                  [
+                    2.449281,
+                    48.769727
+                  ],
+                  [
+                    2.448408,
+                    48.770405
+                  ],
+                  [
+                    2.448315,
+                    48.770539
+                  ],
+                  [
+                    2.44797,
+                    48.770879
+                  ],
+                  [
+                    2.44773,
+                    48.771253
+                  ],
+                  [
+                    2.447498,
+                    48.771683
+                  ],
+                  [
+                    2.447259,
+                    48.772047
+                  ],
+                  [
+                    2.447026,
+                    48.772288
+                  ],
+                  [
+                    2.446683,
+                    48.772571
+                  ],
+                  [
+                    2.446368,
+                    48.772779
+                  ],
+                  [
+                    2.446029,
+                    48.772959
+                  ],
+                  [
+                    2.445481,
+                    48.773173
+                  ],
+                  [
+                    2.444919,
+                    48.773317
+                  ],
+                  [
+                    2.444345,
+                    48.773421
+                  ],
+                  [
+                    2.442792,
+                    48.773636
+                  ],
+                  [
+                    2.44222,
+                    48.773711
+                  ],
+                  [
+                    2.441705,
+                    48.773813
+                  ],
+                  [
+                    2.440316,
+                    48.774113
+                  ],
+                  [
+                    2.439895,
+                    48.774228
+                  ],
+                  [
+                    2.439727,
+                    48.774306
+                  ],
+                  [
+                    2.439696,
+                    48.774464
+                  ],
+                  [
+                    2.43967,
+                    48.774511
+                  ],
+                  [
+                    2.439588,
+                    48.774581
+                  ],
+                  [
+                    2.43947,
+                    48.77464
+                  ],
+                  [
+                    2.43935,
+                    48.774668
+                  ],
+                  [
+                    2.439322,
+                    48.77467
+                  ],
+                  [
+                    2.439269,
+                    48.774979
+                  ],
+                  [
+                    2.438901,
+                    48.776412
+                  ],
+                  [
+                    2.438841,
+                    48.776459
+                  ],
+                  [
+                    2.438573,
+                    48.777494
+                  ],
+                  [
+                    2.438372,
+                    48.778104
+                  ],
+                  [
+                    2.438346,
+                    48.77822
+                  ],
+                  [
+                    2.438028,
+                    48.779416
+                  ],
+                  [
+                    2.437846,
+                    48.780179
+                  ],
+                  [
+                    2.437475,
+                    48.781667
+                  ],
+                  [
+                    2.437401,
+                    48.781936
+                  ],
+                  [
+                    2.43714,
+                    48.782938
+                  ],
+                  [
+                    2.437035,
+                    48.783355
+                  ],
+                  [
+                    2.436947,
+                    48.783783
+                  ],
+                  [
+                    2.436825,
+                    48.78414
+                  ],
+                  [
+                    2.436837,
+                    48.784279
+                  ],
+                  [
+                    2.4369,
+                    48.784348
+                  ],
+                  [
+                    2.436893,
+                    48.784427
+                  ],
+                  [
+                    2.436866,
+                    48.78446
+                  ],
+                  [
+                    2.436776,
+                    48.784506
+                  ],
+                  [
+                    2.436682,
+                    48.784758
+                  ],
+                  [
+                    2.43644,
+                    48.785527
+                  ],
+                  [
+                    2.436113,
+                    48.786872
+                  ],
+                  [
+                    2.436059,
+                    48.787094
+                  ],
+                  [
+                    2.435916,
+                    48.787627
+                  ],
+                  [
+                    2.435681,
+                    48.78852
+                  ],
+                  [
+                    2.435572,
+                    48.788757
+                  ],
+                  [
+                    2.435146,
+                    48.790414
+                  ],
+                  [
+                    2.434991,
+                    48.790992
+                  ],
+                  [
+                    2.434941,
+                    48.79119
+                  ],
+                  [
+                    2.43486,
+                    48.791514
+                  ],
+                  [
+                    2.434814,
+                    48.791691
+                  ],
+                  [
+                    2.434652,
+                    48.79232
+                  ],
+                  [
+                    2.434481,
+                    48.792981
+                  ],
+                  [
+                    2.434466,
+                    48.793036
+                  ],
+                  [
+                    2.434442,
+                    48.793129
+                  ],
+                  [
+                    2.434424,
+                    48.79321
+                  ],
+                  [
+                    2.434313,
+                    48.793652
+                  ],
+                  [
+                    2.434279,
+                    48.793776
+                  ],
+                  [
+                    2.43419,
+                    48.794099
+                  ],
+                  [
+                    2.434166,
+                    48.79419
+                  ],
+                  [
+                    2.43415,
+                    48.79427
+                  ],
+                  [
+                    2.43409,
+                    48.79448
+                  ],
+                  [
+                    2.43397,
+                    48.794968
+                  ],
+                  [
+                    2.433915,
+                    48.795157
+                  ],
+                  [
+                    2.433813,
+                    48.795556
+                  ],
+                  [
+                    2.4338,
+                    48.795607
+                  ],
+                  [
+                    2.433671,
+                    48.796144
+                  ],
+                  [
+                    2.433342,
+                    48.797408
+                  ],
+                  [
+                    2.433134,
+                    48.797385
+                  ],
+                  [
+                    2.432738,
+                    48.797304
+                  ],
+                  [
+                    2.432775,
+                    48.79722
+                  ],
+                  [
+                    2.432595,
+                    48.797165
+                  ],
+                  [
+                    2.430627,
+                    48.796684
+                  ],
+                  [
+                    2.43005,
+                    48.796559
+                  ],
+                  [
+                    2.429033,
+                    48.79635
+                  ],
+                  [
+                    2.428861,
+                    48.796313
+                  ],
+                  [
+                    2.426833,
+                    48.795948
+                  ],
+                  [
+                    2.426618,
+                    48.795921
+                  ],
+                  [
+                    2.425984,
+                    48.795845
+                  ],
+                  [
+                    2.425841,
+                    48.795825
+                  ],
+                  [
+                    2.425281,
+                    48.795722
+                  ],
+                  [
+                    2.42413,
+                    48.79548
+                  ],
+                  [
+                    2.423473,
+                    48.795346
+                  ],
+                  [
+                    2.423276,
+                    48.795301
+                  ],
+                  [
+                    2.42257,
+                    48.795148
+                  ],
+                  [
+                    2.422513,
+                    48.795271
+                  ],
+                  [
+                    2.422513,
+                    48.795336
+                  ],
+                  [
+                    2.422143,
+                    48.795989
+                  ],
+                  [
+                    2.42203,
+                    48.796095
+                  ],
+                  [
+                    2.422057,
+                    48.79614
+                  ],
+                  [
+                    2.421689,
+                    48.796816
+                  ],
+                  [
+                    2.421467,
+                    48.797163
+                  ],
+                  [
+                    2.421224,
+                    48.797485
+                  ],
+                  [
+                    2.421155,
+                    48.797542
+                  ],
+                  [
+                    2.420657,
+                    48.798139
+                  ],
+                  [
+                    2.420467,
+                    48.798229
+                  ],
+                  [
+                    2.420291,
+                    48.798154
+                  ],
+                  [
+                    2.420043,
+                    48.798008
+                  ],
+                  [
+                    2.417527,
+                    48.79658
+                  ],
+                  [
+                    2.417437,
+                    48.796528
+                  ],
+                  [
+                    2.417364,
+                    48.796517
+                  ],
+                  [
+                    2.417134,
+                    48.796405
+                  ],
+                  [
+                    2.416747,
+                    48.796348
+                  ],
+                  [
+                    2.416352,
+                    48.796286
+                  ],
+                  [
+                    2.416425,
+                    48.796049
+                  ],
+                  [
+                    2.416465,
+                    48.796001
+                  ],
+                  [
+                    2.416652,
+                    48.79595
+                  ],
+                  [
+                    2.417293,
+                    48.795354
+                  ],
+                  [
+                    2.417806,
+                    48.794847
+                  ]
+                ]
+              }
+            }
+          ],
+          "metadata": {
+            "attribution": "openrouteservice.org | OpenStreetMap contributors",
+            "service": "routing",
+            "timestamp": 1782015534583,
+            "query": {
+              "coordinates": [
+                [
+                  2.480438,
+                  48.755105
+                ],
+                [
+                  2.417805,
+                  48.794847
+                ]
+              ],
+              "profile": "driving-hgv",
+              "profileName": "driving-hgv",
+              "format": "json"
+            },
+            "engine": {
+              "version": "9.9.0",
+              "build_date": "2026-06-12T10:08:58Z",
+              "graph_date": "2026-06-14T12:17:10Z",
+              "osm_date": "2026-05-17T23:59:59Z"
+            }
+          }
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Driving Time & Distance": [
+      {
+        "json": {
+          "distance": "9.61",
+          "duration": "17.78",
+          "n_steps": 24
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Save Results": [
+      {
+        "json": {
+          "shipment_number": "15487-PLO",
+          "driving_distance": "9.61",
+          "driving_time": "17.78"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Collect Shipment Information": [
+      {
+        "json": {
+          "row_number": 2,
+          "shipment_number": "15487-PLO",
+          "pickup_location": "Centre de Distribution Leclerc",
+          "pickup_address": "77 Rue Albert Garry, 94450 Limeil-Brevannes",
+          "pickup_longitude": 2.480438,
+          "pickup_latitude": 48.755105,
+          "expected_pickup_time": "24-09-2024, 09:00:00",
+          "temperature_control": "Chilled",
+          "destination_store_name": "E.Leclerc Store 124",
+          "destination_address": "43-45 Quai Jules Guesde, 94405 Vitry-sur-Seine",
+          "destination_longitude": 2.417805,
+          "destination_latitude": 48.794847,
+          "expected_delivery_time": "24-09-2024, 18:00:00",
+          "driving_distance": 9.61,
+          "driving_time": 17.78
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "AI Agent Reply": [
+      {
+        "json": {
+          "output": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Shipment Confirmation</title>\n</head>\n<body>\n    <p>Dear Nathalie Durand,</p>\n    \n    <p>We are pleased to confirm the shipment planification for your order. Below are the key details:</p>\n    \n    <ul>\n        <li><strong>Shipment Number:</strong> 15487-PLO</li>\n        <li><strong>Pickup Location:</strong> Centre de Distribution Leclerc</li>\n        <li><strong>Pickup Address:</strong> 77 Rue Albert Garry, 94450 Limeil-Brevannes</li>\n        <li><strong>Expected Pickup Time:</strong> 24-09-2024, 09:00:00</li>\n        <li><strong>Temperature Control:</strong> Chilled</li>\n        <li><strong>Destination:</strong> E.Leclerc Store 124</li>\n        <li><strong>Destination Address:</strong> 43-45 Quai Jules Guesde, 94405 Vitry-sur-Seine</li>\n        <li><strong>Expected Delivery Time:</strong> 24-09-2024, 18:00:00</li>\n        <li><strong>Driving Distance:</strong> 9.61 km</li>\n        <li><strong>Estimated Transit Time:</strong> 17.78 min</li>\n    </ul>\n\n    <p>We assure you that the transport has been successfully scheduled as per your requirements. Should you have any questions or require further assistance, please do not hesitate to reach out.</p>\n\n    <p>Thank you for choosing LogiGreen Transportation.</p>\n\n    <p>Best regards,<br>\n    LogiGreen Bot<br>\n    Transportation Planner<br>\n    LogiGreen Transportation<br>\n    <a href=\"mailto:logigreenbot@gmail.com\">logigreenbot@gmail.com</a></p>\n</body>\n</html>"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Reply": [
+      {
+        "json": {
+          "id": "19ee86ac321e9aa9",
+          "threadId": "19ee83c8c7c7fa94",
+          "labelIds": [
+            "SENT"
+          ]
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Request Open Route API BUS GEOJSON": [
+      {
+        "json": {
+          "type": "FeatureCollection",
+          "bbox": [
+            2.416352,
+            48.752956,
+            2.485108,
+            48.798229
+          ],
+          "features": [
+            {
+              "bbox": [
+                2.416352,
+                48.752956,
+                2.485108,
+                48.798229
+              ],
+              "type": "Feature",
+              "properties": {
+                "segments": [
+                  {
+                    "distance": 9633.7,
+                    "duration": 1077.7,
+                    "steps": [
+                      {
+                        "distance": 85.7,
+                        "duration": 20.6,
+                        "type": 11,
+                        "instruction": "Head northeast on Rue Albert Garry",
+                        "name": "Rue Albert Garry",
+                        "way_points": [
+                          0,
+                          2
+                        ]
+                      },
+                      {
+                        "distance": 297.8,
+                        "duration": 71.5,
+                        "type": 1,
+                        "instruction": "Turn right onto Rue Jean-Marie Prugnot",
+                        "name": "Rue Jean-Marie Prugnot",
+                        "way_points": [
+                          2,
+                          7
+                        ]
+                      },
+                      {
+                        "distance": 44.7,
+                        "duration": 10.7,
+                        "type": 7,
+                        "instruction": "Enter the roundabout and take the 3rd exit onto Avenue des Deux Clochers",
+                        "name": "Avenue des Deux Clochers",
+                        "exit_number": 3,
+                        "way_points": [
+                          7,
+                          14
+                        ]
+                      },
+                      {
+                        "distance": 164.5,
+                        "duration": 39.5,
+                        "type": 6,
+                        "instruction": "Continue straight onto Avenue des Deux Clochers",
+                        "name": "Avenue des Deux Clochers",
+                        "way_points": [
+                          14,
+                          16
+                        ]
+                      },
+                      {
+                        "distance": 325.6,
+                        "duration": 34.7,
+                        "type": 0,
+                        "instruction": "Turn left onto Avenue Gabriel Péri, D 205",
+                        "name": "Avenue Gabriel Péri, D 205",
+                        "way_points": [
+                          16,
+                          24
+                        ]
+                      },
+                      {
+                        "distance": 44.2,
+                        "duration": 10.6,
+                        "type": 7,
+                        "instruction": "Enter the roundabout and take the 3rd exit onto Rue Pierre Semard, D 101",
+                        "name": "Rue Pierre Semard, D 101",
+                        "exit_number": 3,
+                        "way_points": [
+                          24,
+                          28
+                        ]
+                      },
+                      {
+                        "distance": 754.8,
+                        "duration": 86.7,
+                        "type": 6,
+                        "instruction": "Continue straight onto Rue Pierre Semard, D 101",
+                        "name": "Rue Pierre Semard, D 101",
+                        "way_points": [
+                          28,
+                          44
+                        ]
+                      },
+                      {
+                        "distance": 123.2,
+                        "duration": 29.1,
+                        "type": 12,
+                        "instruction": "Keep left onto Carrefour Simone de Beauvoir",
+                        "name": "Carrefour Simone de Beauvoir",
+                        "way_points": [
+                          44,
+                          53
+                        ]
+                      },
+                      {
+                        "distance": 2544.4,
+                        "duration": 176.6,
+                        "type": 13,
+                        "instruction": "Keep right onto Carrefour Simone de Beauvoir",
+                        "name": "Carrefour Simone de Beauvoir",
+                        "way_points": [
+                          53,
+                          83
+                        ]
+                      },
+                      {
+                        "distance": 589.2,
+                        "duration": 56.3,
+                        "type": 13,
+                        "instruction": "Keep right",
+                        "name": "-",
+                        "way_points": [
+                          83,
+                          96
+                        ]
+                      },
+                      {
+                        "distance": 237.8,
+                        "duration": 25.2,
+                        "type": 12,
+                        "instruction": "Keep left",
+                        "name": "-",
+                        "way_points": [
+                          96,
+                          101
+                        ]
+                      },
+                      {
+                        "distance": 55.3,
+                        "duration": 15.9,
+                        "type": 7,
+                        "instruction": "Enter the roundabout and take the 2nd exit",
+                        "name": "-",
+                        "exit_number": 2,
+                        "way_points": [
+                          101,
+                          107
+                        ]
+                      },
+                      {
+                        "distance": 1085.5,
+                        "duration": 121.6,
+                        "type": 6,
+                        "instruction": "Continue straight",
+                        "name": "-",
+                        "way_points": [
+                          107,
+                          122
+                        ]
+                      },
+                      {
+                        "distance": 30.2,
+                        "duration": 2.7,
+                        "type": 7,
+                        "instruction": "Enter the roundabout and take the 2nd exit onto Avenue du Maréchal Foch, D 6",
+                        "name": "Avenue du Maréchal Foch, D 6",
+                        "exit_number": 2,
+                        "way_points": [
+                          122,
+                          126
+                        ]
+                      },
+                      {
+                        "distance": 1456.9,
+                        "duration": 141.6,
+                        "type": 6,
+                        "instruction": "Continue straight onto Avenue du Maréchal Foch, D 6",
+                        "name": "Avenue du Maréchal Foch, D 6",
+                        "way_points": [
+                          126,
+                          155
+                        ]
+                      },
+                      {
+                        "distance": 45.8,
+                        "duration": 8.2,
+                        "type": 0,
+                        "instruction": "Turn left onto Place Gallieni",
+                        "name": "Place Gallieni",
+                        "way_points": [
+                          155,
+                          157
+                        ]
+                      },
+                      {
+                        "distance": 9.7,
+                        "duration": 3.5,
+                        "type": 0,
+                        "instruction": "Turn left onto Place Gallieni",
+                        "name": "Place Gallieni",
+                        "way_points": [
+                          157,
+                          158
+                        ]
+                      },
+                      {
+                        "distance": 783.2,
+                        "duration": 83.7,
+                        "type": 1,
+                        "instruction": "Turn right onto Boulevard Gallieni",
+                        "name": "Boulevard Gallieni",
+                        "way_points": [
+                          158,
+                          172
+                        ]
+                      },
+                      {
+                        "distance": 113.4,
+                        "duration": 15.3,
+                        "type": 1,
+                        "instruction": "Turn right onto Quai Jean-Baptiste Clément, D 138",
+                        "name": "Quai Jean-Baptiste Clément, D 138",
+                        "way_points": [
+                          172,
+                          176
+                        ]
+                      },
+                      {
+                        "distance": 268.1,
+                        "duration": 24.1,
+                        "type": 1,
+                        "instruction": "Turn right onto Quai Jean-Baptiste Clément, D 138",
+                        "name": "Quai Jean-Baptiste Clément, D 138",
+                        "way_points": [
+                          176,
+                          183
+                        ]
+                      },
+                      {
+                        "distance": 376.9,
+                        "duration": 64.8,
+                        "type": 0,
+                        "instruction": "Turn left onto D 148",
+                        "name": "D 148",
+                        "way_points": [
+                          183,
+                          191
+                        ]
+                      },
+                      {
+                        "distance": 47.8,
+                        "duration": 13.3,
+                        "type": 0,
+                        "instruction": "Turn left onto Quai Jules Guesde, D 152",
+                        "name": "Quai Jules Guesde, D 152",
+                        "way_points": [
+                          191,
+                          194
+                        ]
+                      },
+                      {
+                        "distance": 149,
+                        "duration": 21.5,
+                        "type": 13,
+                        "instruction": "Keep right onto Quai Jules Guesde, D 152",
+                        "name": "Quai Jules Guesde, D 152",
+                        "way_points": [
+                          194,
+                          196
+                        ]
+                      },
+                      {
+                        "distance": 0,
+                        "duration": 0,
+                        "type": 10,
+                        "instruction": "Arrive at Quai Jules Guesde, D 152, straight ahead",
+                        "name": "-",
+                        "way_points": [
+                          196,
+                          196
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "way_points": [
+                  0,
+                  196
+                ],
+                "summary": {
+                  "distance": 9633.7,
+                  "duration": 1077.7
+                }
+              },
+              "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                  [
+                    2.480436,
+                    48.755108
+                  ],
+                  [
+                    2.481009,
+                    48.75533
+                  ],
+                  [
+                    2.481378,
+                    48.755556
+                  ],
+                  [
+                    2.481462,
+                    48.755466
+                  ],
+                  [
+                    2.481958,
+                    48.75472
+                  ],
+                  [
+                    2.482118,
+                    48.754474
+                  ],
+                  [
+                    2.482468,
+                    48.753946
+                  ],
+                  [
+                    2.483046,
+                    48.753115
+                  ],
+                  [
+                    2.482988,
+                    48.753077
+                  ],
+                  [
+                    2.482992,
+                    48.752997
+                  ],
+                  [
+                    2.483085,
+                    48.752956
+                  ],
+                  [
+                    2.48316,
+                    48.752965
+                  ],
+                  [
+                    2.483219,
+                    48.753007
+                  ],
+                  [
+                    2.483229,
+                    48.753035
+                  ],
+                  [
+                    2.483204,
+                    48.75309
+                  ],
+                  [
+                    2.483734,
+                    48.753303
+                  ],
+                  [
+                    2.485108,
+                    48.753873
+                  ],
+                  [
+                    2.484837,
+                    48.7543
+                  ],
+                  [
+                    2.484545,
+                    48.75476
+                  ],
+                  [
+                    2.483896,
+                    48.755783
+                  ],
+                  [
+                    2.483855,
+                    48.756018
+                  ],
+                  [
+                    2.483829,
+                    48.756106
+                  ],
+                  [
+                    2.483689,
+                    48.756329
+                  ],
+                  [
+                    2.483511,
+                    48.756545
+                  ],
+                  [
+                    2.4835,
+                    48.756588
+                  ],
+                  [
+                    2.483537,
+                    48.756706
+                  ],
+                  [
+                    2.483487,
+                    48.756802
+                  ],
+                  [
+                    2.483401,
+                    48.756859
+                  ],
+                  [
+                    2.483266,
+                    48.756893
+                  ],
+                  [
+                    2.483153,
+                    48.756943
+                  ],
+                  [
+                    2.483048,
+                    48.757013
+                  ],
+                  [
+                    2.482911,
+                    48.757171
+                  ],
+                  [
+                    2.482386,
+                    48.757693
+                  ],
+                  [
+                    2.482357,
+                    48.75772
+                  ],
+                  [
+                    2.481978,
+                    48.758094
+                  ],
+                  [
+                    2.481247,
+                    48.758829
+                  ],
+                  [
+                    2.4793,
+                    48.760795
+                  ],
+                  [
+                    2.479172,
+                    48.760942
+                  ],
+                  [
+                    2.47906,
+                    48.761127
+                  ],
+                  [
+                    2.479029,
+                    48.761364
+                  ],
+                  [
+                    2.479045,
+                    48.761557
+                  ],
+                  [
+                    2.479097,
+                    48.761705
+                  ],
+                  [
+                    2.479216,
+                    48.761921
+                  ],
+                  [
+                    2.479504,
+                    48.762423
+                  ],
+                  [
+                    2.479687,
+                    48.762767
+                  ],
+                  [
+                    2.479615,
+                    48.762944
+                  ],
+                  [
+                    2.479572,
+                    48.762993
+                  ],
+                  [
+                    2.479502,
+                    48.763055
+                  ],
+                  [
+                    2.47929,
+                    48.763178
+                  ],
+                  [
+                    2.479091,
+                    48.763194
+                  ],
+                  [
+                    2.478898,
+                    48.763162
+                  ],
+                  [
+                    2.478757,
+                    48.763108
+                  ],
+                  [
+                    2.47867,
+                    48.763049
+                  ],
+                  [
+                    2.478566,
+                    48.762914
+                  ],
+                  [
+                    2.478343,
+                    48.762708
+                  ],
+                  [
+                    2.478249,
+                    48.762646
+                  ],
+                  [
+                    2.477561,
+                    48.762555
+                  ],
+                  [
+                    2.471813,
+                    48.761798
+                  ],
+                  [
+                    2.470702,
+                    48.761652
+                  ],
+                  [
+                    2.470166,
+                    48.761619
+                  ],
+                  [
+                    2.469647,
+                    48.76163
+                  ],
+                  [
+                    2.469188,
+                    48.761671
+                  ],
+                  [
+                    2.468534,
+                    48.761806
+                  ],
+                  [
+                    2.467719,
+                    48.762083
+                  ],
+                  [
+                    2.467057,
+                    48.762453
+                  ],
+                  [
+                    2.466145,
+                    48.763033
+                  ],
+                  [
+                    2.46588,
+                    48.763183
+                  ],
+                  [
+                    2.465304,
+                    48.763497
+                  ],
+                  [
+                    2.465103,
+                    48.763551
+                  ],
+                  [
+                    2.464318,
+                    48.763923
+                  ],
+                  [
+                    2.463458,
+                    48.764291
+                  ],
+                  [
+                    2.462461,
+                    48.764621
+                  ],
+                  [
+                    2.461102,
+                    48.765016
+                  ],
+                  [
+                    2.458896,
+                    48.765544
+                  ],
+                  [
+                    2.457094,
+                    48.766022
+                  ],
+                  [
+                    2.455803,
+                    48.766394
+                  ],
+                  [
+                    2.45395,
+                    48.767113
+                  ],
+                  [
+                    2.453723,
+                    48.767236
+                  ],
+                  [
+                    2.452376,
+                    48.767872
+                  ],
+                  [
+                    2.451405,
+                    48.768389
+                  ],
+                  [
+                    2.450828,
+                    48.768717
+                  ],
+                  [
+                    2.450383,
+                    48.768993
+                  ],
+                  [
+                    2.449281,
+                    48.769727
+                  ],
+                  [
+                    2.448408,
+                    48.770405
+                  ],
+                  [
+                    2.448315,
+                    48.770539
+                  ],
+                  [
+                    2.44797,
+                    48.770879
+                  ],
+                  [
+                    2.44773,
+                    48.771253
+                  ],
+                  [
+                    2.447498,
+                    48.771683
+                  ],
+                  [
+                    2.447259,
+                    48.772047
+                  ],
+                  [
+                    2.447026,
+                    48.772288
+                  ],
+                  [
+                    2.446683,
+                    48.772571
+                  ],
+                  [
+                    2.446368,
+                    48.772779
+                  ],
+                  [
+                    2.446029,
+                    48.772959
+                  ],
+                  [
+                    2.445481,
+                    48.773173
+                  ],
+                  [
+                    2.444919,
+                    48.773317
+                  ],
+                  [
+                    2.444345,
+                    48.773421
+                  ],
+                  [
+                    2.442792,
+                    48.773636
+                  ],
+                  [
+                    2.44222,
+                    48.773711
+                  ],
+                  [
+                    2.441705,
+                    48.773813
+                  ],
+                  [
+                    2.440316,
+                    48.774113
+                  ],
+                  [
+                    2.439895,
+                    48.774228
+                  ],
+                  [
+                    2.439727,
+                    48.774306
+                  ],
+                  [
+                    2.439696,
+                    48.774464
+                  ],
+                  [
+                    2.43967,
+                    48.774511
+                  ],
+                  [
+                    2.439588,
+                    48.774581
+                  ],
+                  [
+                    2.43947,
+                    48.77464
+                  ],
+                  [
+                    2.43935,
+                    48.774668
+                  ],
+                  [
+                    2.439322,
+                    48.77467
+                  ],
+                  [
+                    2.439269,
+                    48.774979
+                  ],
+                  [
+                    2.438901,
+                    48.776412
+                  ],
+                  [
+                    2.438841,
+                    48.776459
+                  ],
+                  [
+                    2.438573,
+                    48.777494
+                  ],
+                  [
+                    2.438372,
+                    48.778104
+                  ],
+                  [
+                    2.438346,
+                    48.77822
+                  ],
+                  [
+                    2.438028,
+                    48.779416
+                  ],
+                  [
+                    2.437846,
+                    48.780179
+                  ],
+                  [
+                    2.437475,
+                    48.781667
+                  ],
+                  [
+                    2.437401,
+                    48.781936
+                  ],
+                  [
+                    2.43714,
+                    48.782938
+                  ],
+                  [
+                    2.437035,
+                    48.783355
+                  ],
+                  [
+                    2.436947,
+                    48.783783
+                  ],
+                  [
+                    2.436825,
+                    48.78414
+                  ],
+                  [
+                    2.436837,
+                    48.784279
+                  ],
+                  [
+                    2.4369,
+                    48.784348
+                  ],
+                  [
+                    2.436893,
+                    48.784427
+                  ],
+                  [
+                    2.436866,
+                    48.78446
+                  ],
+                  [
+                    2.436776,
+                    48.784506
+                  ],
+                  [
+                    2.436682,
+                    48.784758
+                  ],
+                  [
+                    2.43644,
+                    48.785527
+                  ],
+                  [
+                    2.436113,
+                    48.786872
+                  ],
+                  [
+                    2.436059,
+                    48.787094
+                  ],
+                  [
+                    2.435916,
+                    48.787627
+                  ],
+                  [
+                    2.435681,
+                    48.78852
+                  ],
+                  [
+                    2.435572,
+                    48.788757
+                  ],
+                  [
+                    2.435146,
+                    48.790414
+                  ],
+                  [
+                    2.434991,
+                    48.790992
+                  ],
+                  [
+                    2.434941,
+                    48.79119
+                  ],
+                  [
+                    2.43486,
+                    48.791514
+                  ],
+                  [
+                    2.434814,
+                    48.791691
+                  ],
+                  [
+                    2.434652,
+                    48.79232
+                  ],
+                  [
+                    2.434481,
+                    48.792981
+                  ],
+                  [
+                    2.434466,
+                    48.793036
+                  ],
+                  [
+                    2.434442,
+                    48.793129
+                  ],
+                  [
+                    2.434424,
+                    48.79321
+                  ],
+                  [
+                    2.434313,
+                    48.793652
+                  ],
+                  [
+                    2.434279,
+                    48.793776
+                  ],
+                  [
+                    2.43419,
+                    48.794099
+                  ],
+                  [
+                    2.434166,
+                    48.79419
+                  ],
+                  [
+                    2.43415,
+                    48.79427
+                  ],
+                  [
+                    2.43409,
+                    48.79448
+                  ],
+                  [
+                    2.43397,
+                    48.794968
+                  ],
+                  [
+                    2.433915,
+                    48.795157
+                  ],
+                  [
+                    2.433813,
+                    48.795556
+                  ],
+                  [
+                    2.4338,
+                    48.795607
+                  ],
+                  [
+                    2.433671,
+                    48.796144
+                  ],
+                  [
+                    2.433342,
+                    48.797408
+                  ],
+                  [
+                    2.433134,
+                    48.797385
+                  ],
+                  [
+                    2.432738,
+                    48.797304
+                  ],
+                  [
+                    2.432775,
+                    48.79722
+                  ],
+                  [
+                    2.432595,
+                    48.797165
+                  ],
+                  [
+                    2.430627,
+                    48.796684
+                  ],
+                  [
+                    2.43005,
+                    48.796559
+                  ],
+                  [
+                    2.429033,
+                    48.79635
+                  ],
+                  [
+                    2.428861,
+                    48.796313
+                  ],
+                  [
+                    2.426833,
+                    48.795948
+                  ],
+                  [
+                    2.426618,
+                    48.795921
+                  ],
+                  [
+                    2.425984,
+                    48.795845
+                  ],
+                  [
+                    2.425841,
+                    48.795825
+                  ],
+                  [
+                    2.425281,
+                    48.795722
+                  ],
+                  [
+                    2.42413,
+                    48.79548
+                  ],
+                  [
+                    2.423473,
+                    48.795346
+                  ],
+                  [
+                    2.423276,
+                    48.795301
+                  ],
+                  [
+                    2.42257,
+                    48.795148
+                  ],
+                  [
+                    2.422513,
+                    48.795271
+                  ],
+                  [
+                    2.422513,
+                    48.795336
+                  ],
+                  [
+                    2.422143,
+                    48.795989
+                  ],
+                  [
+                    2.42203,
+                    48.796095
+                  ],
+                  [
+                    2.422057,
+                    48.79614
+                  ],
+                  [
+                    2.421689,
+                    48.796816
+                  ],
+                  [
+                    2.421467,
+                    48.797163
+                  ],
+                  [
+                    2.421224,
+                    48.797485
+                  ],
+                  [
+                    2.421155,
+                    48.797542
+                  ],
+                  [
+                    2.420657,
+                    48.798139
+                  ],
+                  [
+                    2.420467,
+                    48.798229
+                  ],
+                  [
+                    2.420291,
+                    48.798154
+                  ],
+                  [
+                    2.420043,
+                    48.798008
+                  ],
+                  [
+                    2.417527,
+                    48.79658
+                  ],
+                  [
+                    2.417437,
+                    48.796528
+                  ],
+                  [
+                    2.417364,
+                    48.796517
+                  ],
+                  [
+                    2.417134,
+                    48.796405
+                  ],
+                  [
+                    2.416747,
+                    48.796348
+                  ],
+                  [
+                    2.416352,
+                    48.796286
+                  ],
+                  [
+                    2.416425,
+                    48.796049
+                  ],
+                  [
+                    2.416465,
+                    48.796001
+                  ],
+                  [
+                    2.416652,
+                    48.79595
+                  ],
+                  [
+                    2.417293,
+                    48.795354
+                  ],
+                  [
+                    2.417806,
+                    48.794847
+                  ]
+                ]
+              }
+            }
+          ],
+          "metadata": {
+            "attribution": "openrouteservice.org | OpenStreetMap contributors",
+            "service": "routing",
+            "timestamp": 1782020396693,
+            "query": {
+              "coordinates": [
+                [
+                  2.480438,
+                  48.755105
+                ],
+                [
+                  2.417805,
+                  48.794847
+                ]
+              ],
+              "profile": "driving-hgv",
+              "profileName": "driving-hgv",
+              "format": "geojson",
+              "options": {
+                "vehicle_type": "bus"
+              }
+            },
+            "engine": {
+              "version": "9.9.0",
+              "build_date": "2026-06-12T10:08:58Z",
+              "graph_date": "2026-06-14T12:17:10Z",
+              "osm_date": "2026-05-17T23:59:59Z"
+            }
+          }
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
@@ -2073,12 +4832,23 @@
       "createdAt": "2026-06-25T01:16:37.442Z",
       "role": "workflow:owner",
       "workflowId": "JgqtyLe57rHtJqiU",
-      "projectId": "0mwVSLULhlB6ku2N"
+      "projectId": "0mwVSLULhlB6ku2N",
+      "project": {
+        "updatedAt": "2026-05-08T10:08:26.296Z",
+        "createdAt": "2026-05-08T08:11:46.302Z",
+        "id": "0mwVSLULhlB6ku2N",
+        "name": "Nyxu Infinity <nyxuofficial@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
+      }
     }
   ],
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
   "updatedAt": "2026-06-25T01:27:35.000Z",
+  "versionCounter": 17,
   "versionId": "132ac0f6-646f-403d-8a34-74211c34074b"
 }
