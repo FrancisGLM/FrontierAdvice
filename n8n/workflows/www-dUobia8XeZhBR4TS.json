@@ -10,7 +10,6 @@
     }
   },
   "createdAt": "2026-06-28T04:47:46.976Z",
-  "description": null,
   "id": "dUobia8XeZhBR4TS",
   "isArchived": true,
   "meta": null,
@@ -31,141 +30,6 @@
       "name": "When Executed by Another Workflow"
     }
   ],
-  "pinData": {
-    "When Executed by Another Workflow": [
-      {
-        "json": {
-          "origen": {
-            "longitude": -70.6842,
-            "latitude": -33.455629
-          },
-          "destino": {
-            "longitude": -58.410883,
-            "latitude": -34.603793
-          },
-          "vehiculo": "hgv",
-          "subtipo_camion": "bus",
-          "pasos_fronterizos": [
-            {
-              "nombre_oficial": "Complejo Fronterizo Integrado Chungará",
-              "latitud": -18.281256220599374,
-              "longitud": -69.1382599889235
-            },
-            {
-              "nombre_oficial": "Complejo Fronterizo Visviri",
-              "latitud": -17.728156808376593,
-              "longitud": -69.39906250042017
-            },
-            {
-              "nombre_oficial": "Complejo Fronterizo Colchane",
-              "latitud": -19.27613535545881,
-              "longitud": -68.6220071110844
-            },
-            {
-              "nombre_oficial": "Complejo fronterizo Jama",
-              "latitud": -23.226542016937067,
-              "longitud": -67.06293188309498
-            },
-            {
-              "nombre_oficial": "Complejo Hito Cajón",
-              "latitud": -22.91657340212709,
-              "longitud": -67.7979900727528
-            },
-            {
-              "nombre_oficial": "Complejo Fronterizo San Pedro de Atacama",
-              "latitud": -22.88333183390768,
-              "longitud": -67.7999981381664
-            },
-            {
-              "nombre_oficial": "Complejo Fronterizo Los Libertadores",
-              "latitud": -32.84271357006212,
-              "longitud": -70.12060761622942
-            },
-            {
-              "nombre_oficial": "Complejo Fronterizo Pehuenche",
-              "latitud": -35.98339876179999,
-              "longitud": -70.40008582155707
-            },
-            {
-              "nombre_oficial": "Complejo Fronterizo Pino Hachado",
-              "latitud": -38.64353932515282,
-              "longitud": -70.94181263016343
-            },
-            {
-              "nombre_oficial": "Complejo Fronterizo Mamuil Malal",
-              "latitud": -39.58305791239352,
-              "longitud": -71.4693939286603
-            },
-            {
-              "nombre_oficial": "Complejo Fronterizo Hua Hum",
-              "latitud": -40.09957264039809,
-              "longitud": -71.67327902924646
-            },
-            {
-              "nombre_oficial": "Complejo Fronterizo El Límite – Futaleufú",
-              "latitud": -43.17649779051323,
-              "longitud": -71.7577012994437
-            },
-            {
-              "nombre_oficial": "Complejo Fronterizo Huemules",
-              "latitud": -45.910651767448066,
-              "longitud": -71.68669185610418
-            },
-            {
-              "nombre_oficial": "Complejo Fronterizo Dorotea",
-              "latitud": -51.6047274439038,
-              "longitud": -72.33307040008525
-            },
-            {
-              "nombre_oficial": "Complejo Fronterizo Integración Austral",
-              "latitud": -52.13921294439705,
-              "longitud": -69.51967392894386
-            },
-            {
-              "nombre_oficial": "Complejo Fronterizo Cardenal Samoré",
-              "latitud": -40.661793579874114,
-              "longitud": -72.12630979106433
-            },
-            {
-              "nombre_oficial": "Complejo Fronterizo Río Encuentro - Palena",
-              "latitud": -43.59291558357533,
-              "longitud": -71.71250712830513
-            },
-            {
-              "nombre_oficial": "Complejo Fronterizo Coyhaique Alto",
-              "latitud": -45.48091934238515,
-              "longitud": -71.60339430008784
-            },
-            {
-              "nombre_oficial": "Complejo Fronterizo Río Don Guillermo",
-              "latitud": -51.25578941434214,
-              "longitud": -72.23629537197762
-            },
-            {
-              "nombre_oficial": "Complejo Fronterizo Peulla",
-              "latitud": -41.06906983182753,
-              "longitud": -71.83030792865698
-            },
-            {
-              "nombre_oficial": "Complejo Fronterizo Jeinimeni",
-              "latitud": -46.56415379554354,
-              "longitud": -71.67146899938595
-            },
-            {
-              "nombre_oficial": "Complejo Fronterizo Casas Viejas",
-              "latitud": -51.699614296982354,
-              "longitud": -72.3284620253791
-            },
-            {
-              "nombre_oficial": "Complejo Fronterizo San Sebastián",
-              "latitud": -53.32290744501417,
-              "longitud": -68.65291812894517
-            }
-          ]
-        }
-      }
-    ]
-  },
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
@@ -176,23 +40,12 @@
       "createdAt": "2026-06-28T04:47:46.978Z",
       "role": "workflow:owner",
       "workflowId": "dUobia8XeZhBR4TS",
-      "projectId": "0mwVSLULhlB6ku2N",
-      "project": {
-        "updatedAt": "2026-05-08T10:08:26.296Z",
-        "createdAt": "2026-05-08T08:11:46.302Z",
-        "id": "0mwVSLULhlB6ku2N",
-        "name": "Nyxu Infinity <nyxuofficial@gmail.com>",
-        "type": "personal",
-        "icon": null,
-        "description": null,
-        "creatorId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
-      }
+      "projectId": "0mwVSLULhlB6ku2N"
     }
   ],
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
   "updatedAt": "2026-06-28T06:18:31.000Z",
-  "versionCounter": 66,
   "versionId": "f1111f51-e205-4da7-85e8-6d37dfc9f62a"
 }
