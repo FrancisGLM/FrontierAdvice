@@ -1,0 +1,929 @@
+{
+  "active": true,
+  "activeVersion": {
+    "updatedAt": "2026-06-28T13:17:02.000Z",
+    "createdAt": "2026-06-28T13:17:01.387Z",
+    "versionId": "ac096f78-5820-4a1d-a18d-2e19449f4531",
+    "workflowId": "wbywNKGwn7TP1pZq",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "calcular-ruta",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          -400,
+          -176
+        ],
+        "id": "6ea4be79-a2b5-45a8-ace6-453b26d78736",
+        "name": "Webhook",
+        "webhookId": "85d4b9a0-94a2-46ad-b6bd-f70444c208d5"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Por favor, procesa esta solicitud de viaje. Utiliza los siguientes datos para construir el JSON que le enviarás a la herramienta Coordenates_location:\n\npickup_address: {{ $json.body.origen }}\ndestination_address: {{ $json.body.destino }}\npickup_countryCode: {{ $json.body.paisOrigen }}\ndestination_countryCode: {{ $json.body.paisDestino }}\nvehiculo: {{ $json.body.tipoVehiculo }}\nsubtipo_camion: {{ $json.body.subtipoCamion }}\nProcede con el análisis y devuelve el resultado en la estructura requerida por el parser.",
+          "options": {
+            "systemMessage": "=Eres el Agente Orquestador de Ruteo de FrontierAdvice Chile. Tu objetivo es planificar rutas transandinas utilizando las herramientas proporcionadas de forma secuencial.\n\nInstrucciones de Ejecución:\n1. Invoca la herramienta `Coords_location` pasándole los datos proporcionados por el usuario para obtener las coordenadas y la normalización del vehículo.\n2. Recibe la respuesta de la primera herramienta.\n3. Invoca la herramienta `Steps_Finding` pasándole los datos tal cual los recibiste de la primera.\n4. Recibe la respuesta final de la tercera herramienta.\n\nReglas de Redacción para la salida final:\n\nA) CASO EXITOSO: \n1. Extrae el nombre del paso seleccionado y colócalo en `paso_fronterizo_primario`.\n2. Extrae el nombre de la segunda mejor opción (la alternativa) y colócalo en `paso_fronterizo_alternativo`.\n3. El campo `error` debe ir completamente vacío (es decir: \"\").\n\nB) MANEJO DE ERRORES Y CASOS BORDE (¡MUY IMPORTANTE!):\nSi alguna herramienta te devuelve un error, reporta que una dirección no fue encontrada, o hay cualquier fallo que impida calcular la ruta:\n1. Omite completamente el cálculo de rutas.\n2. En el campo `error`, redacta un mensaje amable y profesional en tercera persona informando al usuario el problema exacto (ejemplo: \"Lo sentimos, no fue posible identificar la dirección de origen proporcionada. Por favor, verifique la información e intente nuevamente.\").\n3. Los campos de pasos fronterizos (`paso_fronterizo_primario` y `paso_fronterizo_alternativo`) y de vehículo debes enviarlos vacíos `\"\"`. Los arreglos de coordenadas (`ors_waypoints` y `ors_alternative_waypoints`) debes enviarlos vacíos `[]`.\n\nREGLA ESTRICTA DE FORMATO FINAL: \nTu respuesta final hacia el usuario DEBE ser EXCLUSIVAMENTE un objeto JSON puro. NO incluyas formato markdown (como ```json) ni texto fuera del objeto. NO envuelvas el objeto en otras llaves.\n\nEl formato exacto que debes devolver es este:\n{\n  \"paso_fronterizo_primario\": \"Complejo Fronterizo Pehuenche\",\n  \"paso_fronterizo_alternativo\": \"Complejo Fronterizo Vergara\",\n  \"error\": \"\", \n  \"ors_waypoints\": [[-71.677, -35.439], [-70.400, -35.983], [-58.443, -34.595]],\n  \"ors_alternative_waypoints\": [[-71.677, -35.439], [-70.400, -35.983], [-58.443, -34.595]],\n  \"vehiculo\": \"hgv\",\n  \"subtipo_camion\": \"bus\"\n}\n"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 3.1,
+        "position": [
+          -80,
+          -176
+        ],
+        "id": "6c9548c4-953f-4a7c-a979-61171c4a1e21",
+        "name": "AI Agent"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "gpt-4o-mini",
+            "mode": "list",
+            "cachedResultName": "gpt-4o-mini"
+          },
+          "builtInTools": {},
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.3,
+        "position": [
+          -160,
+          80
+        ],
+        "id": "20a4d93e-7f21-4184-8b4b-f75a7cd46390",
+        "name": "OpenAI Chat Model",
+        "credentials": {
+          "openAiApi": {
+            "id": "lSu0LiqTeh12r5KI",
+            "name": "OpenAI account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.5,
+        "position": [
+          896,
+          -192
+        ],
+        "id": "bb7c016a-fb67-4035-81b7-c939136b4d50",
+        "name": "Respond to Webhook"
+      },
+      {
+        "parameters": {
+          "jsCode": "const textoAgente = $input.all()[0].json.text || $input.all()[0].json.output;\n\n// Limpiamos los backticks de markdown por si el LLM los llega a poner\nlet textoLimpio = textoAgente.replace(/^```json\\n/, '').replace(/\\n```$/, '');\n\nlet datos = JSON.parse(textoLimpio);\n\nif (datos.output) {\n    datos = datos.output;\n}\n\nreturn [{ json: datos }];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          272,
+          -176
+        ],
+        "id": "c28cbbcc-4c41-4b01-a925-811852e9ede4",
+        "name": "Mario the plumber"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "4a54115c-d975-45c4-aab7-164909d39b49",
+                "leftValue": "={{ $json.error }}",
+                "rightValue": "error",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          464,
+          -176
+        ],
+        "id": "099dff12-9e60-4044-8f22-6f2ede6353e1",
+        "name": "Something wrong?"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "hVav0dnSjn6t7SqO",
+            "mode": "list",
+            "cachedResultUrl": "/workflow/hVav0dnSjn6t7SqO",
+            "cachedResultName": "Route_mapping_x2"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.3,
+        "position": [
+          672,
+          -80
+        ],
+        "id": "9f26e3d3-b540-4aa8-94ec-89c11652bbe4",
+        "name": "Route_Mapping_x2"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "CcBNJr6kQYj5T4zB",
+            "mode": "list",
+            "cachedResultUrl": "/workflow/CcBNJr6kQYj5T4zB",
+            "cachedResultName": "Coords_location"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "pickup_address": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('pickup_address', ``, 'string') }}",
+              "destination_address": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('destination_address', ``, 'string') }}",
+              "pickup_countryCode": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('pickup_countryCode', ``, 'string') }}",
+              "destination_countryCode": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('destination_countryCode', ``, 'string') }}",
+              "vehiculo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('vehiculo', ``, 'string') }}",
+              "subtipo_camion": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('subtipo_camion', ``, 'string') }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "pickup_address",
+                "displayName": "pickup_address",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "destination_address",
+                "displayName": "destination_address",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "pickup_countryCode",
+                "displayName": "pickup_countryCode",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "destination_countryCode",
+                "displayName": "destination_countryCode",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "vehiculo",
+                "displayName": "vehiculo",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "subtipo_camion",
+                "displayName": "subtipo_camion",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+        "typeVersion": 2.2,
+        "position": [
+          0,
+          80
+        ],
+        "id": "e700b165-3872-4707-84ea-49ba9f059d0e",
+        "name": "Coords_location"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "3Z2J84vr1wYJuce5",
+            "mode": "list",
+            "cachedResultUrl": "/workflow/3Z2J84vr1wYJuce5",
+            "cachedResultName": "Best_Steps"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "origen": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('origen', ``, 'json') }}",
+              "destino": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('destino', ``, 'json') }}",
+              "vehiculo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('vehiculo', ``, 'string') }}",
+              "subtipo_camion": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('subtipo_camion', ``, 'string') }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "origen",
+                "displayName": "origen",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "object"
+              },
+              {
+                "id": "destino",
+                "displayName": "destino",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "object"
+              },
+              {
+                "id": "vehiculo",
+                "displayName": "vehiculo",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              },
+              {
+                "id": "subtipo_camion",
+                "displayName": "subtipo_camion",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string"
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+        "typeVersion": 2.2,
+        "position": [
+          128,
+          80
+        ],
+        "id": "6287a861-bb85-4601-9fcc-408d44d8b41e",
+        "name": "Best_Steps"
+      }
+    ],
+    "connections": {
+      "OpenAI Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent": {
+        "main": [
+          [
+            {
+              "node": "Mario the plumber",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Mario the plumber": {
+        "main": [
+          [
+            {
+              "node": "Something wrong?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Something wrong?": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Route_Mapping_x2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Route_Mapping_x2": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Coords_location": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Best_Steps": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Nyxu Infinity",
+    "name": "Version ac096f78",
+    "description": "",
+    "autosaved": true,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-06-28T13:17:02.846Z",
+        "id": 210,
+        "workflowId": "wbywNKGwn7TP1pZq",
+        "versionId": "ac096f78-5820-4a1d-a18d-2e19449f4531",
+        "event": "activated",
+        "userId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
+      }
+    ]
+  },
+  "activeVersionId": "ac096f78-5820-4a1d-a18d-2e19449f4531",
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Mario the plumber",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mario the plumber": {
+      "main": [
+        [
+          {
+            "node": "Something wrong?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Something wrong?": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Route_Mapping_x2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route_Mapping_x2": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Coords_location": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Best_Steps": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-06-26T03:10:37.269Z",
+  "description": null,
+  "id": "wbywNKGwn7TP1pZq",
+  "isArchived": false,
+  "meta": null,
+  "name": "Agentic_Routing",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "calcular-ruta",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -400,
+        -176
+      ],
+      "id": "6ea4be79-a2b5-45a8-ace6-453b26d78736",
+      "name": "Webhook",
+      "webhookId": "85d4b9a0-94a2-46ad-b6bd-f70444c208d5"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Por favor, procesa esta solicitud de viaje. Utiliza los siguientes datos para construir el JSON que le enviarás a la herramienta Coordenates_location:\n\npickup_address: {{ $json.body.origen }}\ndestination_address: {{ $json.body.destino }}\npickup_countryCode: {{ $json.body.paisOrigen }}\ndestination_countryCode: {{ $json.body.paisDestino }}\nvehiculo: {{ $json.body.tipoVehiculo }}\nsubtipo_camion: {{ $json.body.subtipoCamion }}\nProcede con el análisis y devuelve el resultado en la estructura requerida por el parser.",
+        "options": {
+          "systemMessage": "=Eres el Agente Orquestador de Ruteo de FrontierAdvice Chile. Tu objetivo es planificar rutas transandinas utilizando las herramientas proporcionadas de forma secuencial.\n\nInstrucciones de Ejecución:\n1. Invoca la herramienta `Coords_location` pasándole los datos proporcionados por el usuario para obtener las coordenadas y la normalización del vehículo.\n2. Recibe la respuesta de la primera herramienta.\n3. Invoca la herramienta `Steps_Finding` pasándole los datos tal cual los recibiste de la primera.\n4. Recibe la respuesta final de la tercera herramienta.\n\nReglas de Redacción para la salida final:\n\nA) CASO EXITOSO: \n1. Extrae el nombre del paso seleccionado y colócalo en `paso_fronterizo_primario`.\n2. Extrae el nombre de la segunda mejor opción (la alternativa) y colócalo en `paso_fronterizo_alternativo`.\n3. El campo `error` debe ir completamente vacío (es decir: \"\").\n\nB) MANEJO DE ERRORES Y CASOS BORDE (¡MUY IMPORTANTE!):\nSi alguna herramienta te devuelve un error, reporta que una dirección no fue encontrada, o hay cualquier fallo que impida calcular la ruta:\n1. Omite completamente el cálculo de rutas.\n2. En el campo `error`, redacta un mensaje amable y profesional en tercera persona informando al usuario el problema exacto (ejemplo: \"Lo sentimos, no fue posible identificar la dirección de origen proporcionada. Por favor, verifique la información e intente nuevamente.\").\n3. Los campos de pasos fronterizos (`paso_fronterizo_primario` y `paso_fronterizo_alternativo`) y de vehículo debes enviarlos vacíos `\"\"`. Los arreglos de coordenadas (`ors_waypoints` y `ors_alternative_waypoints`) debes enviarlos vacíos `[]`.\n\nREGLA ESTRICTA DE FORMATO FINAL: \nTu respuesta final hacia el usuario DEBE ser EXCLUSIVAMENTE un objeto JSON puro. NO incluyas formato markdown (como ```json) ni texto fuera del objeto. NO envuelvas el objeto en otras llaves.\n\nEl formato exacto que debes devolver es este:\n{\n  \"paso_fronterizo_primario\": \"Complejo Fronterizo Pehuenche\",\n  \"paso_fronterizo_alternativo\": \"Complejo Fronterizo Vergara\",\n  \"error\": \"\", \n  \"ors_waypoints\": [[-71.677, -35.439], [-70.400, -35.983], [-58.443, -34.595]],\n  \"ors_alternative_waypoints\": [[-71.677, -35.439], [-70.400, -35.983], [-58.443, -34.595]],\n  \"vehiculo\": \"hgv\",\n  \"subtipo_camion\": \"bus\"\n}\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -80,
+        -176
+      ],
+      "id": "6c9548c4-953f-4a7c-a979-61171c4a1e21",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -160,
+        80
+      ],
+      "id": "20a4d93e-7f21-4184-8b4b-f75a7cd46390",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "lSu0LiqTeh12r5KI",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        896,
+        -192
+      ],
+      "id": "bb7c016a-fb67-4035-81b7-c939136b4d50",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "const textoAgente = $input.all()[0].json.text || $input.all()[0].json.output;\n\n// Limpiamos los backticks de markdown por si el LLM los llega a poner\nlet textoLimpio = textoAgente.replace(/^```json\\n/, '').replace(/\\n```$/, '');\n\nlet datos = JSON.parse(textoLimpio);\n\nif (datos.output) {\n    datos = datos.output;\n}\n\nreturn [{ json: datos }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        272,
+        -176
+      ],
+      "id": "c28cbbcc-4c41-4b01-a925-811852e9ede4",
+      "name": "Mario the plumber"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "4a54115c-d975-45c4-aab7-164909d39b49",
+              "leftValue": "={{ $json.error }}",
+              "rightValue": "error",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        464,
+        -176
+      ],
+      "id": "099dff12-9e60-4044-8f22-6f2ede6353e1",
+      "name": "Something wrong?"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "hVav0dnSjn6t7SqO",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/hVav0dnSjn6t7SqO",
+          "cachedResultName": "Route_mapping_x2"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        672,
+        -80
+      ],
+      "id": "9f26e3d3-b540-4aa8-94ec-89c11652bbe4",
+      "name": "Route_Mapping_x2"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "CcBNJr6kQYj5T4zB",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/CcBNJr6kQYj5T4zB",
+          "cachedResultName": "Coords_location"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "pickup_address": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('pickup_address', ``, 'string') }}",
+            "destination_address": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('destination_address', ``, 'string') }}",
+            "pickup_countryCode": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('pickup_countryCode', ``, 'string') }}",
+            "destination_countryCode": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('destination_countryCode', ``, 'string') }}",
+            "vehiculo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('vehiculo', ``, 'string') }}",
+            "subtipo_camion": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('subtipo_camion', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "pickup_address",
+              "displayName": "pickup_address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "destination_address",
+              "displayName": "destination_address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "pickup_countryCode",
+              "displayName": "pickup_countryCode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "destination_countryCode",
+              "displayName": "destination_countryCode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "vehiculo",
+              "displayName": "vehiculo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "subtipo_camion",
+              "displayName": "subtipo_camion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        80
+      ],
+      "id": "e700b165-3872-4707-84ea-49ba9f059d0e",
+      "name": "Coords_location"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "3Z2J84vr1wYJuce5",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/3Z2J84vr1wYJuce5",
+          "cachedResultName": "Best_Steps"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "origen": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('origen', ``, 'json') }}",
+            "destino": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('destino', ``, 'json') }}",
+            "vehiculo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('vehiculo', ``, 'string') }}",
+            "subtipo_camion": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('subtipo_camion', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "origen",
+              "displayName": "origen",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "object"
+            },
+            {
+              "id": "destino",
+              "displayName": "destino",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "object"
+            },
+            {
+              "id": "vehiculo",
+              "displayName": "vehiculo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "subtipo_camion",
+              "displayName": "subtipo_camion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        128,
+        80
+      ],
+      "id": "6287a861-bb85-4601-9fcc-408d44d8b41e",
+      "name": "Best_Steps"
+    }
+  ],
+  "pinData": {
+    "Route_Mapping_x2": [
+      {
+        "json": {
+          "name": "First item",
+          "code": 1
+        }
+      },
+      {
+        "json": {
+          "name": "Second item",
+          "code": 2
+        }
+      }
+    ],
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.frontieradvice.tech",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+            "content-length": "176",
+            "accept": "*/*",
+            "accept-encoding": "gzip, br",
+            "accept-language": "es-ES,es;q=0.9,en;q=0.8",
+            "cdn-loop": "cloudflare; loops=1",
+            "cf-connecting-ip": "181.43.42.36",
+            "cf-ipcountry": "CL",
+            "cf-ray": "a1299d797900a58f-EZE",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-warp-tag-id": "1b9f09cf-1265-463b-a08e-4e66583a9183",
+            "connection": "keep-alive",
+            "content-type": "application/json",
+            "origin": "http://localhost:3000",
+            "priority": "u=1, i",
+            "referer": "http://localhost:3000/",
+            "sec-ch-ua": "\"Chromium\";v=\"148\", \"Google Chrome\";v=\"148\", \"Not/A)Brand\";v=\"99\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": "\"Windows\"",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "cross-site",
+            "x-forwarded-for": "181.43.42.36",
+            "x-forwarded-proto": "https"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "origen": "pasaje 5 poniente C 1136, Talca, Talca",
+            "paisOrigen": "Chile",
+            "destino": "Av.corrientes 3247, Comuna 3, Buenos aires",
+            "paisDestino": "Argentina",
+            "tipoVehiculo": "coche"
+          },
+          "webhookUrl": "https://n8n.frontieradvice.tech/webhook/calcular-ruta",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-06-26T03:10:37.270Z",
+      "createdAt": "2026-06-26T03:10:37.270Z",
+      "role": "workflow:owner",
+      "workflowId": "wbywNKGwn7TP1pZq",
+      "projectId": "0mwVSLULhlB6ku2N",
+      "project": {
+        "updatedAt": "2026-05-08T10:08:26.296Z",
+        "createdAt": "2026-05-08T08:11:46.302Z",
+        "id": "0mwVSLULhlB6ku2N",
+        "name": "Nyxu Infinity <nyxuofficial@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
+      }
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2026-06-28T13:17:01.387Z",
+  "versionCounter": 533,
+  "versionId": "ac096f78-5820-4a1d-a18d-2e19449f4531"
+}
