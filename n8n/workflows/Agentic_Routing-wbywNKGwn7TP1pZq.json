@@ -413,17 +413,7 @@
     "authors": "Nyxu Infinity",
     "name": "Version ac096f78",
     "description": "",
-    "autosaved": true,
-    "workflowPublishHistory": [
-      {
-        "createdAt": "2026-06-28T13:17:02.846Z",
-        "id": 210,
-        "workflowId": "wbywNKGwn7TP1pZq",
-        "versionId": "ac096f78-5820-4a1d-a18d-2e19449f4531",
-        "event": "activated",
-        "userId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
-      }
-    ]
+    "autosaved": true
   },
   "activeVersionId": "ac096f78-5820-4a1d-a18d-2e19449f4531",
   "connections": {
@@ -524,7 +514,6 @@
     }
   },
   "createdAt": "2026-06-26T03:10:37.269Z",
-  "description": null,
   "id": "wbywNKGwn7TP1pZq",
   "isArchived": false,
   "meta": null,
@@ -837,66 +826,6 @@
       "name": "Best_Steps"
     }
   ],
-  "pinData": {
-    "Route_Mapping_x2": [
-      {
-        "json": {
-          "name": "First item",
-          "code": 1
-        }
-      },
-      {
-        "json": {
-          "name": "Second item",
-          "code": 2
-        }
-      }
-    ],
-    "Webhook": [
-      {
-        "json": {
-          "headers": {
-            "host": "n8n.frontieradvice.tech",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
-            "content-length": "176",
-            "accept": "*/*",
-            "accept-encoding": "gzip, br",
-            "accept-language": "es-ES,es;q=0.9,en;q=0.8",
-            "cdn-loop": "cloudflare; loops=1",
-            "cf-connecting-ip": "181.43.42.36",
-            "cf-ipcountry": "CL",
-            "cf-ray": "a1299d797900a58f-EZE",
-            "cf-visitor": "{\"scheme\":\"https\"}",
-            "cf-warp-tag-id": "1b9f09cf-1265-463b-a08e-4e66583a9183",
-            "connection": "keep-alive",
-            "content-type": "application/json",
-            "origin": "http://localhost:3000",
-            "priority": "u=1, i",
-            "referer": "http://localhost:3000/",
-            "sec-ch-ua": "\"Chromium\";v=\"148\", \"Google Chrome\";v=\"148\", \"Not/A)Brand\";v=\"99\"",
-            "sec-ch-ua-mobile": "?0",
-            "sec-ch-ua-platform": "\"Windows\"",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "cross-site",
-            "x-forwarded-for": "181.43.42.36",
-            "x-forwarded-proto": "https"
-          },
-          "params": {},
-          "query": {},
-          "body": {
-            "origen": "pasaje 5 poniente C 1136, Talca, Talca",
-            "paisOrigen": "Chile",
-            "destino": "Av.corrientes 3247, Comuna 3, Buenos aires",
-            "paisDestino": "Argentina",
-            "tipoVehiculo": "coche"
-          },
-          "webhookUrl": "https://n8n.frontieradvice.tech/webhook/calcular-ruta",
-          "executionMode": "production"
-        }
-      }
-    ]
-  },
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
@@ -907,23 +836,12 @@
       "createdAt": "2026-06-26T03:10:37.270Z",
       "role": "workflow:owner",
       "workflowId": "wbywNKGwn7TP1pZq",
-      "projectId": "0mwVSLULhlB6ku2N",
-      "project": {
-        "updatedAt": "2026-05-08T10:08:26.296Z",
-        "createdAt": "2026-05-08T08:11:46.302Z",
-        "id": "0mwVSLULhlB6ku2N",
-        "name": "Nyxu Infinity <nyxuofficial@gmail.com>",
-        "type": "personal",
-        "icon": null,
-        "description": null,
-        "creatorId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
-      }
+      "projectId": "0mwVSLULhlB6ku2N"
     }
   ],
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
   "updatedAt": "2026-06-28T13:17:01.387Z",
-  "versionCounter": 533,
   "versionId": "ac096f78-5820-4a1d-a18d-2e19449f4531"
 }
