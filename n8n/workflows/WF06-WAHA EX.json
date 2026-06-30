@@ -1,0 +1,337 @@
+{
+  "name": "WF06-WAHA EX",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "fbe9497f-7c7a-494f-962f-e070f6d2d074",
+      "name": "Fin de Extracción1",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -1808,
+        1024
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://strapi.frontieradvice.tech/api/mensaje-wahas",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  data: {\n    id_estado: { connect: [ { documentId: $json.data.documentId } ] },\n    msg_id_waha: $('Loop Novedades').item.json.waha_id,\n    msg_fecha_iso: new Date().toISOString(),\n    procesado: true,\n    relevante: true,\n    fuente: \"WhatsApp UPF\"\n  }\n} }}",
+        "options": {}
+      },
+      "id": "979db99a-638b-43cc-bb63-fd0a78767977",
+      "name": "POST MensajeWAHA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1584,
+        1168
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://strapi.frontieradvice.tech/api/estado-diarios",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  data: {\n    id_paso: { connect: [ { documentId: $json.documentId } ] },\n    fecha_reporte: new Date().toISOString(),\n    estado_general: $json.estado_general,\n    fuente: \"WhatsApp UPF\",\n    mensaje_original: $json.mensaje_original,\n    origen_tipo: \"waha\",\n    motivo_estado: $json.detalles,\n    msg_id_waha: $json.waha_id,\n    confianza_extraccion: 0.95,\n    es_programado: false\n  }\n} }}",
+        "options": {}
+      },
+      "id": "fa2dd315-408f-4a07-a044-782dbe2c9f66",
+      "name": "POST EstadoDiario",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1808,
+        1168
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "9069ce2a-bd6a-460c-a5e2-711171d49faf",
+      "name": "Loop Novedades",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -2032,
+        1152
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const rawMessage = $(\"Webhook WAHA\").item.json.body?.payload?.body || \"\";\nconst pasosDB = $(\"GET Pasos DB\").item.json.data || [];\n\nif (!rawMessage) return [];\n\nconst blocks = rawMessage.split(/(?=🔹)/);\nconst results = [];\n\nfunction normalizeStr(s) {\n  return s.normalize(\"NFD\").replace(/[\\u0300-\\u036f]/g, \"\").toLowerCase().replace(/[^a-z0-9]/g, '');\n}\n\nfor (const block of blocks) {\n  if (!block.includes('🔹')) continue;\n\n  const linesInBlock = block.split('\\n');\n  const firstLine = linesInBlock[0];\n  let cleanLine = firstLine.replace('🔹', '').trim();\n\n  const match = cleanLine.match(/^(.*?)(?:✅|⚠️|⛔️|⛔|⚠|\\s+HABILITADO|\\s+NO\\s+HABILITADO|\\s+CERRADO)/i);\n  if (!match) continue;\n\n  let rawName = match[1].replace(/Complejo/ig, '').replace(/Fronterizo/ig, '').replace(/Integrado/ig, '').trim();\n\n  let rawState = \"desconocido\";\n  let normState = \"desconocido\";\n\n  if (cleanLine.match(/NO HABILITADO|CERRADO/i)) {\n    rawState = cleanLine.match(/NO HABILITADO|CERRADO/i)[0].toUpperCase();\n    normState = \"cerrado\";\n  } else if (cleanLine.match(/HABILITADO/i)) {\n    rawState = \"HABILITADO\";\n    normState = \"abierto\";\n  } else if (cleanLine.match(/⚠️|⚠/)) {\n    rawState = \"CONDICIONADO\";\n    normState = \"condicionado\";\n  }\n\n  let details = cleanLine.substring(match[1].length).replace(/(✅|⚠️|⛔️|⛔|⚠)/g, '').trim();\n  if (details.toUpperCase().startsWith(rawState)) {\n    details = details.substring(rawState.length).trim();\n  }\n  details = details.replace(/^[-\\|\\.,\\s]+/, '');\n  \n  if (linesInBlock.length > 1) {\n    details += \" \" + linesInBlock.slice(1).join(\" \");\n  }\n\n  let pasoEncontrado = null;\n  const searchName = normalizeStr(rawName);\n\n  for (const p of pasosDB) {\n    const dbName = normalizeStr(p.nombre_oficial);\n    if (dbName.includes(searchName) || searchName.includes(dbName)) {\n      pasoEncontrado = p;\n      break;\n    }\n  }\n\n  if (pasoEncontrado) {\n    // --- NUEVO: Extracción de Horarios y Vehículos ---\n    let horario_apertura = null;\n    let horario_cierre = null;\n    const horaMatch = details.match(/(\\d{1,2}:\\d{2})\\s*[a-zA-Z]*\\s*a\\s*(\\d{1,2}:\\d{2})/i);\n    if (horaMatch) {\n      horario_apertura = horaMatch[1];\n      horario_cierre = horaMatch[2];\n    }\n    \n    let tipo_vehiculos = [];\n    if (normState === \"cerrado\") {\n      tipo_vehiculos = [];\n    } else {\n      const tLower = details.toLowerCase();\n      if (tLower.includes(\"todo tipo\") || tLower.includes(\"todos los veh\")) {\n        tipo_vehiculos = [\"automóvil\", \"bus\", \"camión\"];\n      } else {\n        if (tLower.includes(\"bus \") || tLower.includes(\"buses\")) tipo_vehiculos.push(\"bus\");\n        if (tLower.includes(\"menor\") || tLower.includes(\"auto\") || tLower.includes(\"particular\")) tipo_vehiculos.push(\"automóvil\");\n        if (tLower.includes(\"carga\") || tLower.includes(\"cami\")) tipo_vehiculos.push(\"camión\");\n      }\n      tipo_vehiculos = [...new Set(tipo_vehiculos)];\n    }\n    // ---------------------------------------------------\n    \n    results.push({\n      json: {\n        documentId: pasoEncontrado.documentId,\n        nombre_oficial: pasoEncontrado.nombre_oficial,\n        nombre_waha: rawName,\n        estado_general: normState,\n        estado_raw: rawState,\n        mensaje_original: block.trim(),\n        detalles: details || rawState,\n        horario_apertura: horario_apertura,\n        horario_cierre: horario_cierre,\n        tipo_vehiculos: tipo_vehiculos,\n        timestamp: $(\"Webhook WAHA\").item.json.body?.payload?.timestamp || Math.floor(Date.now() / 1000),\n        waha_id: $(\"Webhook WAHA\").item.json.body?.payload?.id || \"\"\n      }\n    });\n  }\n}\n\nreturn results;\n"
+      },
+      "id": "dfb8b666-b743-4c07-81f5-63b3695e0559",
+      "name": "Parser Regex WhatsApp",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2256,
+        1152
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=http://strapi.frontieradvice.tech/api/paso-fronterizos",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filters[activo][$eq]",
+              "value": "true"
+            },
+            {
+              "name": "pagination[pageSize]",
+              "value": "100"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=(Tu token de Strapi irá aquí automáticamente por las credenciales)"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "34008971-1e59-4d75-9b0f-e2fb0d05f05a",
+      "name": "GET Pasos DB",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2480,
+        1152
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "waha-upf",
+        "options": {}
+      },
+      "id": "9ca7f0a4-3db0-4420-9acf-b8ce7a10bdb1",
+      "name": "Webhook WAHA",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -2928,
+        1168
+      ],
+      "webhookId": "waha-upf-listener"
+    },
+    {
+      "parameters": {},
+      "id": "196f14da-0e8f-430d-a56a-4cb5c3b73bdb",
+      "name": "No corresponde a Canal",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -2480,
+        1328
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c4f22024-44f8-4fe5-b515-c0025fa30cc5",
+              "leftValue": "={{ $json.body.payload.from }}",
+              "rightValue": "120363410566293258@newsletter",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "f56e838c-3d11-4a9b-8b81-1c3f55e81460",
+              "leftValue": "={{ $json.body.payload.from }}",
+              "rightValue": "120363198041682325@newsletter",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -2704,
+        1168
+      ],
+      "id": "9c974c09-628e-4df1-87b4-a6030a4373bd",
+      "name": "If"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "POST MensajeWAHA": {
+      "main": [
+        [
+          {
+            "node": "Loop Novedades",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST EstadoDiario": {
+      "main": [
+        [
+          {
+            "node": "POST MensajeWAHA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Novedades": {
+      "main": [
+        [
+          {
+            "node": "Fin de Extracción1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "POST EstadoDiario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parser Regex WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Loop Novedades",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET Pasos DB": {
+      "main": [
+        [
+          {
+            "node": "Parser Regex WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook WAHA": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "GET Pasos DB",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No corresponde a Canal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "c3832f5c-a196-449d-b8af-fbc2a99f5346",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f6a3d6f9188f996b307c8214379aee6cf5813f05c4ab256e406b367a0d2612cb"
+  },
+  "id": "DutUYZCbka2CsUyR",
+  "tags": []
+}

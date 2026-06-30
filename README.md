@@ -145,6 +145,7 @@ Cada servicio incluye un archivo `.env.example`. Copia y completa cada uno:
 cp strapi/.env.example strapi/.env
 cp n8n/.env.example n8n/.env
 cp frontend/.env.example frontend/.env.local
+cp waha/.env.example waha/.env
 ```
 
 ### 3. Levantar el stack

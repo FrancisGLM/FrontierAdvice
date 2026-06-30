@@ -1,0 +1,541 @@
+{
+  "name": "Best_Steps",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "jsonExample",
+        "jsonExample": "{\n  \"origen\": {\n    \"longitude\": -71.677711,\n    \"latitude\": -35.439359\n  },\n  \"destino\": {\n    \"longitude\": -58.443922,\n    \"latitude\": -34.595089\n  },\n  \"vehiculo\": \"hgv\",\n  \"subtipo_camion\": \"bus\"\n}"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -256,
+        -16
+      ],
+      "id": "a35fd001-8a64-43fa-a4ac-b5dfea60a895",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "CQDigitARpACoN6f",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/CQDigitARpACoN6f",
+          "cachedResultName": "Steps_Filter"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "origen": "={{ $json.origen }}",
+            "destino": "={{ $json.destino }}",
+            "vehiculo": "={{ $json.vehiculo }}",
+            "subtipo_camion": "={{ $json.subtipo_camion }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "origen",
+              "displayName": "origen",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "object",
+              "removed": false
+            },
+            {
+              "id": "destino",
+              "displayName": "destino",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "object",
+              "removed": false
+            },
+            {
+              "id": "vehiculo",
+              "displayName": "vehiculo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "subtipo_camion",
+              "displayName": "subtipo_camion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        -48,
+        -16
+      ],
+      "id": "fa80d12c-0ef1-4533-a748-bd05ec96a4c0",
+      "name": "Call 'Steps_Filter'"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * ================================================================================\n *  FASE 1: PRE-FILTRO GEODESICO (Motor de Decision)\n * ================================================================================\n */\n\nconst TOP_N = 3;\nconst IDR_MAX = 2.5;\n\n// Variables y pesos (se pasan a la siguiente fase)\nconst WEIGHTS = { wDist: 0.50, wIDR: 0.30, wTime: 0.20 };\nconst ESTADO_PENALTY = {\n    'abierto': 1.00, 'open': 1.00,\n    'abierto_con_precaucion': 1.30, 'precaucion': 1.30, 'caution': 1.30,\n    'cerrado': Infinity, 'closed': Infinity,\n};\nconst VEHICULOS_PESADOS = new Set([\n    'camion', 'camion_reparto', 'camion_agricola',\n    'camion_mercancias', 'camion_forestal', 'bus', 'hgv'\n]);\n\n// ─── MATEMATICA GEODESICA ──────────────────────────────────────────────────────\nfunction haversineKm(la1, lo1, la2, lo2) {\n    const R = 6371; const r = d => d * Math.PI / 180;\n    const a = Math.sin(r(la2-la1)/2)**2 + Math.cos(r(la1))*Math.cos(r(la2))*Math.sin(r(lo2-lo1)/2)**2;\n    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));\n}\n\nconst _W = { a: 6378137.0, f: 1/298.257223563, b: 6356752.314245 };\nfunction vincentyKm(la1, lo1, la2, lo2) {\n    const { a, f, b } = _W; const R = d => d * Math.PI / 180;\n    const phi1=R(la1), phi2=R(la2), L=R(lo2-lo1);\n    const tU1=(1-f)*Math.tan(phi1), tU2=(1-f)*Math.tan(phi2);\n    const cU1=1/Math.sqrt(1+tU1*tU1), sU1=tU1*cU1;\n    const cU2=1/Math.sqrt(1+tU2*tU2), sU2=tU2*cU2;\n    let lam=L, lP, sS, cS, sg, sA, c2A, c2Sm, C, it=0;\n    do {\n        const sL=Math.sin(lam), cL=Math.cos(lam);\n        const ss=(cU2*sL)**2+(cU1*sU2-sU1*cU2*cL)**2;\n        sS=Math.sqrt(ss); if(sS===0) return 0;\n        cS=sU1*sU2+cU1*cU2*cL; sg=Math.atan2(sS,cS);\n        sA=cU1*cU2*sL/sS; c2A=1-sA*sA;\n        c2Sm=c2A!==0?cS-2*sU1*sU2/c2A:0;\n        C=f/16*c2A*(4+f*(4-3*c2A)); lP=lam;\n        lam=L+(1-C)*f*sA*(sg+C*sS*(c2Sm+C*cS*(-1+2*c2Sm**2)));\n        if(++it>100) return haversineKm(la1,lo1,la2,lo2);\n    } while(Math.abs(lam-lP)>1e-12);\n    const u2=c2A*(a*a-b*b)/(b*b);\n    const Av=1+u2/16384*(4096+u2*(-768+u2*(320-175*u2)));\n    const Bv=u2/1024*(256+u2*(-128+u2*(74-47*u2)));\n    const ds=Bv*sS*(c2Sm+Bv/4*(cS*(-1+2*c2Sm**2)-Bv/6*c2Sm*(-3+4*sS**2)*(-3+4*c2Sm**2)));\n    return b*Av*(sg-ds)/1000;\n}\n\n// ─── HELPERS ───────────────────────────────────────────────────────────────────\nfunction calcIDR(dAB, dBC, dAC) { return (dAC > 0) ? (dAB + dBC) / dAC : Infinity; }\n\n// Ahora sí leerá correctamente el estado_general que le pasamos desde el nodo anterior\nfunction estadoDePaso(p) { return (p.estado_general || p.estado || p.status || 'abierto').toLowerCase(); }\n\n// ─── PROCESAMIENTO ─────────────────────────────────────────────────────────────\n\nconst todosLosItems = $input.all();\nif (todosLosItems.length === 0) throw new Error(\"No se recibieron datos de entrada.\");\n\nconst item = todosLosItems[0].json;\nif (!item.origen || !item.destino) throw new Error(\"Faltan campos origen/destino en el objeto de entrada.\");\n\nconst oLat = parseFloat(item.origen.latitude ?? item.origen.latitud);\nconst oLon = parseFloat(item.origen.longitude ?? item.origen.longitud);\nconst dLat = parseFloat(item.destino.latitude ?? item.destino.latitud);\nconst dLon = parseFloat(item.destino.longitude ?? item.destino.longitud);\nconst tipoVehiculo = (item.tipo_vehiculo || item.vehiculo || '').toLowerCase();\nconst profile = VEHICULOS_PESADOS.has(tipoVehiculo) ? 'driving-hgv' : 'driving-car';\n\n// Extraemos los pasos. Si el Agente los mandó como texto, los re-convertimos a JSON\nlet pasosCrudos = item.pasos_fronterizos || [];\nif (typeof pasosCrudos === 'string') {\n    try { pasosCrudos = JSON.parse(pasosCrudos); } catch (e) { pasosCrudos = []; }\n}\n\nif (!pasosCrudos || pasosCrudos.length === 0) {\n    return [{ json: { status: \"sin_pasos\", mensaje: \"La lista de pasos fronterizos llegó vacía a esta Fase.\" } }];\n}\n\n// Aplicamos un filtro rápido por si se coló un paso 'cerrado' en la lista\nconst pasosFiltrados = pasosCrudos.filter(p => ESTADO_PENALTY[estadoDePaso(p)] !== Infinity);\n\nif (!pasosFiltrados.length) {\n    return [{ json: { status: \"sin_pasos\", mensaje: \"Todos los pasos recibidos estaban cerrados.\" } }];\n}\n\n// 2. Calculo Geodesico\nconst dAC_geo = vincentyKm(oLat, oLon, dLat, dLon);\nconst evaluados = pasosFiltrados.map(p => {\n    const bLat = parseFloat(p.latitud ?? p.lat);\n    const bLon = parseFloat(p.longitud ?? p.lon ?? p.lng);\n    const nombre = p.nombre_oficial ?? p.nombre ?? `ID-${p.id}`;\n    if (isNaN(bLat) || isNaN(bLon)) return { ...p, nombre, IDR_geo: Infinity };\n\n    const dAB = vincentyKm(oLat, oLon, bLat, bLon);\n    const dBC = vincentyKm(bLat, bLon, dLat, dLon);\n    const hAB = haversineKm(oLat, oLon, bLat, bLon);\n    const hBC = haversineKm(bLat, bLon, dLat, dLon);\n\n    return {\n        ...p, nombre, _bLat: bLat, _bLon: bLon, estado_operativo: estadoDePaso(p),\n        total_haversine_km: hAB + hBC,\n        total_vincenty_km: dAB + dBC,\n        IDR_geo: calcIDR(dAB, dBC, dAC_geo)\n    };\n});\n\nevaluados.sort((a, b) => a.IDR_geo - b.IDR_geo);\nconst ganadorVincenty = evaluados[0];\nconst ganadorHaversine = [...evaluados].sort((a,b) => a.total_haversine_km - b.total_haversine_km)[0];\n\nconst topCandidatos = evaluados.filter(p => p.IDR_geo <= IDR_MAX).slice(0, TOP_N);\nif (!topCandidatos.length) throw new Error(\"Ningun paso supera umbral IDR.\");\n\n// 3. Preparar payload de matriz para UN SOLO request HTTP\n// Array [Origen, Cand1, Cand2, Cand3, Destino]\nconst locations = [\n    [oLon, oLat],\n    ...topCandidatos.map(p => [p._bLon, p._bLat]),\n    [dLon, dLat]\n];\nconst N = topCandidatos.length;\nconst sources = [0, ...topCandidatos.map((_, i) => i + 1)]; // A y todos los B\nconst destinations = [...topCandidatos.map((_, i) => i + 1), N + 1]; // Todos los B y C\n\nreturn [{\n    json: {\n        status: \"ok\",\n        metadata_prefiltro: { dAC_geo, total_pasos: pasosFiltrados.length },\n        config: { WEIGHTS, ESTADO_PENALTY, profile, tipoVehiculo, oLon, oLat, dLon, dLat },\n        top_candidatos: topCandidatos,\n        ganador_haversine: { nombre: ganadorHaversine.nombre, km: ganadorHaversine.total_haversine_km },\n        ganador_vincenty: { nombre: ganadorVincenty.nombre, km: ganadorVincenty.total_vincenty_km },\n        \n        // ESTO LO LEE EL NODO HTTP DIRECTAMENTE\n        ors_matrix_payload: {\n            locations,\n            sources,\n            destinations,\n            metrics: [\"distance\", \"duration\"],\n            units: \"km\"\n        }\n    }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        144,
+        -16
+      ],
+      "id": "bba4df57-2f36-45b4-93bb-88884fd00bef",
+      "name": "Fase 1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.openrouteservice.org/v2/matrix/driving-car",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8"
+            },
+            {
+              "name": "Authorization",
+              "value": "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImE1M2MzYjMwY2UwYTQ1MDdhNGM1OWMwMmQwODQwMjc3IiwiaCI6Im11cm11cjY0In0="
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.ors_matrix_payload }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "eeef0028-9a28-48e9-a9d6-0b0b642ebb77",
+      "name": "fase2-ORS-Matrix Car",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        592,
+        -16
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.config.tipoVehiculo }}",
+                    "rightValue": "car",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "1a5bbccd-2d21-4545-baef-f258db180b5e"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "3510e42d-60ec-4ae6-8e0a-b9a92ed7eede",
+                    "leftValue": "={{ $json.config.tipoVehiculo }}",
+                    "rightValue": "hgv",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        336,
+        -16
+      ],
+      "id": "79a10c81-e7d7-454b-9a4c-9cdec11adba6",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.openrouteservice.org/v2/matrix/driving-hgv",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8"
+            },
+            {
+              "name": "Authorization",
+              "value": "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImE1M2MzYjMwY2UwYTQ1MDdhNGM1OWMwMmQwODQwMjc3IiwiaCI6Im11cm11cjY0In0="
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.ors_matrix_payload }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "71e83847-2122-4fd8-ad7c-2e5003a08dae",
+      "name": "fase2-ORS-Matrix HGV",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        592,
+        176
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * ================================================================================\n *  FASE 3: SCORING MULTICRITERIO (Motor de Decision)\n * ================================================================================\n *  Este script se coloca DESPUES del nodo HTTP de Matrix.\n *  Cruza los datos del prefiltro con la matriz de distancias reales,\n *  calcula el score final ponderado y emite el ganador.\n */\n\nconst item = $input.all()[0].json;\n\nif (item.status === \"sin_pasos\") {\n    return [{ json: item }]; // Pasa directo el fallback\n}\n\n// Obtener la matriz del nodo actual (Fase 2)\nlet mat = $input.all()[0].json;\nif (mat.body && mat.body.distances) {\n    mat = mat.body; // Si usamos Full Response\n} else if (mat.ors_matrix_response) {\n    mat = mat.ors_matrix_response.body || mat.ors_matrix_response;\n}\n\n// OBTENER LA DATA DEL NODO FASE 1\nlet fase1;\ntry {\n    fase1 = $(\"Fase 1\").first().json;\n} catch (e) {\n    throw new Error(\"Por favor, renombra tu primer nodo Code a 'Fase 1' para que este script pueda leer sus datos.\");\n}\n\n// OBTENER DATOS DE VEHÍCULO DEL NODO COMPACT\nlet compactNode;\ntry {\n    compactNode = $(\"When Executed by Another Workflow\").first().json;\n} catch (e) {\n    throw new Error(\"No se pudo leer el nodo 'Inicial'. Verifica el nombre.\");\n}\nconst vehiculo_real = compactNode.vehiculo || \"\";\nconst subtipo_real = compactNode.subtipo_camion || \"\";\n\nconst config = fase1.config;\nconst topCandidatos = fase1.top_candidatos;\n\nif (!mat || !mat.distances) throw new Error(\"No se recibio respuesta valida de ORS Matrix\");\n\n// Extraemos la distancia directa Vial (A -> C) para normalizar.\n// En nuestra matriz: A es index 0 en sources. C es el ultimo index en destinations.\nconst idxAC_source = 0;\nconst idxAC_dest = topCandidatos.length; \nconst dAC_vial_km = mat.distances[idxAC_source][idxAC_dest];\nconst tAC_vial_s  = mat.durations[idxAC_source][idxAC_dest];\n\nfunction calcIDR(dAB, dBC, dAC) { return (dAC > 0) ? (dAB + dBC) / dAC : Infinity; }\n\nconst candidatosEvaluados = topCandidatos.map((paso, i) => {\n    // A -> B[i]: Source index 0, Dest index i\n    const dAB_km = mat.distances[0][i];\n    const tAB_s  = mat.durations[0][i];\n    \n    // B[i] -> C: Source index i+1, Dest index idxAC_dest\n    const dBC_km = mat.distances[i + 1][idxAC_dest];\n    const tBC_s  = mat.durations[i + 1][idxAC_dest];\n    \n    const totalKm = dAB_km + dBC_km;\n    const totalS  = tAB_s  + tBC_s;\n    const IDR_vial = calcIDR(dAB_km, dBC_km, dAC_vial_km);\n\n    // Funcion de costo base\n    const ref = dAC_vial_km > 0 ? dAC_vial_km : 1;\n    const tRef = tAC_vial_s  > 0 ? tAC_vial_s  : 1;\n    const scoreBase = config.WEIGHTS.wDist * (totalKm / ref)\n                    + config.WEIGHTS.wIDR  * IDR_vial\n                    + config.WEIGHTS.wTime * (totalS  / tRef);\n\n    const penalizacion = config.ESTADO_PENALTY[paso.estado_operativo] ?? 1.0;\n    const scoreFinal = scoreBase * penalizacion;\n\n    return {\n        ...paso,\n        distancia_origen_km:  Math.round(dAB_km * 10) / 10,\n        distancia_destino_km: Math.round(dBC_km * 10) / 10,\n        total_vial_km:        Math.round(totalKm * 10) / 10,\n        tiempo_origen_min:    Math.round(tAB_s / 60),\n        tiempo_destino_min:   Math.round(tBC_s / 60),\n        total_tiempo_min:     Math.round(totalS / 60),\n        IDR_vial:             Math.round(IDR_vial * 10000) / 10000,\n        penalizacion_estado:  penalizacion,\n        score:                Math.round(scoreFinal * 10000) / 10000,\n    };\n});\n\ncandidatosEvaluados.sort((a, b) => a.score - b.score);\nconst optimo = candidatosEvaluados[0];\nconst alternativo = candidatosEvaluados.length > 1 ? candidatosEvaluados[1] : null;\n\nconst gHaversine = fase1.ganador_haversine;\nconst gVincenty = fase1.ganador_vincenty;\nconst coinciden = gHaversine.nombre === gVincenty.nombre && gVincenty.nombre === optimo.nombre;\n\nreturn [{\n    json: {\n        vehiculo: vehiculo_real,\n        subtipo_camion: subtipo_real,\n        metadata: {\n            motor: \"FrontierAdvice Decision Engine v2.0 (Split Arch)\",\n            perfil_ors: config.profile,\n            tipo_vehiculo: config.tipoVehiculo,\n            distancia_directa_vial_km: Math.round(dAC_vial_km * 10) / 10,\n        },\n        paso_seleccionado: {\n            documentId:           optimo.documentId,\n            nombre:               optimo.nombre,\n            estado_operativo:     optimo.estado_operativo,\n            total_vial_km:        optimo.total_vial_km,\n            total_tiempo_min:     optimo.total_tiempo_min,\n            IDR_vial:             optimo.IDR_vial,\n            score:                optimo.score,\n        },\n        top3_alternativas: candidatosEvaluados.slice(0, 3).map(p => ({\n            nombre:             p.nombre,\n            estado_operativo:   p.estado_operativo,\n            total_vial_km:      p.total_vial_km,\n            total_tiempo_min:   p.total_tiempo_min,\n            score:              p.score,\n        })),\n        comparativa_metodos: {\n            haversine_seleccionaria:      gHaversine.nombre,\n            vincenty_puro_seleccionaria:  gVincenty.nombre,\n            motor_decision_selecciono:    optimo.nombre,\n            los_tres_coinciden:           coinciden,\n            diferencia_km_haversine_vs_motor: isFinite(gHaversine.km)\n                ? Math.round((optimo.total_vial_km - gHaversine.km) * 10) / 10\n                : null\n        },\n        // Waypoints listos para el nodo ORS Directions Final (Branch B)\n        ors_waypoints: [\n            [config.oLon, config.oLat],\n            [optimo._bLon, optimo._bLat],\n            [config.dLon, config.dLat]\n        ],\n        ors_alternative_waypoints: alternativo ? [\n            [config.oLon, config.oLat],\n            [alternativo._bLon, alternativo._bLat],\n            [config.dLon, config.dLat]\n        ] : null\n    }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        -16
+      ],
+      "id": "d5093cab-0a7b-45e4-b60e-3b23aab3ae8a",
+      "name": "fase3-scoring1"
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "origen": {
+            "longitude": -70.6842,
+            "latitude": -33.455629
+          },
+          "destino": {
+            "longitude": -58.410883,
+            "latitude": -34.603793
+          },
+          "vehiculo": "hgv",
+          "subtipo_camion": "bus"
+        }
+      }
+    ],
+    "fase2-ORS-Matrix HGV": [
+      {
+        "json": {
+          "durations": [
+            [
+              12220.24,
+              12097.5,
+              26710.91,
+              77447.52
+            ],
+            [
+              0,
+              16631.64,
+              28293.23,
+              78388.97
+            ],
+            [
+              16631.64,
+              0,
+              33108.65,
+              65488.95
+            ],
+            [
+              28472.59,
+              32985.3,
+              0,
+              67865.7
+            ]
+          ],
+          "distances": [
+            [
+              152.86,
+              172.93,
+              407.57,
+              1465.78
+            ],
+            [
+              0,
+              156.63,
+              409.74,
+              1370.44
+            ],
+            [
+              156.63,
+              0,
+              625.82,
+              1293.62
+            ],
+            [
+              413.1,
+              625.08,
+              0,
+              1232.59
+            ]
+          ],
+          "destinations": [
+            {
+              "location": [
+                -70.477671,
+                -35.138688
+              ],
+              "snapped_distance": 16.65
+            },
+            {
+              "location": [
+                -70.398105,
+                -35.981301
+              ],
+              "snapped_distance": 293.54
+            },
+            {
+              "location": [
+                -70.120521,
+                -32.842749
+              ],
+              "snapped_distance": 8.97
+            },
+            {
+              "location": [
+                -58.443932,
+                -34.595096
+              ],
+              "snapped_distance": 1.2
+            }
+          ],
+          "sources": [
+            {
+              "location": [
+                -71.677711,
+                -35.439359
+              ],
+              "snapped_distance": 0.05
+            },
+            {
+              "location": [
+                -70.477671,
+                -35.138688
+              ],
+              "snapped_distance": 16.65
+            },
+            {
+              "location": [
+                -70.398105,
+                -35.981301
+              ],
+              "snapped_distance": 293.54
+            },
+            {
+              "location": [
+                -70.120521,
+                -32.842749
+              ],
+              "snapped_distance": 8.97
+            }
+          ],
+          "metadata": {
+            "attribution": "openrouteservice.org | OpenStreetMap contributors",
+            "service": "matrix",
+            "timestamp": 1782452263917,
+            "query": {
+              "locations": [
+                [
+                  -71.677711,
+                  -35.439359
+                ],
+                [
+                  -70.47748941504368,
+                  -35.13867059392304
+                ],
+                [
+                  -70.40008582155707,
+                  -35.98339876179999
+                ],
+                [
+                  -70.12060761622942,
+                  -32.84271357006212
+                ],
+                [
+                  -58.443922,
+                  -34.595089
+                ]
+              ],
+              "profile": "driving-hgv",
+              "profileName": "driving-hgv",
+              "responseType": "json",
+              "sources": [
+                "0",
+                "1",
+                "2",
+                "3"
+              ],
+              "destinations": [
+                "1",
+                "2",
+                "3",
+                "4"
+              ],
+              "metrics": [
+                "distance",
+                "duration"
+              ],
+              "units": "km"
+            },
+            "engine": {
+              "version": "9.9.0",
+              "build_date": "2026-06-12T10:08:58Z",
+              "graph_date": "2026-06-14T12:17:10Z",
+              "osm_date": "2026-05-17T23:59:59Z"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Call 'Steps_Filter'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Steps_Filter'": {
+      "main": [
+        [
+          {
+            "node": "Fase 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fase 1": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "fase2-ORS-Matrix Car": {
+      "main": [
+        [
+          {
+            "node": "fase3-scoring1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "fase2-ORS-Matrix Car",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "fase2-ORS-Matrix HGV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "fase2-ORS-Matrix HGV": {
+      "main": [
+        [
+          {
+            "node": "fase3-scoring1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "f34a3234-e6c1-4313-9051-dc485e6811c8",
+  "meta": {
+    "instanceId": "f6a3d6f9188f996b307c8214379aee6cf5813f05c4ab256e406b367a0d2612cb"
+  },
+  "id": "3Z2J84vr1wYJuce5",
+  "tags": []
+}

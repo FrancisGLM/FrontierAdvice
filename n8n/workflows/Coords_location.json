@@ -1,0 +1,545 @@
+{
+  "name": "Coords_location",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "jsonExample",
+        "jsonExample": "{\n  \"pickup_address\": \"Pasaje 5 Poniente C 1130, Talca, Chile\",\n  \"destination_address\": \"Av. Corrientes 3247, C1193 Cdad. Autónoma de Buenos Aires, Argentina\",\n  \"pickup_countryCode\": \"Chile\",\n  \"destination_countryCode\": \"Argentina\",\n  \"vehiculo\": \"camion\",\n  \"subtipo_camion\": \"autobus\"\n}\n"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -128,
+        64
+      ],
+      "id": "112f9603-01db-4d13-a46a-5a46f5cdedf1",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e4c92077-f294-4e49-8276-20d1441c0c2c",
+              "name": "p_longitude",
+              "type": "string",
+              "value": "={{ $json.features[0].geometry.coordinates[0] }}"
+            },
+            {
+              "id": "899e5304-e7a1-4ce1-bf9a-f403d74934fb",
+              "name": "p_latitude",
+              "type": "string",
+              "value": "={{ $json.features[0].geometry.coordinates[1] }}"
+            },
+            {
+              "id": "5b35642b-dda4-42b8-b7bb-1275616bfb59",
+              "name": "borough",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.borough }}"
+            },
+            {
+              "id": "aa74bd9a-f543-48e1-a69b-0e6472bda053",
+              "name": "neighbourhood",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.neighbourhood }}"
+            },
+            {
+              "id": "7f303dc8-4e28-4d46-8e3e-9db00dbcac3a",
+              "name": "localadmin",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.localadmin }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3077da6e-e2ee-4b30-ac7a-e9a6d14e1d11",
+      "name": "GPS Pickup1",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        640,
+        -64
+      ],
+      "notesInFlow": true,
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e4c92077-f294-4e49-8276-20d1441c0c2c",
+              "name": "d_longitude",
+              "type": "string",
+              "value": "={{ $json.features[0].geometry.coordinates[0] }}"
+            },
+            {
+              "id": "899e5304-e7a1-4ce1-bf9a-f403d74934fb",
+              "name": "d_latitude",
+              "type": "string",
+              "value": "={{ $json.features[0].geometry.coordinates[1] }}"
+            },
+            {
+              "id": "5b35642b-dda4-42b8-b7bb-1275616bfb59",
+              "name": "borough",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.borough }}"
+            },
+            {
+              "id": "aa74bd9a-f543-48e1-a69b-0e6472bda053",
+              "name": "neighbourhood",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.neighbourhood }}"
+            },
+            {
+              "id": "7f303dc8-4e28-4d46-8e3e-9db00dbcac3a",
+              "name": "localadmin",
+              "type": "string",
+              "value": "={{ $json.features[0].properties.localadmin }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "060b4315-4d92-41a0-a738-5a3d6d96ec33",
+      "name": "GPS Delivery1",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        640,
+        128
+      ],
+      "notesInFlow": true,
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        848,
+        32
+      ],
+      "id": "fcad08bc-779a-443f-a5d2-88de9b7b3ae0",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "const countryMap = {\n  // Chile\n  chile: 'CL',\n  cl: 'CL',\n  chl: 'CL',\n  // Argentina\n  argentina: 'AR',\n  ar: 'AR',\n  arg: 'AR',\n  // Bolivia\n  bolivia: 'BO',\n  bo: 'BO',\n  bol: 'BO',\n  // Perú\n  peru: 'PE',\n  'perú': 'PE',\n  pe: 'PE',\n  per: 'PE',\n};\n\nconst vehicleMap = {\n  camion: 'hgv',\n  'camión': 'hgv',\n  coche: 'car',\n};\n\nconst truckSubtypeMap = {\n  general: '',\n  autobus: 'bus',\n  'autobús': 'bus',\n  'agrícola': 'agricultural',\n  agricola: 'agricultural',\n  forestal: 'forestry',\n  reparto: 'delivery',\n  'mercancía': 'goods',\n  mercancia: 'goods',\n};\n\nfunction normalizeText(value) {\n  return String(value || '').trim().toLowerCase();\n}\n\nfunction detectCountryFromAddress(address) {\n  const text = normalizeText(address);\n  if (text.includes('chile')) return 'CL';\n  if (text.includes('argentina')) return 'AR';\n  if (text.includes('bolivia')) return 'BO';\n  if (text.includes('peru') || text.includes('perú')) return 'PE';\n  return null;\n}\n\nreturn items.map(item => {\n  const data = item.json;\n\n  const pickupCountry =\n    countryMap[normalizeText(data.pickup_countryCode)] ||\n    detectCountryFromAddress(data.pickup_address) ||\n    'CL'; // ← default CL si todo lo anterior es null/vacío\n\n  const destinationCountry =\n    countryMap[normalizeText(data.destination_countryCode)] ||\n    detectCountryFromAddress(data.destination_address);\n\n  const vehiculo =\n    vehicleMap[normalizeText(data.vehiculo)] || data.vehiculo;\n\n  // Si subtipo es null/undefined/vacío → siempre ''\n  const subtipoNormalizado = normalizeText(data.subtipo_camion);\n  const subtipoCamion = !subtipoNormalizado\n    ? ''\n    : (truckSubtypeMap[subtipoNormalizado] ?? data.subtipo_camion);\n\n  return {\n    json: {\n      ...data,\n      pickup_countryCode: pickupCountry,\n      destination_countryCode: destinationCountry,\n      vehiculo,\n      subtipo_camion: subtipoCamion,\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        112,
+        64
+      ],
+      "id": "f578758c-452c-4225-a602-f1655d1c99b6",
+      "name": "Normalización"
+    },
+    {
+      "parameters": {
+        "url": "https://api.openrouteservice.org/geocode/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "api_key",
+              "value": "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImE1M2MzYjMwY2UwYTQ1MDdhNGM1OWMwMmQwODQwMjc3IiwiaCI6Im11cm11cjY0In0="
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.pickup_address }}"
+            },
+            {
+              "name": "boundary.country",
+              "value": "={{ $json.pickup_countryCode }}"
+            },
+            {
+              "name": "sources",
+              "value": "openstreetmap"
+            },
+            {
+              "name": "size",
+              "value": "1"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e7ad54b4-d358-47fc-8e0d-634c97ecd4bd",
+      "name": "Query Open Route API Pickup1",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        400,
+        -64
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "url": "https://api.openrouteservice.org/geocode/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "api_key",
+              "value": "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImE1M2MzYjMwY2UwYTQ1MDdhNGM1OWMwMmQwODQwMjc3IiwiaCI6Im11cm11cjY0In0="
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.destination_address }}"
+            },
+            {
+              "name": "boundary.country",
+              "value": "={{ $json.destination_countryCode }}"
+            },
+            {
+              "name": "sources",
+              "value": "openstreetmap"
+            },
+            {
+              "name": "size",
+              "value": "1"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "33244a04-032a-40c9-8dc8-9c71ff6d2305",
+      "name": "Query Open Route API Delivery1",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        400,
+        128
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "jsCode": "// Input esperado en este nodo:\n// [\n//   { p_longitude, p_latitude, ... },\n//   { d_longitude, d_latitude, ... }\n// ]\n\nconst normalizacion = $('Normalización').first().json;\n\nconst origenItem = items.find(item =>\n  item.json.p_longitude != null && item.json.p_latitude != null\n);\n\nconst destinoItem = items.find(item =>\n  item.json.d_longitude != null && item.json.d_latitude != null\n);\n\nif (!origenItem) {\n  throw new Error('No se encontró el origen (p_longitude / p_latitude)');\n}\n\nif (!destinoItem) {\n  throw new Error('No se encontró el destino (d_longitude / d_latitude)');\n}\n\nreturn [\n  {\n    json: {\n      origen: {\n        longitude: Number(origenItem.json.p_longitude),\n        latitude: Number(origenItem.json.p_latitude),\n      },\n      destino: {\n        longitude: Number(destinoItem.json.d_longitude),\n        latitude: Number(destinoItem.json.d_latitude),\n      },\n      vehiculo: normalizacion.vehiculo,\n      subtipo_camion: normalizacion.subtipo_camion,\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1056,
+        32
+      ],
+      "id": "8a457b90-fd9a-4599-9ff7-47bff08c210d",
+      "name": "Packaging"
+    }
+  ],
+  "pinData": {
+    "Query Open Route API Pickup1": [
+      {
+        "json": {
+          "geocoding": {
+            "version": "0.2",
+            "attribution": "https://openrouteservice.org/terms-of-service/#attribution-geocode",
+            "query": {
+              "text": "Pasaje 5 Poniente C 1130, Talca, Chile",
+              "size": 1,
+              "sources": [
+                "openstreetmap"
+              ],
+              "private": false,
+              "boundary.country": [
+                "CHL"
+              ],
+              "lang": {
+                "name": "English",
+                "iso6391": "en",
+                "iso6393": "eng",
+                "via": "default",
+                "defaulted": true
+              },
+              "querySize": 20,
+              "parser": "libpostal",
+              "parsed_text": {
+                "street": "pasaje 5 poniente c",
+                "housenumber": "1130",
+                "city": "talca",
+                "country": "chile"
+              }
+            },
+            "engine": {
+              "name": "Pelias",
+              "author": "Mapzen",
+              "version": "1.0"
+            },
+            "timestamp": 1782359520241
+          },
+          "type": "FeatureCollection",
+          "features": [
+            {
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  -71.677711,
+                  -35.439359
+                ]
+              },
+              "properties": {
+                "id": "polyline:26209117",
+                "gid": "openstreetmap:street:polyline:26209117",
+                "layer": "street",
+                "source": "openstreetmap",
+                "source_id": "polyline:26209117",
+                "name": "Pasaje 5 Poniente C",
+                "street": "Pasaje 5 Poniente C",
+                "confidence": 0.8,
+                "match_type": "fallback",
+                "accuracy": "centroid",
+                "country": "Chile",
+                "country_gid": "whosonfirst:country:85633057",
+                "country_a": "CHL",
+                "region": "Del Maule",
+                "region_gid": "whosonfirst:region:85682149",
+                "region_a": "ML",
+                "county": "Talca",
+                "county_gid": "whosonfirst:county:102063111",
+                "county_a": "TC",
+                "locality": "Talca",
+                "locality_gid": "whosonfirst:locality:102016893",
+                "continent": "South America",
+                "continent_gid": "whosonfirst:continent:102191577",
+                "label": "Pasaje 5 Poniente C, Talca, ML, Chile"
+              },
+              "bbox": [
+                -71.678364,
+                -35.440055,
+                -71.677113,
+                -35.438633
+              ]
+            }
+          ],
+          "bbox": [
+            -71.678364,
+            -35.440055,
+            -71.677113,
+            -35.438633
+          ]
+        }
+      }
+    ],
+    "Query Open Route API Delivery1": [
+      {
+        "json": {
+          "geocoding": {
+            "version": "0.2",
+            "attribution": "https://openrouteservice.org/terms-of-service/#attribution-geocode",
+            "query": {
+              "text": "Av. Corrientes 3247, C1193 Cdad. Autónoma de Buenos Aires, Argentina",
+              "size": 1,
+              "sources": [
+                "openstreetmap"
+              ],
+              "private": false,
+              "boundary.country": [
+                "ARG"
+              ],
+              "lang": {
+                "name": "English",
+                "iso6391": "en",
+                "iso6393": "eng",
+                "via": "default",
+                "defaulted": true
+              },
+              "querySize": 20,
+              "parser": "pelias",
+              "parsed_text": {
+                "subject": "Av. Corrientes",
+                "street": "Av. Corrientes",
+                "postcode": "3247",
+                "locality": "Buenos Aires",
+                "country": "Argentina",
+                "admin": "C1193 Cdad. Autónoma de Buenos Aires, Argentina"
+              }
+            },
+            "engine": {
+              "name": "Pelias",
+              "author": "Mapzen",
+              "version": "1.0"
+            },
+            "timestamp": 1782359521311
+          },
+          "type": "FeatureCollection",
+          "features": [
+            {
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  -58.443922,
+                  -34.595089
+                ]
+              },
+              "properties": {
+                "id": "polyline:31957772",
+                "gid": "openstreetmap:street:polyline:31957772",
+                "layer": "street",
+                "source": "openstreetmap",
+                "source_id": "polyline:31957772",
+                "name": "Avenida Corrientes",
+                "street": "Avenida Corrientes",
+                "confidence": 1,
+                "match_type": "exact",
+                "accuracy": "centroid",
+                "country": "Argentina",
+                "country_gid": "whosonfirst:country:85632505",
+                "country_a": "ARG",
+                "region": "Autonomous City of Buenos Aires",
+                "region_gid": "whosonfirst:region:85668081",
+                "region_a": "CF",
+                "locality": "Buenos Aires",
+                "locality_gid": "whosonfirst:locality:421174285",
+                "borough": "Comuna 15",
+                "borough_gid": "whosonfirst:borough:1109371881",
+                "borough_a": "DF",
+                "neighbourhood": "Villa Crespo",
+                "neighbourhood_gid": "whosonfirst:neighbourhood:85764307",
+                "continent": "South America",
+                "continent_gid": "whosonfirst:continent:102191577",
+                "label": "Avenida Corrientes, Buenos Aires, CF, Argentina"
+              },
+              "bbox": [
+                -58.444342,
+                -34.595479,
+                -58.443505,
+                -34.5947
+              ]
+            }
+          ],
+          "bbox": [
+            -58.444342,
+            -34.595479,
+            -58.443505,
+            -34.5947
+          ]
+        }
+      }
+    ]
+  },
+  "connections": {
+    "GPS Pickup1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GPS Delivery1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Normalización": {
+      "main": [
+        [
+          {
+            "node": "Query Open Route API Pickup1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Query Open Route API Delivery1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Open Route API Pickup1": {
+      "main": [
+        [
+          {
+            "node": "GPS Pickup1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Open Route API Delivery1": {
+      "main": [
+        [
+          {
+            "node": "GPS Delivery1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Normalización",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Packaging",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "cc153722-34f1-412d-969a-30639748009d",
+  "meta": {
+    "instanceId": "f6a3d6f9188f996b307c8214379aee6cf5813f05c4ab256e406b367a0d2612cb"
+  },
+  "id": "CcBNJr6kQYj5T4zB",
+  "tags": []
+}

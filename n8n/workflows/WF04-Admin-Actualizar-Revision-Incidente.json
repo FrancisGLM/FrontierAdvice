@@ -1,0 +1,323 @@
+{
+  "name": "WF04-Admin-Actualizar-Revision-Incidente",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "admin/revisar-incidente",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "5acbd830-494f-4151-8a1b-b00a32f79ccb",
+      "name": "Webhook Revisar Incidente",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1104,
+        192
+      ],
+      "webhookId": "d488f12c-4ea7-481b-a072-6fabae75e2f8"
+    },
+    {
+      "parameters": {
+        "jsCode": "const headers = $json.headers || {};\nconst source = $json.body && Object.keys($json.body).length ? $json.body : $json;\nconst jwt = ((headers.authorization || headers.Authorization || '').replace('Bearer ', '')).trim();\nconst admin_key = (headers['x-admin-key'] || headers['X-ADMIN-KEY'] || '').toString().trim();\nconst ip = (headers['x-forwarded-for'] || '').toString();\nconst user_agent = (headers['user-agent'] || headers['User-Agent'] || '').toString();\nconst reporte_documentId = (source.reporte_documentId || '').toString().trim();\nconst estado_revision = (source.estado_revision || '').toString().trim();\nconst observacion_admin = (source.observacion_admin || '').toString().trim();\nconst errores = [];\nconst estados = ['pendiente','en_revision','resuelto','descartado'];\nif (!jwt) errores.push('Falta JWT');\nif (!admin_key) errores.push('Falta X-ADMIN-KEY');\nif (!reporte_documentId) errores.push('Falta reporte_documentId');\nif (!estado_revision || !estados.includes(estado_revision)) errores.push('estado_revision invalido: debe ser pendiente, en_revision, resuelto o descartado');\nreturn [{ json: { jwt, admin_key, ip, user_agent, reporte_documentId, estado_revision, observacion_admin, errores, entrada_valida: errores.length === 0 } }];"
+      },
+      "id": "195c3855-7bab-4a52-8885-795fc625cd9c",
+      "name": "Validar Entrada",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -880,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.entrada_valida }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0b3a738b-0759-48c3-b933-0ed7ea631c38",
+      "name": "Entrada Valida?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -656,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: false, error: 'Parametros invalidos', detalle: $json.errores } }}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "id": "87de06b9-260a-4a2d-b3e9-6793178b9b97",
+      "name": "Responder 400",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        -432,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "u9PrypE4thOZ2QYP",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "cf05c58e-4bf5-4088-bd55-bcd5cbb084a7",
+      "name": "Execute WF00-Validar-Administrador",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        -432,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.autorizado }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "99378349-2271-4510-b469-eb1e444532df",
+      "name": "Autorizado?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -208,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: false, error: $json.motivo, codigo: $json.codigo } }}",
+        "options": {
+          "responseCode": "={{ $json.codigo || 401 }}"
+        }
+      },
+      "id": "e4c679b2-ac83-4a67-912a-83a1e62cff49",
+      "name": "Responder Auth",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        16,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://strapi.frontieradvice.tech/api/reporte-incidentes/{{ $('Validar Entrada').item.json.reporte_documentId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { data: { estado_revision: $('Validar Entrada').item.json.estado_revision, observacion_admin: $('Validar Entrada').item.json.observacion_admin || null, revisado_por_email: $('Execute WF00-Validar-Administrador').item.json.usuario?.email || null, fecha_revision: new Date().toISOString() } } }}",
+        "options": {}
+      },
+      "id": "39dfd03a-0337-478f-882d-30452c19bc0f",
+      "name": "PUT Incidente",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        16,
+        0
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://strapi.frontieradvice.tech/api/admin-logs",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { data: { accion: 'revisar_incidente', paso_documentId: null, estado_anterior: null, estado_nuevo: $('Validar Entrada').item.json.estado_revision, motivo: 'Revision administrativa de incidente', usuario_email: $('Execute WF00-Validar-Administrador').item.json.usuario?.email, ip: $('Execute WF00-Validar-Administrador').item.json.ip, user_agent: $('Execute WF00-Validar-Administrador').item.json.user_agent, fecha_evento: new Date().toISOString(), resultado: 'ok' } } }}",
+        "options": {}
+      },
+      "id": "1218c0e7-314f-4bf8-9724-466d5168a114",
+      "name": "POST Admin Log",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        0
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: true, mensaje: 'Incidente actualizado correctamente', reporte_documentId: $('Validar Entrada').item.json.reporte_documentId } }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "06b5f891-7aeb-4115-8e78-ad035eb8775e",
+      "name": "Responder 200",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        464,
+        0
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook Revisar Incidente": {
+      "main": [
+        [
+          {
+            "node": "Validar Entrada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Entrada": {
+      "main": [
+        [
+          {
+            "node": "Entrada Valida?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Entrada Valida?": {
+      "main": [
+        [
+          {
+            "node": "Execute WF00-Validar-Administrador",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder 400",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute WF00-Validar-Administrador": {
+      "main": [
+        [
+          {
+            "node": "Autorizado?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Autorizado?": {
+      "main": [
+        [
+          {
+            "node": "PUT Incidente",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder Auth",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PUT Incidente": {
+      "main": [
+        [
+          {
+            "node": "POST Admin Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST Admin Log": {
+      "main": [
+        [
+          {
+            "node": "Responder 200",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "2927a3aa-84b4-4e52-a0e2-0516dee19671",
+  "meta": {
+    "instanceId": "f6a3d6f9188f996b307c8214379aee6cf5813f05c4ab256e406b367a0d2612cb"
+  },
+  "id": "uBQWZPBThqQHSRHf",
+  "tags": []
+}
