@@ -74,19 +74,6 @@ services:
     depends_on:
       - strapi
 
-  playwright-mcp:
-    image: acuvity/mcp-server-playwright:0.0.56
-    container_name: playwright-mcp
-    user: "0:0"
-    ports:
-      - "8000:8000"
-    restart: unless-stopped
-    networks:
-      - frontier-network
-    environment:
-      PLAYWRIGHT_BROWSERS_PATH: /tmp/ms-playwright
-    volumes:
-      - playwright_tmp:/tmp/ms-playwright
   
   waha-frontier:
     image: devlikeapro/waha
@@ -107,7 +94,6 @@ services:
 volumes:
   strapi-data:
   n8n_data:
-  playwright_tmp:
   waha_sessions:
   
 

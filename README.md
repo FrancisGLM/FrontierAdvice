@@ -42,7 +42,6 @@ El stack completo se gestiona mediante **Docker Compose**, ejecutándose de form
 | [Strapi](https://strapi.io) 5 + PostgreSQL 16 | CMS headless, modelo de datos y API REST |
 | [n8n](https://n8n.io)                         | Orquestación del agente de scraping      |
 | Gemini 2.5 Flash                              | Extracción, normalización y análisis IA  |
-| Playwright MCP                                | Scraping de fuentes web dinámicas        |
 
 ### Agente Orquestador
 
