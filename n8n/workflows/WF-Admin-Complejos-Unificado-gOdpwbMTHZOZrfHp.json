@@ -1,0 +1,782 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "Webhook Actualizar Complejo": {
+      "main": [
+        [
+          {
+            "node": "Validar Entrada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Entrada": {
+      "main": [
+        [
+          {
+            "node": "Entrada Valida?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Entrada Valida?": {
+      "main": [
+        [
+          {
+            "node": "Execute WF00-Validar-Administrador",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder 400",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute WF00-Validar-Administrador": {
+      "main": [
+        [
+          {
+            "node": "Autorizado?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Autorizado?": {
+      "main": [
+        [
+          {
+            "node": "GET Paso",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder Auth",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET Paso": {
+      "main": [
+        [
+          {
+            "node": "Evaluar Paso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evaluar Paso": {
+      "main": [
+        [
+          {
+            "node": "Paso Existe?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Paso Existe?": {
+      "main": [
+        [
+          {
+            "node": "Switch Accion",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder 404",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PUT Paso": {
+      "main": [
+        [
+          {
+            "node": "POST Admin Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST Admin Log": {
+      "main": [
+        [
+          {
+            "node": "Responder 200",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST Paso": {
+      "main": [
+        [
+          {
+            "node": "POST Admin Log1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PUT Paso Inactivo": {
+      "main": [
+        [
+          {
+            "node": "POST Admin Log2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST Admin Log2": {
+      "main": [
+        [
+          {
+            "node": "Responder 202",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Accion": {
+      "main": [
+        [
+          {
+            "node": "PUT Paso",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "POST Paso",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "PUT Paso Inactivo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST Admin Log1": {
+      "main": [
+        [
+          {
+            "node": "Responder 201",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-06-26T10:22:25.297Z",
+  "description": null,
+  "id": "gOdpwbMTHZOZrfHp",
+  "isArchived": true,
+  "meta": null,
+  "name": "WF-Admin-Complejos-Unificado",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "admin/actualizar-complejo",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "05bb695e-97e2-4ec0-88c5-e9c2bf7c67c9",
+      "name": "Webhook Actualizar Complejo",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1968,
+        880
+      ],
+      "webhookId": "e20b0146-3191-4283-8e5f-1fd965a90f1d"
+    },
+    {
+      "parameters": {
+        "jsCode": "const headers = $json.headers || {};\nconst source = $json.body && Object.keys($json.body).length ? $json.body : $json;\nconst jwt = ((headers.authorization || headers.Authorization || '').replace('Bearer ', '')).trim();\nconst admin_key = (headers['x-admin-key'] || headers['X-ADMIN-KEY'] || '').toString().trim();\nconst ip = (headers['x-forwarded-for'] || '').toString();\nconst user_agent = (headers['user-agent'] || headers['User-Agent'] || '').toString();\nconst accion = (source.accion || '').toString().trim();\nconst paso_documentId = (source.paso_documentId || '').toString().trim();\nconst nombre_oficial = source.nombre_oficial;\nconst latitud = source.latitud;\nconst longitud = source.longitud;\nconst region = source.region;\nconst altitud = source.altitud;\nconst codigo_fuente = source.codigo_fuente;\nconst motivo = source.motivo;\nconst habilitado_para = source.habilitado_para;\nconst errores = [];\nif (!jwt) errores.push('Falta JWT');\nif (!admin_key) errores.push('Falta X-ADMIN-KEY');\nif (!accion || !['actualizar','crear','softdelete'].includes(accion)) errores.push('accion debe ser actualizar, crear o softdelete');\nif (accion !== 'crear' && !paso_documentId) errores.push('Falta paso_documentId');\nif (latitud !== undefined && latitud !== null && latitud !== '' && (isNaN(Number(latitud)) || Number(latitud) < -90 || Number(latitud) > 90)) errores.push('latitud invalida');\nif (longitud !== undefined && longitud !== null && longitud !== '' && (isNaN(Number(longitud)) || Number(longitud) < -180 || Number(longitud) > 180)) errores.push('longitud invalida');\nreturn [{ json: { jwt, admin_key, ip, user_agent, accion, paso_documentId, nombre_oficial, latitud, longitud, region, altitud, codigo_fuente, motivo, habilitado_para, errores, entrada_valida: errores.length === 0 } }];"
+      },
+      "id": "c5b752f3-78f1-434f-908f-e097c98ad783",
+      "name": "Validar Entrada",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1744,
+        880
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.entrada_valida }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "6ca435cb-8c67-4c7e-9609-11fcbbd21af8",
+      "name": "Entrada Valida?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1520,
+        880
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: false, error: 'Parametros invalidos', detalle: $json.errores } }}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "id": "140a2721-0bf7-429b-a92e-6100d361882d",
+      "name": "Responder 400",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        -1296,
+        1024
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "u9PrypE4thOZ2QYP",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "87bce0d2-7406-40cc-92f9-04891428080d",
+      "name": "Execute WF00-Validar-Administrador",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        -1296,
+        832
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.autorizado }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b0f66a46-2f44-4fed-8ea3-cdc5205c9bbb",
+      "name": "Autorizado?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1088,
+        832
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: false, error: $json.motivo, codigo: $json.codigo } }}",
+        "options": {
+          "responseCode": "={{ $json.codigo || 401 }}"
+        }
+      },
+      "id": "690874b1-6fe2-4137-aa2d-8e6257b81458",
+      "name": "Responder Auth",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        -864,
+        1024
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://strapi.frontieradvice.tech/api/paso-fronterizos",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filters[documentId][$eq]",
+              "value": "={{ $('Validar Entrada').item.json.paso_documentId }}"
+            },
+            {
+              "name": "pagination[pageSize]",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c75e1cbf-6c8f-49c2-809d-aa7ae561c222",
+      "name": "GET Paso",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -864,
+        816
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const paso = $json.data?.[0] || null;\nreturn [{ json: { existe: !!paso, paso } }];"
+      },
+      "id": "d93d9c68-9da7-4f77-bd00-e9d38cff6aed",
+      "name": "Evaluar Paso",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -640,
+        816
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.existe }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "931c46b1-ed76-4935-9cbc-993c256b564b",
+      "name": "Paso Existe?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -416,
+        816
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: false, error: 'Paso fronterizo inexistente' } }}",
+        "options": {
+          "responseCode": 404
+        }
+      },
+      "id": "0d8f724b-197a-44a5-aebc-9262bc8d9731",
+      "name": "Responder 404",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        -192,
+        1024
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://strapi.frontieradvice.tech/api/paso-fronterizos/{{ $('Validar Entrada').item.json.paso_documentId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { data: Object.fromEntries(Object.entries({ nombre_oficial: $('Validar Entrada').item.json.nombre_oficial, region: $('Validar Entrada').item.json.region, latitud: $('Validar Entrada').item.json.latitud !== undefined ? Number($('Validar Entrada').item.json.latitud) : undefined, longitud: $('Validar Entrada').item.json.longitud !== undefined ? Number($('Validar Entrada').item.json.longitud) : undefined, altitud: $('Validar Entrada').item.json.altitud !== undefined ? Number($('Validar Entrada').item.json.altitud) : undefined, codigo_fuente: $('Validar Entrada').item.json.codigo_fuente }).filter(([_,v]) => v !== undefined && v !== null && v !== '')) } }}",
+        "options": {}
+      },
+      "id": "0ef04596-55c7-40c9-b3b7-8104d53ce99f",
+      "name": "PUT Paso",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        64,
+        608
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://strapi.frontieradvice.tech/api/admin-logs",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { data: { accion: 'actualizar_complejo', paso_documentId: $('Validar Entrada').item.json.paso_documentId, estado_anterior: null, estado_nuevo: null, motivo: 'Actualizacion manual de complejo', usuario_email: $('Execute WF00-Validar-Administrador').item.json.usuario?.email, ip: $('Execute WF00-Validar-Administrador').item.json.ip, user_agent: $('Execute WF00-Validar-Administrador').item.json.user_agent, fecha_evento: new Date().toISOString(), resultado: 'ok' } } }}",
+        "options": {}
+      },
+      "id": "c7535134-1b25-48ca-8d1d-69b2ead87e91",
+      "name": "POST Admin Log",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        288,
+        608
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: true, mensaje: 'Complejo actualizado correctamente', paso_documentId: $('Validar Entrada').item.json.paso_documentId } }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "2cae320c-8178-498e-81e1-734d51d5442e",
+      "name": "Responder 200",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        496,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://strapi.frontieradvice.tech/api/paso-fronterizos",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { data: { nombre_oficial: $('Validar Entrada1').item.json.nombre_oficial, region: $('Validar Entrada1').item.json.region, codigo_fuente: $('Validar Entrada1').item.json.codigo_fuente || null, latitud: Number($('Validar Entrada1').item.json.latitud), longitud: Number($('Validar Entrada1').item.json.longitud), altitud: $('Validar Entrada1').item.json.altitud !== undefined && $('Validar Entrada1').item.json.altitud !== null ? Number($('Validar Entrada1').item.json.altitud) : null, habilitado_para: $('Validar Entrada1').item.json.habilitado_para, activo: true } } }}",
+        "options": {}
+      },
+      "id": "8d6beef6-4b01-44a6-a51f-a6775b1d0baf",
+      "name": "POST Paso",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        64,
+        800
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: true, mensaje: 'Complejo creado correctamente', paso_documentId: $('POST Paso').item.json.data?.documentId || null } }}",
+        "options": {
+          "responseCode": 201
+        }
+      },
+      "id": "5dbbc2f5-545e-487a-9db7-f93ee5cddb1f",
+      "name": "Responder 201",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        496,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://strapi.frontieradvice.tech/api/paso-fronterizos/{{ $('Validar Entrada').item.json.paso_documentId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { data: { activo: false } } }}",
+        "options": {}
+      },
+      "id": "b741bb39-2d7a-488e-9651-5a5fbcff7b5b",
+      "name": "PUT Paso Inactivo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        64,
+        976
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://strapi.frontieradvice.tech/api/admin-logs",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { data: { accion: 'softdelete_complejo', paso_documentId: $('Validar Entrada1').item.json.paso_documentId, estado_anterior: 'activo', estado_nuevo: 'inactivo', motivo: $('Validar Entrada1').item.json.motivo, usuario_email: $('Execute WF00-Validar-Administrador1').item.json.usuario?.email, ip: $('Execute WF00-Validar-Administrador1').item.json.ip, user_agent: $('Execute WF00-Validar-Administrador1').item.json.user_agent, fecha_evento: new Date().toISOString(), resultado: 'ok' } } }}",
+        "options": {}
+      },
+      "id": "3ef22089-e7cd-41fa-ba36-08994ab09824",
+      "name": "POST Admin Log2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        288,
+        976
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: true, mensaje: 'Complejo desactivado correctamente', paso_documentId: $('Validar Entrada1').item.json.paso_documentId } }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "74c512ee-47db-4cf3-835e-b0fa74ed09c2",
+      "name": "Responder 202",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        496,
+        976
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.accion }}",
+                    "rightValue": "actualizar",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "e53083a6-f4f3-44de-b421-1136c4e15d22"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "actualizar"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.accion }}",
+                    "rightValue": "crear",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "755c8156-6a10-4036-b770-94b2f6201448"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "crear"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.accion }}",
+                    "rightValue": "softdelete",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "c385dbc1-8a1b-4bc8-8f09-20b6b447a02e"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "softdelete"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e73dd5a9-d114-4af6-899d-20b657855ba0",
+      "name": "Switch Accion",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        -192,
+        784
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://strapi.frontieradvice.tech/api/admin-logs",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { data: { accion: 'crear_complejo', paso_documentId: $json.data?.documentId || null, estado_anterior: null, estado_nuevo: null, motivo: 'Creacion manual de complejo', usuario_email: $('Execute WF00-Validar-Administrador1').item.json.usuario?.email, ip: $('Execute WF00-Validar-Administrador1').item.json.ip, user_agent: $('Execute WF00-Validar-Administrador1').item.json.user_agent, fecha_evento: new Date().toISOString(), resultado: 'ok' } } }}",
+        "options": {}
+      },
+      "id": "89fc7b77-2747-4193-9434-e6df408db75d",
+      "name": "POST Admin Log1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        288,
+        800
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-06-26T10:22:25.300Z",
+      "createdAt": "2026-06-26T10:22:25.300Z",
+      "role": "workflow:owner",
+      "workflowId": "gOdpwbMTHZOZrfHp",
+      "projectId": "0mwVSLULhlB6ku2N",
+      "project": {
+        "updatedAt": "2026-05-08T10:08:26.296Z",
+        "createdAt": "2026-05-08T08:11:46.302Z",
+        "id": "0mwVSLULhlB6ku2N",
+        "name": "Nyxu Infinity <nyxuofficial@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
+      }
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2026-06-26T10:56:56.000Z",
+  "versionCounter": 77,
+  "versionId": "a72a38ea-c970-4a38-a65f-0da45c5509b6"
+}
