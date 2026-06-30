@@ -347,17 +347,7 @@
     "authors": "Nyxu Infinity",
     "name": "Version cc153722",
     "description": "",
-    "autosaved": true,
-    "workflowPublishHistory": [
-      {
-        "createdAt": "2026-06-26T11:13:36.574Z",
-        "id": 118,
-        "workflowId": "CcBNJr6kQYj5T4zB",
-        "versionId": "cc153722-34f1-412d-969a-30639748009d",
-        "event": "activated",
-        "userId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
-      }
-    ]
+    "autosaved": true
   },
   "activeVersionId": "cc153722-34f1-412d-969a-30639748009d",
   "connections": {
@@ -445,7 +435,6 @@
     }
   },
   "createdAt": "2026-06-26T03:12:21.960Z",
-  "description": null,
   "id": "CcBNJr6kQYj5T4zB",
   "isArchived": false,
   "meta": null,
@@ -705,198 +694,6 @@
       "name": "Packaging"
     }
   ],
-  "pinData": {
-    "Query Open Route API Pickup1": [
-      {
-        "json": {
-          "geocoding": {
-            "version": "0.2",
-            "attribution": "https://openrouteservice.org/terms-of-service/#attribution-geocode",
-            "query": {
-              "text": "Pasaje 5 Poniente C 1130, Talca, Chile",
-              "size": 1,
-              "sources": [
-                "openstreetmap"
-              ],
-              "private": false,
-              "boundary.country": [
-                "CHL"
-              ],
-              "lang": {
-                "name": "English",
-                "iso6391": "en",
-                "iso6393": "eng",
-                "via": "default",
-                "defaulted": true
-              },
-              "querySize": 20,
-              "parser": "libpostal",
-              "parsed_text": {
-                "street": "pasaje 5 poniente c",
-                "housenumber": "1130",
-                "city": "talca",
-                "country": "chile"
-              }
-            },
-            "engine": {
-              "name": "Pelias",
-              "author": "Mapzen",
-              "version": "1.0"
-            },
-            "timestamp": 1782359520241
-          },
-          "type": "FeatureCollection",
-          "features": [
-            {
-              "type": "Feature",
-              "geometry": {
-                "type": "Point",
-                "coordinates": [
-                  -71.677711,
-                  -35.439359
-                ]
-              },
-              "properties": {
-                "id": "polyline:26209117",
-                "gid": "openstreetmap:street:polyline:26209117",
-                "layer": "street",
-                "source": "openstreetmap",
-                "source_id": "polyline:26209117",
-                "name": "Pasaje 5 Poniente C",
-                "street": "Pasaje 5 Poniente C",
-                "confidence": 0.8,
-                "match_type": "fallback",
-                "accuracy": "centroid",
-                "country": "Chile",
-                "country_gid": "whosonfirst:country:85633057",
-                "country_a": "CHL",
-                "region": "Del Maule",
-                "region_gid": "whosonfirst:region:85682149",
-                "region_a": "ML",
-                "county": "Talca",
-                "county_gid": "whosonfirst:county:102063111",
-                "county_a": "TC",
-                "locality": "Talca",
-                "locality_gid": "whosonfirst:locality:102016893",
-                "continent": "South America",
-                "continent_gid": "whosonfirst:continent:102191577",
-                "label": "Pasaje 5 Poniente C, Talca, ML, Chile"
-              },
-              "bbox": [
-                -71.678364,
-                -35.440055,
-                -71.677113,
-                -35.438633
-              ]
-            }
-          ],
-          "bbox": [
-            -71.678364,
-            -35.440055,
-            -71.677113,
-            -35.438633
-          ]
-        }
-      }
-    ],
-    "Query Open Route API Delivery1": [
-      {
-        "json": {
-          "geocoding": {
-            "version": "0.2",
-            "attribution": "https://openrouteservice.org/terms-of-service/#attribution-geocode",
-            "query": {
-              "text": "Av. Corrientes 3247, C1193 Cdad. Autónoma de Buenos Aires, Argentina",
-              "size": 1,
-              "sources": [
-                "openstreetmap"
-              ],
-              "private": false,
-              "boundary.country": [
-                "ARG"
-              ],
-              "lang": {
-                "name": "English",
-                "iso6391": "en",
-                "iso6393": "eng",
-                "via": "default",
-                "defaulted": true
-              },
-              "querySize": 20,
-              "parser": "pelias",
-              "parsed_text": {
-                "subject": "Av. Corrientes",
-                "street": "Av. Corrientes",
-                "postcode": "3247",
-                "locality": "Buenos Aires",
-                "country": "Argentina",
-                "admin": "C1193 Cdad. Autónoma de Buenos Aires, Argentina"
-              }
-            },
-            "engine": {
-              "name": "Pelias",
-              "author": "Mapzen",
-              "version": "1.0"
-            },
-            "timestamp": 1782359521311
-          },
-          "type": "FeatureCollection",
-          "features": [
-            {
-              "type": "Feature",
-              "geometry": {
-                "type": "Point",
-                "coordinates": [
-                  -58.443922,
-                  -34.595089
-                ]
-              },
-              "properties": {
-                "id": "polyline:31957772",
-                "gid": "openstreetmap:street:polyline:31957772",
-                "layer": "street",
-                "source": "openstreetmap",
-                "source_id": "polyline:31957772",
-                "name": "Avenida Corrientes",
-                "street": "Avenida Corrientes",
-                "confidence": 1,
-                "match_type": "exact",
-                "accuracy": "centroid",
-                "country": "Argentina",
-                "country_gid": "whosonfirst:country:85632505",
-                "country_a": "ARG",
-                "region": "Autonomous City of Buenos Aires",
-                "region_gid": "whosonfirst:region:85668081",
-                "region_a": "CF",
-                "locality": "Buenos Aires",
-                "locality_gid": "whosonfirst:locality:421174285",
-                "borough": "Comuna 15",
-                "borough_gid": "whosonfirst:borough:1109371881",
-                "borough_a": "DF",
-                "neighbourhood": "Villa Crespo",
-                "neighbourhood_gid": "whosonfirst:neighbourhood:85764307",
-                "continent": "South America",
-                "continent_gid": "whosonfirst:continent:102191577",
-                "label": "Avenida Corrientes, Buenos Aires, CF, Argentina"
-              },
-              "bbox": [
-                -58.444342,
-                -34.595479,
-                -58.443505,
-                -34.5947
-              ]
-            }
-          ],
-          "bbox": [
-            -58.444342,
-            -34.595479,
-            -58.443505,
-            -34.5947
-          ]
-        }
-      }
-    ]
-  },
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
@@ -907,23 +704,12 @@
       "createdAt": "2026-06-26T03:12:21.962Z",
       "role": "workflow:owner",
       "workflowId": "CcBNJr6kQYj5T4zB",
-      "projectId": "0mwVSLULhlB6ku2N",
-      "project": {
-        "updatedAt": "2026-05-08T10:08:26.296Z",
-        "createdAt": "2026-05-08T08:11:46.302Z",
-        "id": "0mwVSLULhlB6ku2N",
-        "name": "Nyxu Infinity <nyxuofficial@gmail.com>",
-        "type": "personal",
-        "icon": null,
-        "description": null,
-        "creatorId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
-      }
+      "projectId": "0mwVSLULhlB6ku2N"
     }
   ],
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
   "updatedAt": "2026-06-28T04:51:04.438Z",
-  "versionCounter": 48,
   "versionId": "cc153722-34f1-412d-969a-30639748009d"
 }
