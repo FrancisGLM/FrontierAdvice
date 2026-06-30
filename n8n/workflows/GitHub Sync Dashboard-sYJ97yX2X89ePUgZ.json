@@ -1,9 +1,9 @@
 {
   "active": true,
   "activeVersion": {
-    "updatedAt": "2026-05-12T06:35:14.000Z",
-    "createdAt": "2026-05-12T06:35:05.497Z",
-    "versionId": "25961f1d-8031-4c7e-a5d0-34591865a5d7",
+    "updatedAt": "2026-06-30T08:31:27.000Z",
+    "createdAt": "2026-06-24T05:58:44.621Z",
+    "versionId": "4bcb5cb8-f968-47aa-8aed-afc6bf84e8ac",
     "workflowId": "sYJ97yX2X89ePUgZ",
     "nodes": [
       {
@@ -62,8 +62,8 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4,
         "position": [
-          11360,
-          4272
+          11344,
+          4320
         ],
         "id": "20913a2a-ea1b-41d4-9933-1b6bf56d5df6",
         "name": "Globals"
@@ -1778,13 +1778,13 @@
         "parameters": {
           "content": "# ⚠️ MOST IMPORTANT NODE\n## Stores global configs\n\n# 1️⃣\n- provide GitHub `repository owner name`, \n- `repository name`\n- `repository subfolder` (recommended)\n\n# 2️⃣\n- `instance_url` - keep .env variables or set up manually\n- `webhook_path` - keep .env variables or set up manually\n- `webhook_actions` - taken from `Webhook-actions` node\n",
           "height": 592,
-          "width": 480,
+          "width": 560,
           "color": 3
         },
         "type": "n8n-nodes-base.stickyNote",
         "position": [
-          11328,
-          3840
+          11296,
+          3888
         ],
         "typeVersion": 1,
         "id": "0de15750-3224-40cc-84dc-4eeaaadc4f17",
@@ -3898,11 +3898,21 @@
       }
     },
     "authors": "Nyxu Infinity",
-    "name": "v2.6.2",
+    "name": "Version 4bcb5cb8",
     "description": "",
-    "autosaved": true
+    "autosaved": true,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-06-30T08:31:27.158Z",
+        "id": 221,
+        "workflowId": "sYJ97yX2X89ePUgZ",
+        "versionId": "4bcb5cb8-f968-47aa-8aed-afc6bf84e8ac",
+        "event": "activated",
+        "userId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
+      }
+    ]
   },
-  "activeVersionId": "25961f1d-8031-4c7e-a5d0-34591865a5d7",
+  "activeVersionId": "4bcb5cb8-f968-47aa-8aed-afc6bf84e8ac",
   "connections": {
     "Globals": {
       "main": [
@@ -4998,6 +5008,7 @@
     }
   },
   "createdAt": "2026-05-08T21:02:59.606Z",
+  "description": null,
   "id": "sYJ97yX2X89ePUgZ",
   "isArchived": false,
   "meta": {
@@ -7802,6 +7813,7 @@
       "name": "Respond1"
     }
   ],
+  "pinData": {},
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
@@ -7812,7 +7824,17 @@
       "createdAt": "2026-05-08T21:02:59.611Z",
       "role": "workflow:owner",
       "workflowId": "sYJ97yX2X89ePUgZ",
-      "projectId": "0mwVSLULhlB6ku2N"
+      "projectId": "0mwVSLULhlB6ku2N",
+      "project": {
+        "updatedAt": "2026-05-08T10:08:26.296Z",
+        "createdAt": "2026-05-08T08:11:46.302Z",
+        "id": "0mwVSLULhlB6ku2N",
+        "name": "Nyxu Infinity <nyxuofficial@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
+      }
     }
   ],
   "staticData": {
@@ -7825,5 +7847,6 @@
   "tags": [],
   "triggerCount": 3,
   "updatedAt": "2026-06-24T05:58:44.619Z",
+  "versionCounter": 391,
   "versionId": "4bcb5cb8-f968-47aa-8aed-afc6bf84e8ac"
 }
