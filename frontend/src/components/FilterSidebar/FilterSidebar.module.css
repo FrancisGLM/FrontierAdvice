@@ -174,7 +174,7 @@
 }
 
 .pasoItem:hover {
-  background-color: var(--border-subtle);
+  background-color: var(--bg-hover);
 }
 
 .pasoItem.selected {

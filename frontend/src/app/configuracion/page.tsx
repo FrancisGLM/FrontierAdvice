@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Settings, Shield, Lock, LogOut, Sun, Moon, Eye } from 'lucide-react';
+import { Settings, Shield, Lock, LogOut, Sun, Moon, Eye, Type } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import LoginModal from '@/components/LoginModal/LoginModal';
 import { useAuth } from '@/lib/AuthContext';
@@ -40,8 +40,41 @@ export default function ConfiguracionPage() {
   const { isAdmin, logout } = useAuth();
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [highContrast, setHighContrast] = useState(false);
+  const [largeText, setLargeText] = useState(false);
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    setMounted(true);
+    const isHC = localStorage.getItem('frontier_high_contrast') === 'true';
+    setHighContrast(isHC);
+    if (isHC) document.body.classList.add('high-contrast');
+
+    const isLT = localStorage.getItem('frontier_large_text') === 'true';
+    setLargeText(isLT);
+    if (isLT) document.documentElement.classList.add('large-text');
+  }, []);
+
+  const toggleHighContrast = () => {
+    const newVal = !highContrast;
+    setHighContrast(newVal);
+    localStorage.setItem('frontier_high_contrast', String(newVal));
+    if (newVal) {
+      document.body.classList.add('high-contrast');
+    } else {
+      document.body.classList.remove('high-contrast');
+    }
+  };
+
+  const toggleLargeText = () => {
+    const newVal = !largeText;
+    setLargeText(newVal);
+    localStorage.setItem('frontier_large_text', String(newVal));
+    if (newVal) {
+      document.documentElement.classList.add('large-text');
+    } else {
+      document.documentElement.classList.remove('large-text');
+    }
+  };
 
   return (
     <div style={{
@@ -95,27 +128,77 @@ export default function ConfiguracionPage() {
 
           {/* Apariencia y Accesibilidad */}
           <Section icon={Eye} title="Apariencia y Accesibilidad" color="#10b981">
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
-              <div>
-                <p style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary)' }}>Modo de Contraste</p>
-                <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.125rem' }}>
-                  Cambia entre colores claros u oscuros para mejorar la visibilidad.
-                </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+                <div>
+                  <p style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary)' }}>Modo de Contraste</p>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.125rem' }}>
+                    Cambia entre colores claros u oscuros para mejorar la visibilidad.
+                  </p>
+                </div>
+                <button 
+                  onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+                  style={{
+                    padding: '0.5rem 1rem', borderRadius: '0.5rem', backgroundColor: 'var(--bg-base)',
+                    color: 'var(--text-primary)', fontSize: '0.875rem', fontWeight: 600, border: '1px solid var(--border-strong)',
+                    cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', width: '150px', justifyContent: 'center'
+                  }}
+                >
+                  {mounted && resolvedTheme === 'dark' ? (
+                    <><Sun size={16} /> Modo Claro</>
+                  ) : (
+                    <><Moon size={16} /> Modo Oscuro</>
+                  )}
+                </button>
               </div>
-              <button 
-                onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
-                style={{
-                  padding: '0.5rem 1rem', borderRadius: '0.5rem', backgroundColor: 'var(--bg-base)',
-                  color: 'var(--text-primary)', fontSize: '0.875rem', fontWeight: 600, border: '1px solid var(--border-strong)',
-                  cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem'
-                }}
-              >
-                {mounted && resolvedTheme === 'dark' ? (
-                  <><Sun size={16} /> Modo Claro</>
-                ) : (
-                  <><Moon size={16} /> Modo Oscuro</>
-                )}
-              </button>
+
+              <div style={{ height: '1px', backgroundColor: 'var(--border-subtle)' }} />
+
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+                <div>
+                  <p style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary)' }}>Modo de Alto Contraste</p>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.125rem' }}>
+                    Aumenta la saturación y el contraste del mapa para mayor legibilidad bajo el sol.
+                  </p>
+                </div>
+                <button 
+                  onClick={toggleHighContrast}
+                  style={{
+                    padding: '0.5rem 1rem', borderRadius: '0.5rem', 
+                    backgroundColor: highContrast ? 'rgba(16, 185, 129, 0.1)' : 'var(--bg-base)',
+                    color: highContrast ? '#10b981' : 'var(--text-primary)', 
+                    fontSize: '0.875rem', fontWeight: 600, 
+                    border: `1px solid ${highContrast ? 'rgba(16, 185, 129, 0.3)' : 'var(--border-strong)'}`,
+                    cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', width: '150px', justifyContent: 'center'
+                  }}
+                >
+                  <Eye size={16} /> {highContrast ? 'Activado' : 'Desactivado'}
+                </button>
+              </div>
+
+              <div style={{ height: '1px', backgroundColor: 'var(--border-subtle)' }} />
+
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+                <div>
+                  <p style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary)' }}>Tamaño de Texto</p>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.125rem' }}>
+                    Aumenta el tamaño general de la letra en toda la aplicación.
+                  </p>
+                </div>
+                <button 
+                  onClick={toggleLargeText}
+                  style={{
+                    padding: '0.5rem 1rem', borderRadius: '0.5rem', 
+                    backgroundColor: largeText ? 'rgba(16, 185, 129, 0.1)' : 'var(--bg-base)',
+                    color: largeText ? '#10b981' : 'var(--text-primary)', 
+                    fontSize: '0.875rem', fontWeight: 600, 
+                    border: `1px solid ${largeText ? 'rgba(16, 185, 129, 0.3)' : 'var(--border-strong)'}`,
+                    cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', width: '150px', justifyContent: 'center'
+                  }}
+                >
+                  <Type size={16} /> {largeText ? 'Grande' : 'Normal'}
+                </button>
+              </div>
             </div>
           </Section>
 

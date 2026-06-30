@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRutaContext } from '@/lib/RutaContext';
-import { MapPin, Flag, Car, ChevronDown, ChevronLeft, ChevronRight, Navigation, Check, Truck, Lightbulb, AlertTriangle, Trash2, Route } from 'lucide-react';
+import { MapPin, Flag, Car, ChevronDown, ChevronLeft, ChevronRight, Navigation, Check, Truck, Lightbulb, AlertTriangle, Trash2, Route, LocateFixed, Map } from 'lucide-react';
 import type { DireccionEstructurada, Pais, TipoVehiculo, SubtipoCamion } from '@/lib/hooks/useCalcularRuta';
 import type { N8nDobleRutaResponse } from '@/lib/types';
 import { EMPTY_DIRECCION } from '@/lib/RutaContext';
@@ -54,6 +54,7 @@ export default function RutaPanel({ onRutaCalculada, isOpen, onLimpiarRuta }: Ru
     vehiculo, setVehiculo,
     subtipo, setSubtipo,
     isCalculated, setIsCalculated,
+    pickingMapFor, setPickingMapFor,
     calcular, loading, error, rutaResultado: resultado
   } = useRutaContext();
 
@@ -120,13 +121,70 @@ export default function RutaPanel({ onRutaCalculada, isOpen, onLimpiarRuta }: Ru
 
   // Si el usuario cambia cualquier campo, se pierde el estado de 'calculado'
   const updateOrigen = (field: keyof DireccionEstructurada, value: string) => {
-    setOrigen(prev => ({ ...prev, [field]: value }));
+    setOrigen(prev => ({ ...prev, [field]: value, coordenadasExactas: null }));
     setIsCalculated(false);
   };
 
   const updateDestino = (field: keyof DireccionEstructurada, value: string) => {
-    setDestino(prev => ({ ...prev, [field]: value }));
+    setDestino(prev => ({ ...prev, [field]: value, coordenadasExactas: null }));
     setIsCalculated(false);
+  };
+
+  const [isLocating, setIsLocating] = useState<'origen'|'destino'|null>(null);
+
+  const handleLocateMe = async (target: 'origen' | 'destino') => {
+    if (!navigator.geolocation) return;
+    setIsLocating(target);
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+      try {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`);
+        const data = await res.json();
+        if (data && data.address) {
+          const { road, house_number, city, town, village, state, country } = data.address;
+          const street = road || data.name || '';
+          const number = house_number || 'S/N';
+          const muni = city || town || village || state || '';
+          const pais = country || '';
+
+          const dir = {
+            calle: street,
+            numero: number,
+            comuna: muni,
+            ciudad: state || muni,
+            coordenadasExactas: { lat, lng }
+          };
+
+          if (target === 'origen') {
+            setOrigen(dir);
+            if (['Argentina', 'Bolivia', 'Chile', 'Peru'].includes(pais)) {
+               if (pais === paisDestino) {
+                 alert('El país de origen no puede ser el mismo que el destino. Se ha borrado el destino.');
+                 setPaisDestino('');
+               }
+               setPaisOrigen(pais as any);
+            }
+          } else {
+            setDestino(dir);
+            if (['Argentina', 'Bolivia', 'Chile', 'Peru'].includes(pais)) {
+               if (pais === paisOrigen) {
+                 alert('El país de destino no puede ser el mismo que el origen. Se ha borrado el origen.');
+                 setPaisOrigen('');
+               }
+               setPaisDestino(pais as any);
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Error reverse geocoding', err);
+      } finally {
+        setIsLocating(null);
+      }
+    }, () => {
+      setIsLocating(null);
+      alert('No se pudo obtener la ubicación.');
+    });
   };
 
   const handleContinuar = () => {
@@ -226,8 +284,31 @@ export default function RutaPanel({ onRutaCalculada, isOpen, onLimpiarRuta }: Ru
             <div className={styles.sectionDivider} />
 
             <div className={styles.sectionHeader}>
-              <MapPin size={16} className={styles.sectionIcon} />
-              <span>Dirección de Origen</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <MapPin size={16} className={styles.sectionIcon} />
+                <span>Dirección de Origen</span>
+              </div>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <button 
+                  type="button" 
+                  onClick={() => handleLocateMe('origen')}
+                  className={styles.actionBtn}
+                  title="Usar mi ubicación"
+                  disabled={isLocating === 'origen' || loading}
+                >
+                  <LocateFixed size={14} style={{ opacity: isLocating === 'origen' ? 0.5 : 1 }} />
+                </button>
+                <button 
+                  type="button" 
+                  onClick={() => setPickingMapFor(pickingMapFor === 'origen' ? null : 'origen')}
+                  className={styles.actionBtn}
+                  style={{ backgroundColor: pickingMapFor === 'origen' ? 'var(--blue-500-10)' : undefined, color: pickingMapFor === 'origen' ? '#3b82f6' : undefined }}
+                  title="Elegir en el mapa"
+                  disabled={loading}
+                >
+                  <Map size={14} />
+                </button>
+              </div>
             </div>
 
             <div className={styles.fieldRow}>
@@ -306,8 +387,31 @@ export default function RutaPanel({ onRutaCalculada, isOpen, onLimpiarRuta }: Ru
             <div className={styles.sectionDivider} />
 
             <div className={styles.sectionHeader}>
-              <Flag size={16} className={styles.sectionIcon} />
-              <span>Dirección de Destino</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Flag size={16} className={styles.sectionIcon} />
+                <span>Dirección de Destino</span>
+              </div>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <button 
+                  type="button" 
+                  onClick={() => handleLocateMe('destino')}
+                  className={styles.actionBtn}
+                  title="Usar mi ubicación"
+                  disabled={isLocating === 'destino' || loading}
+                >
+                  <LocateFixed size={14} style={{ opacity: isLocating === 'destino' ? 0.5 : 1 }} />
+                </button>
+                <button 
+                  type="button" 
+                  onClick={() => setPickingMapFor(pickingMapFor === 'destino' ? null : 'destino')}
+                  className={styles.actionBtn}
+                  style={{ backgroundColor: pickingMapFor === 'destino' ? 'var(--blue-500-10)' : undefined, color: pickingMapFor === 'destino' ? '#3b82f6' : undefined }}
+                  title="Elegir en el mapa"
+                  disabled={loading}
+                >
+                  <Map size={14} />
+                </button>
+              </div>
             </div>
 
             <div className={styles.fieldRow}>

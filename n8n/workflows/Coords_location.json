@@ -23,13 +23,13 @@
               "id": "e4c92077-f294-4e49-8276-20d1441c0c2c",
               "name": "p_longitude",
               "type": "string",
-              "value": "={{ $json.features[0].geometry.coordinates[0] }}"
+              "value": "={{ $('Normalización').item.json.pickup_address.includes('LAT:') ? $('Normalización').item.json.pickup_address.match(/LNG:([-.\\d]+)/)[1] : ($json.features && $json.features.length > 0 ? $json.features[0].geometry.coordinates[0] : '') }}"
             },
             {
               "id": "899e5304-e7a1-4ce1-bf9a-f403d74934fb",
               "name": "p_latitude",
               "type": "string",
-              "value": "={{ $json.features[0].geometry.coordinates[1] }}"
+              "value": "={{ $('Normalización').item.json.pickup_address.includes('LAT:') ? $('Normalización').item.json.pickup_address.match(/LAT:([-.\\d]+)/)[1] : ($json.features && $json.features.length > 0 ? $json.features[0].geometry.coordinates[1] : '') }}"
             },
             {
               "id": "5b35642b-dda4-42b8-b7bb-1275616bfb59",
@@ -71,13 +71,13 @@
               "id": "e4c92077-f294-4e49-8276-20d1441c0c2c",
               "name": "d_longitude",
               "type": "string",
-              "value": "={{ $json.features[0].geometry.coordinates[0] }}"
+              "value": "={{ $('Normalización').item.json.destination_address.includes('LAT:') ? $('Normalización').item.json.destination_address.match(/LNG:([-.\\d]+)/)[1] : ($json.features && $json.features.length > 0 ? $json.features[0].geometry.coordinates[0] : '') }}"
             },
             {
               "id": "899e5304-e7a1-4ce1-bf9a-f403d74934fb",
               "name": "d_latitude",
               "type": "string",
-              "value": "={{ $json.features[0].geometry.coordinates[1] }}"
+              "value": "={{ $('Normalización').item.json.destination_address.includes('LAT:') ? $('Normalización').item.json.destination_address.match(/LAT:([-.\\d]+)/)[1] : ($json.features && $json.features.length > 0 ? $json.features[0].geometry.coordinates[1] : '') }}"
             },
             {
               "id": "5b35642b-dda4-42b8-b7bb-1275616bfb59",

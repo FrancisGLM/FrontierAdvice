@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { LocateFixed } from 'lucide-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useTheme } from 'next-themes';
@@ -14,6 +15,8 @@ interface MapViewProps {
   rutaResultado?: N8nDobleRutaResponse | null;   // C7: nuevo prop doble ruta
   alternativeIsFocused?: boolean;                 // C7: para intercambio de colores
   onSelectAlternative?: (isAlternative: boolean) => void;
+  pickingMapFor?: 'origen' | 'destino' | null;
+  onMapClick?: (lat: number, lng: number) => void;
 }
 
 const STATUS_COLORS: Record<EstadoPaso, string> = {
@@ -113,6 +116,8 @@ export default function MapView({
   rutaResultado,
   alternativeIsFocused = false,
   onSelectAlternative,
+  pickingMapFor,
+  onMapClick,
 }: MapViewProps) {
   const mapRef            = useRef<L.Map | null>(null);
   const markersRef        = useRef<Map<string, MarkerEntry>>(new Map());
@@ -124,9 +129,12 @@ export default function MapView({
   const routePrimCasRef   = useRef<L.Polyline | null>(null);
   const routeAltCasRef    = useRef<L.Polyline | null>(null);
   const endpointsLayerRef = useRef<L.LayerGroup | null>(null); // C7: Origin & Destination markers
+  const userMarkerRef     = useRef<L.Marker | null>(null);
+  const tempPickRef       = useRef<L.Marker | null>(null); // Visual feedback for map picking
   const tileRef           = useRef<L.TileLayer | null>(null);
   const containerRef      = useRef<HTMLDivElement>(null);
   const { resolvedTheme } = useTheme();
+  const [isLocating, setIsLocating] = useState(false);
   const isDark = resolvedTheme === 'dark';
 
   const lightTile   = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
@@ -174,6 +182,50 @@ export default function MapView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Handle map click for picking
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    
+    if (pickingMapFor && onMapClick) {
+      if (containerRef.current) containerRef.current.style.cursor = 'crosshair';
+      
+      const handleClick = (e: L.LeafletMouseEvent) => {
+        if (!mapRef.current) return;
+        
+        // Remove previous temp marker if any
+        if (tempPickRef.current) {
+          tempPickRef.current.remove();
+        }
+        
+        // Add a red pin for visual feedback
+        const pinHtml = `<svg width="28" height="38" viewBox="0 0 24 34" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.25));">
+          <path d="M12 0C5.372 0 0 5.372 0 12c0 7.5 12 22 12 22s12-14.5 12-22c0-6.628-5.372-12-12-12z" fill="#ef4444" stroke="#991b1b" stroke-width="1"/>
+          <circle cx="12" cy="12" r="4.5" fill="#450a0a"/>
+        </svg>`;
+        
+        const icon = L.divIcon({
+          className: '',
+          html: pinHtml,
+          iconSize: [28, 38],
+          iconAnchor: [14, 36],
+        });
+        
+        tempPickRef.current = L.marker(e.latlng, { icon }).addTo(mapRef.current);
+        
+        onMapClick(e.latlng.lat, e.latlng.lng);
+      };
+      
+      map.on('click', handleClick);
+      return () => {
+        map.off('click', handleClick);
+        if (containerRef.current) containerRef.current.style.cursor = '';
+      };
+    } else {
+      if (containerRef.current) containerRef.current.style.cursor = '';
+    }
+  }, [pickingMapFor, onMapClick]);
+
   // Switch tile on theme change
   useEffect(() => {
     if (!tileRef.current) return;
@@ -202,6 +254,11 @@ export default function MapView({
     routeAltLineRef.current  = null;
     routePrimCasRef.current  = null;
     routeAltCasRef.current   = null;
+
+    if (tempPickRef.current) {
+      tempPickRef.current.remove();
+      tempPickRef.current = null;
+    }
 
     if (!rutaResultado) return;
 
@@ -517,5 +574,52 @@ export default function MapView({
     }
   }, [selectedPasoId, pasos]);
 
-  return <div ref={containerRef} className={styles.mapContainer} />;
+  const handleLocate = () => {
+    if (!navigator.geolocation || !mapRef.current) return;
+    setIsLocating(true);
+    
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setIsLocating(false);
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        const map = mapRef.current!;
+        
+        map.flyTo([lat, lng], 10, { duration: 1.5 });
+        
+        if (!userMarkerRef.current) {
+          const icon = L.divIcon({
+            html: `<div style="width: 16px; height: 16px; background-color: #3b82f6; border: 3px solid white; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>`,
+            className: '',
+            iconSize: [16, 16],
+            iconAnchor: [8, 8],
+          });
+          userMarkerRef.current = L.marker([lat, lng], { icon }).addTo(map);
+        } else {
+          userMarkerRef.current.setLatLng([lat, lng]);
+        }
+      },
+      (err) => {
+        setIsLocating(false);
+        console.error('Error getting location', err);
+        alert('No se pudo obtener tu ubicación. Revisa los permisos de tu navegador.');
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+  };
+
+  return (
+    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+      <div ref={containerRef} className={styles.mapContainer} />
+      <button 
+        onClick={handleLocate} 
+        className={styles.locateButton} 
+        title="Mi Ubicación"
+        disabled={isLocating}
+        style={{ opacity: isLocating ? 0.6 : 1 }}
+      >
+        <LocateFixed size={20} />
+      </button>
+    </div>
+  );
 }

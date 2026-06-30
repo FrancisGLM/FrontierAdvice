@@ -12,6 +12,34 @@
   background-color: var(--bg-base); /* Fallback */
 }
 
+.locateButton {
+  position: absolute;
+  bottom: 6.5rem; /* Elevado para evitar solapamiento con los controles de zoom (bottomright) */
+  right: 1rem;
+  z-index: 1000;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background-color: var(--bg-solid);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.locateButton:hover {
+  background-color: var(--bg-hover);
+  transform: scale(1.05);
+}
+
+.locateButton:active {
+  transform: scale(0.95);
+}
+
 .legend {
   position: absolute;
   top: 1rem;

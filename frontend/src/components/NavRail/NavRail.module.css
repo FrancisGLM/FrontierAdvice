@@ -64,7 +64,7 @@
 }
 
 .navButton:hover {
-  background-color: var(--border-subtle);
+  background-color: var(--bg-hover);
   color: var(--text-primary);
 }
 

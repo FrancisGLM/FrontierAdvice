@@ -41,6 +41,9 @@ export default function MapDashboard() {
     leftPanel, setLeftPanel,
     rutaResultado,
     alternativeIsFocused, setAlternativeIsFocused,
+    pickingMapFor, setPickingMapFor,
+    origen, setOrigen, destino, setDestino,
+    paisOrigen, setPaisOrigen, paisDestino, setPaisDestino,
     clearAll
   } = useRutaContext();
 
@@ -249,6 +252,58 @@ export default function MapDashboard() {
     setAlternativeIsFocused((prev) => !prev);
   }, [setAlternativeIsFocused]);
 
+  // Selección en Mapa y Reverse Geocoding
+  const handleMapClick = useCallback(async (lat: number, lng: number) => {
+    if (!pickingMapFor) return;
+
+    try {
+      // Reverse Geocoding via Nominatim
+      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`);
+      const data = await res.json();
+
+      if (data && data.address) {
+        const { road, house_number, city, town, village, state, country } = data.address;
+        
+        const street = road || data.name || '';
+        const number = house_number || 'S/N';
+        const muni = city || town || village || state || '';
+        const pais = country || '';
+
+        const dirEstructurada = {
+          calle: street,
+          numero: number,
+          comuna: muni,
+          ciudad: state || muni,
+          coordenadasExactas: { lat, lng }
+        };
+
+        if (pickingMapFor === 'origen') {
+          setOrigen(dirEstructurada);
+          if (['Argentina', 'Bolivia', 'Chile', 'Peru'].includes(pais)) {
+             if (pais === paisDestino) {
+               alert('El país de origen no puede ser el mismo que el destino. Se ha borrado el destino.');
+               setPaisDestino('');
+             }
+             setPaisOrigen(pais as any);
+          }
+        } else {
+          setDestino(dirEstructurada);
+          if (['Argentina', 'Bolivia', 'Chile', 'Peru'].includes(pais)) {
+             if (pais === paisOrigen) {
+               alert('El país de destino no puede ser el mismo que el origen. Se ha borrado el origen.');
+               setPaisOrigen('');
+             }
+             setPaisDestino(pais as any);
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Error in reverse geocoding', err);
+    } finally {
+      setPickingMapFor(null);
+    }
+  }, [pickingMapFor, paisOrigen, paisDestino, setOrigen, setDestino, setPaisOrigen, setPaisDestino, setPickingMapFor]);
+
   // Botón Revisualizar Ruta: vuelve a mostrar panel de resultados a la izquierda
   const handleRevisualizar = useCallback(() => {
     setLeftPanel('resultados');
@@ -328,6 +383,8 @@ export default function MapDashboard() {
             rutaResultado={rutaResultado}
             alternativeIsFocused={alternativeIsFocused}
             onSelectAlternative={setAlternativeIsFocused}
+            pickingMapFor={pickingMapFor}
+            onMapClick={handleMapClick}
           />
         )}
 

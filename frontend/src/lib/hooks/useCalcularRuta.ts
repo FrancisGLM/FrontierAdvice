@@ -18,6 +18,7 @@ export interface DireccionEstructurada {
   numero: string;
   comuna: string;
   ciudad: string;
+  coordenadasExactas?: { lat: number; lng: number } | null;
 }
 
 export interface RutaParams {
@@ -36,11 +37,20 @@ function concatenarDireccion(d: DireccionEstructurada): string {
     d.comuna.trim(),
     d.ciudad.trim(),
   ].filter(Boolean);
-  // Formato: "Calle Número, Comuna, Ciudad"
-  if (parts.length === 0) return '';
-  const calleNum = [parts[0], parts[1]].filter(Boolean).join(' ');
-  const resto = parts.slice(2).join(', ');
-  return [calleNum, resto].filter(Boolean).join(', ');
+  
+  let base = '';
+  if (parts.length > 0) {
+    const calleNum = [parts[0], parts[1]].filter(Boolean).join(' ');
+    const resto = parts.slice(2).join(', ');
+    base = [calleNum, resto].filter(Boolean).join(', ');
+  }
+  
+  if (d.coordenadasExactas) {
+    // Append the exact coordinates so n8n can parse them!
+    base += ` (LAT:${d.coordenadasExactas.lat}, LNG:${d.coordenadasExactas.lng})`;
+  }
+  
+  return base.trim();
 }
 
 interface UseCalcularRutaReturn {

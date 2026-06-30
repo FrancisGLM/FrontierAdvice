@@ -32,6 +32,8 @@ interface RutaContextType {
   setLeftPanel: React.Dispatch<React.SetStateAction<'filtros' | 'ruta' | 'resultados'>>;
   alternativeIsFocused: boolean;
   setAlternativeIsFocused: React.Dispatch<React.SetStateAction<boolean>>;
+  pickingMapFor: 'origen' | 'destino' | null;
+  setPickingMapFor: React.Dispatch<React.SetStateAction<'origen' | 'destino' | null>>;
   
   // Calcular Ruta Hook State
   calcular: ReturnType<typeof useCalcularRuta>['calcular'];
@@ -60,6 +62,7 @@ export function RutaProvider({ children }: { children: ReactNode }) {
   const [isCalculated, setIsCalculated] = useState(false);
   const [leftPanel, setLeftPanel] = useState<'filtros' | 'ruta' | 'resultados'>('filtros');
   const [alternativeIsFocused, setAlternativeIsFocused] = useState(false);
+  const [pickingMapFor, setPickingMapFor] = useState<'origen' | 'destino' | null>(null);
 
   // ── Hook State ──
   const { calcular, limpiar, loading, error, resultado: rutaResultado } = useCalcularRuta();
@@ -74,6 +77,7 @@ export function RutaProvider({ children }: { children: ReactNode }) {
     setSubtipo('');
     setIsCalculated(false);
     setAlternativeIsFocused(false);
+    setPickingMapFor(null);
     limpiar();
   };
 
@@ -89,6 +93,7 @@ export function RutaProvider({ children }: { children: ReactNode }) {
       isCalculated, setIsCalculated,
       leftPanel, setLeftPanel,
       alternativeIsFocused, setAlternativeIsFocused,
+      pickingMapFor, setPickingMapFor,
       calcular, limpiar, loading, error, rutaResultado,
       clearAll
     }}>
