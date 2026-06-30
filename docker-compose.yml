@@ -4,9 +4,9 @@ services:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_DB: frontieradvice_db
-      POSTGRES_USER: strapi
-      POSTGRES_PASSWORD: strapi123
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
@@ -24,9 +24,9 @@ services:
       DATABASE_CLIENT: postgres
       DATABASE_HOST: strapiDB
       DATABASE_PORT: 5432
-      DATABASE_NAME: frontieradvice_db
-      DATABASE_USERNAME: strapi
-      DATABASE_PASSWORD: strapi123
+      DATABASE_NAME: ${DB_NAME}
+      DATABASE_USERNAME: ${DB_USER}
+      DATABASE_PASSWORD: ${DB_PASSWORD}
     ports:
       - "1337:1337"
     volumes:

@@ -17,6 +17,23 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ['frontieradvice.tech', 'strapi.frontieradvice.tech'],
   turbopack: {},
   devIndicators: false,
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=31536000; includeSubDomains; preload',
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: "default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob: wss:;"
+          }
+        ],
+      },
+    ];
+  },
 };
 
 export default withPWA(nextConfig);
