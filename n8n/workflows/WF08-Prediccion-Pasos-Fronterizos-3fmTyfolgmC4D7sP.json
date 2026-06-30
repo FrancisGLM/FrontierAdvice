@@ -716,17 +716,7 @@
     "authors": "Nyxu Infinity",
     "name": "Version fe35c240",
     "description": "",
-    "autosaved": true,
-    "workflowPublishHistory": [
-      {
-        "createdAt": "2026-06-30T07:38:56.448Z",
-        "id": 220,
-        "workflowId": "3fmTyfolgmC4D7sP",
-        "versionId": "fe35c240-3064-443c-be40-786053c59e06",
-        "event": "activated",
-        "userId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
-      }
-    ]
+    "autosaved": true
   },
   "activeVersionId": "fe35c240-3064-443c-be40-786053c59e06",
   "connections": {
@@ -951,7 +941,6 @@
     }
   },
   "createdAt": "2026-06-25T03:46:28.707Z",
-  "description": null,
   "id": "3fmTyfolgmC4D7sP",
   "isArchived": false,
   "meta": null,
@@ -1443,7 +1432,6 @@
       "name": "Combinar Datos Paso 6"
     }
   ],
-  "pinData": {},
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
@@ -1454,17 +1442,7 @@
       "createdAt": "2026-06-25T03:46:28.711Z",
       "role": "workflow:owner",
       "workflowId": "3fmTyfolgmC4D7sP",
-      "projectId": "0mwVSLULhlB6ku2N",
-      "project": {
-        "updatedAt": "2026-05-08T10:08:26.296Z",
-        "createdAt": "2026-05-08T08:11:46.302Z",
-        "id": "0mwVSLULhlB6ku2N",
-        "name": "Nyxu Infinity <nyxuofficial@gmail.com>",
-        "type": "personal",
-        "icon": null,
-        "description": null,
-        "creatorId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
-      }
+      "projectId": "0mwVSLULhlB6ku2N"
     }
   ],
   "staticData": {
@@ -1480,6 +1458,5 @@
   "tags": [],
   "triggerCount": 1,
   "updatedAt": "2026-06-30T07:38:50.980Z",
-  "versionCounter": 232,
   "versionId": "fe35c240-3064-443c-be40-786053c59e06"
 }
