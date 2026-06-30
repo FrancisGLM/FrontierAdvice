@@ -11,12 +11,18 @@
 
 ## Descripción
 
-FrontierAdvice Chile centraliza y normaliza el estado operativo de los pasos fronterizos chilenos integrando cuatro fuentes oficiales dispersas en una única interfaz web. El sistema automatiza la captura de datos cada dos horas, clasifica el riesgo de cierre por horizonte temporal y permite consultas en lenguaje natural con cálculo de rutas alternativas según tipo de vehículo.
+FrontierAdvice Chile centraliza y normaliza el estado operativo de los pasos fronterizos chilenos integrando sus fuentes oficiales (WhatsApp y X) en una única interfaz web. El sistema automatiza la captura de datos, clasifica el riesgo de cierre por horizonte temporal mediante modelos predictivos y permite consultas en lenguaje natural con cálculo de rutas alternativas según tipo de vehículo.
 
 **Proyecto de Título — Ingeniería Civil Informática, UCM**
 
 - **FL** Francisco López — Fullstack, ingesta de datos y análisis
 - **FI** Franco Ingravallo — Inteligencia y agente orquestador
+
+### Características Principales
+
+- **Extracción Inteligente:** Uso de IA (Gemini) en los flujos de n8n para analizar texto no estructurado desde WhatsApp y X, normalizando automáticamente el estado de los pasos.
+- **Predicción de Cierre:** Cálculo de la probabilidad de cierre de un paso (riesgo Alto, Medio o Bajo) en diferentes horizontes de tiempo, considerando factores como el clima histórico y actual (Open-Meteo).
+- **Mapas y Rutas:** Visualización interactiva con MapCN y cálculo de rutas alternativas usando OpenRouteService, tomando en cuenta el tipo de vehículo.
 
 ---
 
@@ -42,14 +48,15 @@ El stack completo se gestiona mediante **Docker Compose**, ejecutándose de form
 | [Strapi](https://strapi.io) 5 + PostgreSQL 16 | CMS headless, modelo de datos y API REST |
 | [n8n](https://n8n.io)                         | Orquestación del agente de scraping      |
 | Gemini 2.5 Flash                              | Extracción, normalización y análisis IA  |
+| Open-Meteo Archive API                        | Datos de clima histórico y actual        |
 
-### Agente Orquestador
+### Agente Orquestador & Mapas
 
 | Tecnología                          | Rol                                            |
 | ----------------------------------- | ---------------------------------------------- |
 | Gemini 2.5 Flash (function calling) | Procesamiento de consultas en lenguaje natural |
-| Google Maps Routes API              | Cálculo de rutas y waypoints                   |
-| Google Maps JavaScript SDK          | Visualización de mapa con polilínea            |
+| OpenRouteService (ORS API)          | Cálculo de rutas y perfiles de vehículo        |
+| MapCN (React Map Components)        | Visualización de mapa interactivo con GeoJSON  |
 
 ### Frontend
 
@@ -57,6 +64,7 @@ El stack completo se gestiona mediante **Docker Compose**, ejecutándose de form
 | ----------- | -------------------------------- |
 | Next.js 15  | Framework React para el frontend |
 | TailwindCSS | Estilos y diseño responsive      |
+| next-pwa    | Soporte de Progressive Web App   |
 
 ### Infraestructura
 
@@ -74,18 +82,21 @@ El stack completo se gestiona mediante **Docker Compose**, ejecutándose de form
 ```text
 PasoFronterizo
 ├── EstadoDiario
-│   └── Restriccion
-├── AlertaEvento
+├── ClimaActual
+├── ReporteIncidente
 └── SenalPredictiva
 ```
 
-| Entidad           | Descripción                                                    |
-| ----------------- | -------------------------------------------------------------- |
-| `PasoFronterizo`  | Registro base de cada complejo fronterizo activo               |
-| `EstadoDiario`    | Estado operativo capturado por el scraper cada 2 horas         |
-| `Restriccion`     | Restricciones activas asociadas a un estado diario             |
-| `AlertaEvento`    | Eventos o alertas especiales por paso                          |
-| `SenalPredictiva` | Clasificación de riesgo Alto/Medio/Bajo por horizonte temporal |
+| Entidad            | Descripción                                                    |
+| ------------------ | -------------------------------------------------------------- |
+| `PasoFronterizo`   | Registro base de cada complejo fronterizo activo               |
+| `EstadoDiario`     | Estado operativo unificado a partir de las fuentes oficiales   |
+| `ClimaActual`      | Condiciones meteorológicas asociadas al paso fronterizo        |
+| `ReporteIncidente` | Reportes de usuarios sobre el paso fronterizo                  |
+| `SenalPredictiva`  | Clasificación de riesgo Alto/Medio/Bajo por horizonte temporal |
+| `MensajeWAHA`      | Registro en crudo extraído desde el canal oficial de WhatsApp  |
+| `tweet-x`          | Registro en crudo extraído desde la cuenta oficial de X        |
+| `AdminLog`         | Auditoría de operaciones de administrador                      |
 
 ---
 
@@ -95,12 +106,15 @@ PasoFronterizo
 FrontierAdvice/
 ├── frontend/                  # Next.js 15 + TailwindCSS [FL]
 ├── strapi/                    # CMS headless + API REST [FL]
-├── n8n/                       # Orquestación y agente de scraping [FL/FI]
+├── n8n/                       # Orquestación, automatizaciones y agentes [FL/FI]
+│   └── workflows/             # Diagramas JSON y scripts JS (predicción, scraping)
+├── docs/                      # Documentación del proyecto
+│   ├── config/
+│   ├── frontend/
+│   ├── planes_historicos/
+│   ├── recursos/
+│   ├── strapi/
 │   └── workflows/
-├── docs/
-│   ├── contrato-api.md
-│   ├── modelo-datos.md
-│   └── manual-despliegue.md
 ├── .gitignore
 ├── docker-compose.yml
 └── README.md
@@ -114,7 +128,7 @@ FrontierAdvice/
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) instalado y corriendo
 - [cloudflared](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/) instalado en el sistema
-- API Keys: Gemini 2.5 Flash, Google Maps
+- API Keys: Gemini 2.5 Flash, OpenRouteService
 
 ### 1. Clonar el repositorio
 
@@ -147,7 +161,7 @@ docker compose up -d --build
 | Strapi Admin | http://localhost:1337/admin | https://strapi.frontieradvice.tech/admin |
 | n8n          | http://localhost:5678       | https://n8n.frontieradvice.tech          |
 
-> El acceso remoto requiere que el tunnel de Cloudflare esté activo. Ver `docs/manual-despliegue.md`.
+> El acceso remoto requiere que el tunnel de Cloudflare esté activo. (Ver documentación respectiva).
 
 ### Comandos útiles
 
@@ -162,7 +176,7 @@ docker compose up -d --build    # rebuild y levantar
 
 ## Workflows de n8n
 
-Los workflows se versionan como JSON en `n8n/workflows/`. Para importarlos:
+Los workflows y algoritmos se versionan en `n8n/workflows/`. Para importarlos:
 
 1. Abrir n8n → **Workflows → Import from file**
 2. Seleccionar los archivos `.json` desde `n8n/workflows/`
@@ -184,7 +198,6 @@ Los workflows se versionan como JSON en `n8n/workflows/`. Para importarlos:
 | Fuente                      | Formato               | Canal       |
 | --------------------------- | --------------------- | ----------- |
 | UPF Ministerio del Interior | Texto no estructurado | WhatsApp    |
-| pasosfronterizos.gov.cl     | HTML                  | Web         |
 | @UPFronterizos              | Lenguaje natural      | X (Twitter) |
 
 ---
