@@ -344,17 +344,7 @@
     "authors": "Nyxu Infinity",
     "name": "Version f34a3234",
     "description": "",
-    "autosaved": true,
-    "workflowPublishHistory": [
-      {
-        "createdAt": "2026-06-28T06:18:25.621Z",
-        "id": 203,
-        "workflowId": "3Z2J84vr1wYJuce5",
-        "versionId": "f34a3234-e6c1-4313-9051-dc485e6811c8",
-        "event": "activated",
-        "userId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
-      }
-    ]
+    "autosaved": true
   },
   "activeVersionId": "f34a3234-e6c1-4313-9051-dc485e6811c8",
   "connections": {
@@ -433,7 +423,6 @@
     }
   },
   "createdAt": "2026-06-28T05:40:19.932Z",
-  "description": null,
   "id": "3Z2J84vr1wYJuce5",
   "isArchived": false,
   "meta": null,
@@ -699,197 +688,6 @@
       "name": "fase3-scoring1"
     }
   ],
-  "pinData": {
-    "When Executed by Another Workflow": [
-      {
-        "json": {
-          "origen": {
-            "longitude": -70.6842,
-            "latitude": -33.455629
-          },
-          "destino": {
-            "longitude": -58.410883,
-            "latitude": -34.603793
-          },
-          "vehiculo": "hgv",
-          "subtipo_camion": "bus"
-        }
-      }
-    ],
-    "fase2-ORS-Matrix HGV": [
-      {
-        "json": {
-          "durations": [
-            [
-              12220.24,
-              12097.5,
-              26710.91,
-              77447.52
-            ],
-            [
-              0,
-              16631.64,
-              28293.23,
-              78388.97
-            ],
-            [
-              16631.64,
-              0,
-              33108.65,
-              65488.95
-            ],
-            [
-              28472.59,
-              32985.3,
-              0,
-              67865.7
-            ]
-          ],
-          "distances": [
-            [
-              152.86,
-              172.93,
-              407.57,
-              1465.78
-            ],
-            [
-              0,
-              156.63,
-              409.74,
-              1370.44
-            ],
-            [
-              156.63,
-              0,
-              625.82,
-              1293.62
-            ],
-            [
-              413.1,
-              625.08,
-              0,
-              1232.59
-            ]
-          ],
-          "destinations": [
-            {
-              "location": [
-                -70.477671,
-                -35.138688
-              ],
-              "snapped_distance": 16.65
-            },
-            {
-              "location": [
-                -70.398105,
-                -35.981301
-              ],
-              "snapped_distance": 293.54
-            },
-            {
-              "location": [
-                -70.120521,
-                -32.842749
-              ],
-              "snapped_distance": 8.97
-            },
-            {
-              "location": [
-                -58.443932,
-                -34.595096
-              ],
-              "snapped_distance": 1.2
-            }
-          ],
-          "sources": [
-            {
-              "location": [
-                -71.677711,
-                -35.439359
-              ],
-              "snapped_distance": 0.05
-            },
-            {
-              "location": [
-                -70.477671,
-                -35.138688
-              ],
-              "snapped_distance": 16.65
-            },
-            {
-              "location": [
-                -70.398105,
-                -35.981301
-              ],
-              "snapped_distance": 293.54
-            },
-            {
-              "location": [
-                -70.120521,
-                -32.842749
-              ],
-              "snapped_distance": 8.97
-            }
-          ],
-          "metadata": {
-            "attribution": "openrouteservice.org | OpenStreetMap contributors",
-            "service": "matrix",
-            "timestamp": 1782452263917,
-            "query": {
-              "locations": [
-                [
-                  -71.677711,
-                  -35.439359
-                ],
-                [
-                  -70.47748941504368,
-                  -35.13867059392304
-                ],
-                [
-                  -70.40008582155707,
-                  -35.98339876179999
-                ],
-                [
-                  -70.12060761622942,
-                  -32.84271357006212
-                ],
-                [
-                  -58.443922,
-                  -34.595089
-                ]
-              ],
-              "profile": "driving-hgv",
-              "profileName": "driving-hgv",
-              "responseType": "json",
-              "sources": [
-                "0",
-                "1",
-                "2",
-                "3"
-              ],
-              "destinations": [
-                "1",
-                "2",
-                "3",
-                "4"
-              ],
-              "metrics": [
-                "distance",
-                "duration"
-              ],
-              "units": "km"
-            },
-            "engine": {
-              "version": "9.9.0",
-              "build_date": "2026-06-12T10:08:58Z",
-              "graph_date": "2026-06-14T12:17:10Z",
-              "osm_date": "2026-05-17T23:59:59Z"
-            }
-          }
-        }
-      }
-    ]
-  },
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
@@ -900,23 +698,12 @@
       "createdAt": "2026-06-28T05:40:19.935Z",
       "role": "workflow:owner",
       "workflowId": "3Z2J84vr1wYJuce5",
-      "projectId": "0mwVSLULhlB6ku2N",
-      "project": {
-        "updatedAt": "2026-05-08T10:08:26.296Z",
-        "createdAt": "2026-05-08T08:11:46.302Z",
-        "id": "0mwVSLULhlB6ku2N",
-        "name": "Nyxu Infinity <nyxuofficial@gmail.com>",
-        "type": "personal",
-        "icon": null,
-        "description": null,
-        "creatorId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
-      }
+      "projectId": "0mwVSLULhlB6ku2N"
     }
   ],
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
   "updatedAt": "2026-06-28T06:18:19.851Z",
-  "versionCounter": 26,
   "versionId": "f34a3234-e6c1-4313-9051-dc485e6811c8"
 }
