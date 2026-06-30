@@ -1,0 +1,1314 @@
+{
+  "active": true,
+  "activeVersion": {
+    "updatedAt": "2026-06-24T05:57:35.000Z",
+    "createdAt": "2026-06-24T05:57:32.490Z",
+    "versionId": "52306e44-39cc-455a-b948-f3a59eb2b43c",
+    "workflowId": "8cCTq64abzpQZZ6V",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "hours"
+              }
+            ]
+          }
+        },
+        "id": "ebf888ab-1b67-49dc-b91c-4cf33412167c",
+        "name": "Schedule Trigger",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          -2224,
+          208
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "c1",
+                "name": "strapiurl",
+                "value": "https://strapi.frontieradvice.tech",
+                "type": "string"
+              },
+              {
+                "id": "c2",
+                "name": "capturedat",
+                "value": "={{ $now.toISO() }}",
+                "type": "string"
+              },
+              {
+                "id": "c3",
+                "name": "openmeteo_base",
+                "value": "https://api.open-meteo.com/v1/forecast",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "d85ae2b0-3596-4264-8755-a51c0414dd8d",
+        "name": "Set Config",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -2016,
+          208
+        ]
+      },
+      {
+        "parameters": {
+          "url": "={{ $json.strapiurl }}/api/paso-fronterizos",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "strapiTokenApi",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "filters[activo][$eq]",
+                "value": "true"
+              },
+              {
+                "name": "fields[0]",
+                "value": "id"
+              },
+              {
+                "name": "fields[1]",
+                "value": "nombre_oficial"
+              },
+              {
+                "name": "fields[2]",
+                "value": "codigo_fuente"
+              },
+              {
+                "name": "fields[3]",
+                "value": "latitud"
+              },
+              {
+                "name": "fields[4]",
+                "value": "longitud"
+              },
+              {
+                "name": "fields[5]",
+                "value": "documentId"
+              },
+              {
+                "name": "pagination[pageSize]",
+                "value": "100"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer b4748a0ff4611d007369a5119c5d70450595cdee7e6f9431a3891b5c2a16c58d5fcdbfef2cb5c1dafc30c244f43a0769bf9aab2e3daf64d98bed68e33100e22cae1a03147cd754469246db07962c0a75becb3a187b6dcd4ac413921e822b96f0f6789c2749a4e77d82dbc88ccf10a7437b29c87c7dd4f9b6875627c62c3d03e2"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "94053725-da18-492f-ae94-a8db9905767d",
+        "name": "Obtener Pasos Activos",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -1792,
+          208
+        ],
+        "credentials": {
+          "strapiTokenApi": {
+            "id": "eUSeEuEvTFDfOYVR",
+            "name": "Strapi FrontierAdvice"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "conditions": [
+              {
+                "id": "d1",
+                "leftValue": "={{ $json.data?.length ?? 0 }}",
+                "rightValue": 0,
+                "operator": {
+                  "type": "number",
+                  "operation": "gt"
+                }
+              }
+            ],
+            "combinator": "and",
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            }
+          },
+          "options": {}
+        },
+        "id": "9e7aa5bc-2805-4ff4-86a0-7aca3cc677c9",
+        "name": "IF Hay Pasos",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -1568,
+          208
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "1049f1fb-0760-4f8c-bf2e-e2d83a54c405",
+        "name": "Log Sin Pasos",
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
+        "position": [
+          -1344,
+          320
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "\nconst config = $('Set Config').first().json;\nconst pasos = $input.first().json.data ?? [];\n\nreturn pasos.map(p => ({\n  json: {\n    paso_id: p.id,\n    paso_documentId: p.documentId,\n    nombre: p.nombre_oficial,\n    codigo_fuente: p.codigo_fuente,\n    latitud: p.latitud,\n    longitud: p.longitud,\n    strapiurl: config.strapiurl,\n    capturedat: config.capturedat,\n    openmeteo_base: config.openmeteo_base\n  }\n}));"
+        },
+        "id": "ccd9f3fa-387b-4e2a-bd61-dde3fff8d255",
+        "name": "Splitear Pasos",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1344,
+          96
+        ]
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "b21fcf82-a3cd-482e-87cd-95d0c92c22d7",
+        "name": "Loop Paso x Paso",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          -1072,
+          96
+        ]
+      },
+      {
+        "parameters": {
+          "url": "={{ $json.openmeteo_base }}",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "latitude",
+                "value": "={{ $json.latitud }}"
+              },
+              {
+                "name": "longitude",
+                "value": "={{ $json.longitud }}"
+              },
+              {
+                "name": "current",
+                "value": "temperature_2m,wind_speed_10m,weathercode,precipitation,relative_humidity_2m"
+              },
+              {
+                "name": "daily",
+                "value": "temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max,weathercode"
+              },
+              {
+                "name": "forecast_days",
+                "value": "4"
+              },
+              {
+                "name": "timezone",
+                "value": "America/Santiago"
+              },
+              {
+                "name": "wind_speed_unit",
+                "value": "kmh"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a5eafa70-3c4e-4eac-95fc-a299eac32b46",
+        "name": "Consultar Open-Meteo",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -848,
+          112
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "\nconst paso   = $('Loop Paso x Paso').item.json;\nconst meteo  = $input.item.json;\nconst curr   = meteo.current ?? {};\nconst daily  = meteo.daily  ?? {};\n\nconst wmoLabel = (code) => {\n  if (code === 0)              return 'Despejado';\n  if (code <= 3)               return 'Parcialmente nublado';\n  if (code <= 48)              return 'Niebla';\n  if (code <= 67)              return 'Lluvia';\n  if (code <= 77)              return 'Nieve';\n  if (code <= 82)              return 'Lluvia intensa';\n  if (code <= 99)              return 'Tormenta';\n  return 'Desconocido';\n};\n\nconst riskLevel = (code, viento) => {\n  if ([71,72,73,75,77,85,86].includes(code))  return 'Alto';\n  if ([95,96,99].includes(code))               return 'Alto';\n  if (viento > 100)                            return 'Alto';\n  if ([61,63,65,80,81,82].includes(code))      return 'Medio';\n  if (viento > 60)                             return 'Medio';\n  return 'Bajo';\n};\n\nconst days = (daily.time ?? []).slice(1, 4).map((fecha, i) => ({\n  fecha:            fecha,\n  temp_max:         daily.temperature_2m_max?.[i+1] ?? null,\n  temp_min:         daily.temperature_2m_min?.[i+1] ?? null,\n  precipitacion:    daily.precipitation_sum?.[i+1]  ?? null,\n  viento_max:       daily.wind_speed_10m_max?.[i+1] ?? null,\n  weathercode:      daily.weathercode?.[i+1]         ?? null,\n  descripcion:      wmoLabel(daily.weathercode?.[i+1] ?? 0),\n  nivel_riesgo:     riskLevel(daily.weathercode?.[i+1] ?? 0, daily.wind_speed_10m_max?.[i+1] ?? 0)\n}));\n\nconst wcode  = curr.weathercode ?? 0;\nconst viento = curr.wind_speed_10m ?? 0;\n\nreturn [{\n  json: {\n    paso_id: paso.paso_id,\n    paso_documentId: paso.paso_documentId,\n    nombre: paso.nombre,\n    codigo_fuente: paso.codigo_fuente,\n    strapiurl: paso.strapiurl,\n    capturedat: paso.capturedat,\n    temperatura_actual: curr.temperature_2m ?? null,\n    humedad_actual: curr.relative_humidity_2m ?? null,\n    viento_actual: viento,\n    precipitacion_actual: curr.precipitation ?? null,\n    weathercode: wcode,\n    descripcion_actual: wmoLabel(wcode),\n    nivel_riesgo_actual: riskLevel(wcode, viento),\n    pronostico_3dias: days\n  }\n}];\n"
+        },
+        "id": "6dfa8bf3-25fb-405f-9881-a5e36e3f4870",
+        "name": "Transformar Respuesta",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -624,
+          112
+        ]
+      },
+      {
+        "parameters": {
+          "url": "={{ $json.strapiurl }}/api/clima-actuals",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "strapiTokenApi",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "filters[paso_fronterizo][id][$eq]",
+                "value": "={{ $json.paso_id }}"
+              },
+              {
+                "name": "fields[0]",
+                "value": "id"
+              },
+              {
+                "name": "fields[1]",
+                "value": "documentId"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer b4748a0ff4611d007369a5119c5d70450595cdee7e6f9431a3891b5c2a16c58d5fcdbfef2cb5c1dafc30c244f43a0769bf9aab2e3daf64d98bed68e33100e22cae1a03147cd754469246db07962c0a75becb3a187b6dcd4ac413921e822b96f0f6789c2749a4e77d82dbc88ccf10a7437b29c87c7dd4f9b6875627c62c3d03e2"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "8adfd422-2037-45f6-85cf-44a29fe7526b",
+        "name": "Buscar ClimaActual Existente",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -400,
+          112
+        ],
+        "credentials": {
+          "strapiTokenApi": {
+            "id": "eUSeEuEvTFDfOYVR",
+            "name": "Strapi FrontierAdvice"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "conditions": [
+              {
+                "id": "e1",
+                "leftValue": "={{ $json.data?.length ?? 0 }}",
+                "rightValue": 0,
+                "operator": {
+                  "type": "number",
+                  "operation": "gt"
+                }
+              }
+            ],
+            "combinator": "and",
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 1
+            }
+          },
+          "options": {}
+        },
+        "id": "f82cc90e-8c44-47ab-8414-841450297279",
+        "name": "IF Ya Existe Clima",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -176,
+          112
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const clima = $('Transformar Respuesta').item.json;\nconst existe = $('Buscar ClimaActual Existente').item.json;\n\nconst clima_id = existe.data?.[0]?.id ?? null;\nconst clima_documentId = existe.data?.[0]?.documentId ?? null;\n\nreturn [{\n  json: {\n    ...clima,\n    clima_id,\n    clima_documentId\n  }\n}];"
+        },
+        "id": "99356577-d4ff-4dbe-b593-647a932374a1",
+        "name": "Merge Clima + ID",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          80,
+          96
+        ]
+      },
+      {
+        "parameters": {
+          "method": "PUT",
+          "url": "={{ $json.strapiurl }}/api/clima-actuals/{{ $json.clima_documentId }}",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "strapiTokenApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Authorization",
+                "value": "=Bearer b4748a0ff4611d007369a5119c5d70450595cdee7e6f9431a3891b5c2a16c58d5fcdbfef2cb5c1dafc30c244f43a0769bf9aab2e3daf64d98bed68e33100e22cae1a03147cd754469246db07962c0a75becb3a187b6dcd4ac413921e822b96f0f6789c2749a4e77d82dbc88ccf10a7437b29c87c7dd4f9b6875627c62c3d03e2"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify({\n  data: {\n    paso_fronterizo: {\n      connect: [\n        { documentId: $json.paso_documentId }\n      ]\n    },\n    temperatura_actual: $json.temperatura_actual,\n    humedad_actual: $json.humedad_actual,\n    viento_actual: $json.viento_actual,\n    precipitacion_actual: $json.precipitacion_actual,\n    weathercode: $json.weathercode,\n    descripcion_actual: $json.descripcion_actual,\n    nivel_riesgo_actual: $json.nivel_riesgo_actual,\n    pronostico_3dias: $json.pronostico_3dias,\n    capturado_en: $json.capturedat\n  }\n}) }}",
+          "options": {}
+        },
+        "id": "33d209f2-7c74-4240-9710-25110abfca03",
+        "name": "PUT Actualizar Clima",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          288,
+          96
+        ],
+        "credentials": {
+          "strapiTokenApi": {
+            "id": "eUSeEuEvTFDfOYVR",
+            "name": "Strapi FrontierAdvice"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $('Transformar Respuesta').item.json.strapiurl }}/api/clima-actuals",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "strapiTokenApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Authorization",
+                "value": "=Bearer b4748a0ff4611d007369a5119c5d70450595cdee7e6f9431a3891b5c2a16c58d5fcdbfef2cb5c1dafc30c244f43a0769bf9aab2e3daf64d98bed68e33100e22cae1a03147cd754469246db07962c0a75becb3a187b6dcd4ac413921e822b96f0f6789c2749a4e77d82dbc88ccf10a7437b29c87c7dd4f9b6875627c62c3d03e2"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify({\n  data: {\n    paso_fronterizo: {\n      connect: [\n        { documentId: $('Transformar Respuesta').item.json.paso_documentId }\n      ]\n    },\n    temperatura_actual: $('Transformar Respuesta').item.json.temperatura_actual,\n    humedad_actual: $('Transformar Respuesta').item.json.humedad_actual,\n    viento_actual: $('Transformar Respuesta').item.json.viento_actual,\n    precipitacion_actual: $('Transformar Respuesta').item.json.precipitacion_actual,\n    weathercode: $('Transformar Respuesta').item.json.weathercode,\n    descripcion_actual: $('Transformar Respuesta').item.json.descripcion_actual,\n    nivel_riesgo_actual: $('Transformar Respuesta').item.json.nivel_riesgo_actual,\n    pronostico_3dias: $('Transformar Respuesta').item.json.pronostico_3dias,\n    capturado_en: $('Transformar Respuesta').item.json.capturedat\n  }\n}) }}",
+          "options": {}
+        },
+        "id": "9c6ab620-a979-4b67-b746-bb6b7b0f20e3",
+        "name": "POST Crear Clima",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          192,
+          288
+        ],
+        "credentials": {
+          "strapiTokenApi": {
+            "id": "eUSeEuEvTFDfOYVR",
+            "name": "Strapi FrontierAdvice"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "id": "6099c077-c0a1-4aed-876c-d03667e8249a",
+        "name": "Volver al Loop",
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
+        "position": [
+          496,
+          288
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "4bd0658d-bb60-4b58-b62d-3d6cc0552599",
+        "name": "Loop Finalizado",
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
+        "position": [
+          -848,
+          -64
+        ]
+      }
+    ],
+    "connections": {
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Set Config",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Set Config": {
+        "main": [
+          [
+            {
+              "node": "Obtener Pasos Activos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Obtener Pasos Activos": {
+        "main": [
+          [
+            {
+              "node": "IF Hay Pasos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF Hay Pasos": {
+        "main": [
+          [
+            {
+              "node": "Splitear Pasos",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Log Sin Pasos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Splitear Pasos": {
+        "main": [
+          [
+            {
+              "node": "Loop Paso x Paso",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Paso x Paso": {
+        "main": [
+          [
+            {
+              "node": "Loop Finalizado",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Consultar Open-Meteo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Consultar Open-Meteo": {
+        "main": [
+          [
+            {
+              "node": "Transformar Respuesta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Transformar Respuesta": {
+        "main": [
+          [
+            {
+              "node": "Buscar ClimaActual Existente",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Buscar ClimaActual Existente": {
+        "main": [
+          [
+            {
+              "node": "IF Ya Existe Clima",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF Ya Existe Clima": {
+        "main": [
+          [
+            {
+              "node": "Merge Clima + ID",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "POST Crear Clima",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge Clima + ID": {
+        "main": [
+          [
+            {
+              "node": "PUT Actualizar Clima",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "PUT Actualizar Clima": {
+        "main": [
+          [
+            {
+              "node": "Volver al Loop",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "POST Crear Clima": {
+        "main": [
+          [
+            {
+              "node": "Volver al Loop",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Volver al Loop": {
+        "main": [
+          [
+            {
+              "node": "Loop Paso x Paso",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Nyxu Infinity",
+    "name": "Version 52306e44",
+    "description": "",
+    "autosaved": true,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-06-24T05:57:35.208Z",
+        "id": 75,
+        "workflowId": "8cCTq64abzpQZZ6V",
+        "versionId": "52306e44-39cc-455a-b948-f3a59eb2b43c",
+        "event": "activated",
+        "userId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
+      }
+    ]
+  },
+  "activeVersionId": "52306e44-39cc-455a-b948-f3a59eb2b43c",
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Config": {
+      "main": [
+        [
+          {
+            "node": "Obtener Pasos Activos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener Pasos Activos": {
+      "main": [
+        [
+          {
+            "node": "IF Hay Pasos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Hay Pasos": {
+      "main": [
+        [
+          {
+            "node": "Splitear Pasos",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Sin Pasos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Splitear Pasos": {
+      "main": [
+        [
+          {
+            "node": "Loop Paso x Paso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Paso x Paso": {
+      "main": [
+        [
+          {
+            "node": "Loop Finalizado",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Consultar Open-Meteo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar Open-Meteo": {
+      "main": [
+        [
+          {
+            "node": "Transformar Respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transformar Respuesta": {
+      "main": [
+        [
+          {
+            "node": "Buscar ClimaActual Existente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar ClimaActual Existente": {
+      "main": [
+        [
+          {
+            "node": "IF Ya Existe Clima",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Ya Existe Clima": {
+      "main": [
+        [
+          {
+            "node": "Merge Clima + ID",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "POST Crear Clima",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Clima + ID": {
+      "main": [
+        [
+          {
+            "node": "PUT Actualizar Clima",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PUT Actualizar Clima": {
+      "main": [
+        [
+          {
+            "node": "Volver al Loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST Crear Clima": {
+      "main": [
+        [
+          {
+            "node": "Volver al Loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Volver al Loop": {
+      "main": [
+        [
+          {
+            "node": "Loop Paso x Paso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-06-24T02:50:43.455Z",
+  "description": null,
+  "id": "8cCTq64abzpQZZ6V",
+  "isArchived": false,
+  "meta": null,
+  "name": "WF05-Clima OpenMeteo",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "id": "ebf888ab-1b67-49dc-b91c-4cf33412167c",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -2224,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c1",
+              "name": "strapiurl",
+              "value": "https://strapi.frontieradvice.tech",
+              "type": "string"
+            },
+            {
+              "id": "c2",
+              "name": "capturedat",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "c3",
+              "name": "openmeteo_base",
+              "value": "https://api.open-meteo.com/v1/forecast",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d85ae2b0-3596-4264-8755-a51c0414dd8d",
+      "name": "Set Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2016,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.strapiurl }}/api/paso-fronterizos",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filters[activo][$eq]",
+              "value": "true"
+            },
+            {
+              "name": "fields[0]",
+              "value": "id"
+            },
+            {
+              "name": "fields[1]",
+              "value": "nombre_oficial"
+            },
+            {
+              "name": "fields[2]",
+              "value": "codigo_fuente"
+            },
+            {
+              "name": "fields[3]",
+              "value": "latitud"
+            },
+            {
+              "name": "fields[4]",
+              "value": "longitud"
+            },
+            {
+              "name": "fields[5]",
+              "value": "documentId"
+            },
+            {
+              "name": "pagination[pageSize]",
+              "value": "100"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer b4748a0ff4611d007369a5119c5d70450595cdee7e6f9431a3891b5c2a16c58d5fcdbfef2cb5c1dafc30c244f43a0769bf9aab2e3daf64d98bed68e33100e22cae1a03147cd754469246db07962c0a75becb3a187b6dcd4ac413921e822b96f0f6789c2749a4e77d82dbc88ccf10a7437b29c87c7dd4f9b6875627c62c3d03e2"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "94053725-da18-492f-ae94-a8db9905767d",
+      "name": "Obtener Pasos Activos",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1792,
+        208
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "d1",
+              "leftValue": "={{ $json.data?.length ?? 0 }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and",
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          }
+        },
+        "options": {}
+      },
+      "id": "9e7aa5bc-2805-4ff4-86a0-7aca3cc677c9",
+      "name": "IF Hay Pasos",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1568,
+        208
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "1049f1fb-0760-4f8c-bf2e-e2d83a54c405",
+      "name": "Log Sin Pasos",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -1344,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst config = $('Set Config').first().json;\nconst pasos = $input.first().json.data ?? [];\n\nreturn pasos.map(p => ({\n  json: {\n    paso_id: p.id,\n    paso_documentId: p.documentId,\n    nombre: p.nombre_oficial,\n    codigo_fuente: p.codigo_fuente,\n    latitud: p.latitud,\n    longitud: p.longitud,\n    strapiurl: config.strapiurl,\n    capturedat: config.capturedat,\n    openmeteo_base: config.openmeteo_base\n  }\n}));"
+      },
+      "id": "ccd9f3fa-387b-4e2a-bd61-dde3fff8d255",
+      "name": "Splitear Pasos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1344,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "b21fcf82-a3cd-482e-87cd-95d0c92c22d7",
+      "name": "Loop Paso x Paso",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -1072,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.openmeteo_base }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "latitude",
+              "value": "={{ $json.latitud }}"
+            },
+            {
+              "name": "longitude",
+              "value": "={{ $json.longitud }}"
+            },
+            {
+              "name": "current",
+              "value": "temperature_2m,wind_speed_10m,weathercode,precipitation,relative_humidity_2m"
+            },
+            {
+              "name": "daily",
+              "value": "temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max,weathercode"
+            },
+            {
+              "name": "forecast_days",
+              "value": "4"
+            },
+            {
+              "name": "timezone",
+              "value": "America/Santiago"
+            },
+            {
+              "name": "wind_speed_unit",
+              "value": "kmh"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a5eafa70-3c4e-4eac-95fc-a299eac32b46",
+      "name": "Consultar Open-Meteo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -848,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst paso   = $('Loop Paso x Paso').item.json;\nconst meteo  = $input.item.json;\nconst curr   = meteo.current ?? {};\nconst daily  = meteo.daily  ?? {};\n\nconst wmoLabel = (code) => {\n  if (code === 0)              return 'Despejado';\n  if (code <= 3)               return 'Parcialmente nublado';\n  if (code <= 48)              return 'Niebla';\n  if (code <= 67)              return 'Lluvia';\n  if (code <= 77)              return 'Nieve';\n  if (code <= 82)              return 'Lluvia intensa';\n  if (code <= 99)              return 'Tormenta';\n  return 'Desconocido';\n};\n\nconst riskLevel = (code, viento) => {\n  if ([71,72,73,75,77,85,86].includes(code))  return 'Alto';\n  if ([95,96,99].includes(code))               return 'Alto';\n  if (viento > 100)                            return 'Alto';\n  if ([61,63,65,80,81,82].includes(code))      return 'Medio';\n  if (viento > 60)                             return 'Medio';\n  return 'Bajo';\n};\n\nconst days = (daily.time ?? []).slice(1, 4).map((fecha, i) => ({\n  fecha:            fecha,\n  temp_max:         daily.temperature_2m_max?.[i+1] ?? null,\n  temp_min:         daily.temperature_2m_min?.[i+1] ?? null,\n  precipitacion:    daily.precipitation_sum?.[i+1]  ?? null,\n  viento_max:       daily.wind_speed_10m_max?.[i+1] ?? null,\n  weathercode:      daily.weathercode?.[i+1]         ?? null,\n  descripcion:      wmoLabel(daily.weathercode?.[i+1] ?? 0),\n  nivel_riesgo:     riskLevel(daily.weathercode?.[i+1] ?? 0, daily.wind_speed_10m_max?.[i+1] ?? 0)\n}));\n\nconst wcode  = curr.weathercode ?? 0;\nconst viento = curr.wind_speed_10m ?? 0;\n\nreturn [{\n  json: {\n    paso_id: paso.paso_id,\n    paso_documentId: paso.paso_documentId,\n    nombre: paso.nombre,\n    codigo_fuente: paso.codigo_fuente,\n    strapiurl: paso.strapiurl,\n    capturedat: paso.capturedat,\n    temperatura_actual: curr.temperature_2m ?? null,\n    humedad_actual: curr.relative_humidity_2m ?? null,\n    viento_actual: viento,\n    precipitacion_actual: curr.precipitation ?? null,\n    weathercode: wcode,\n    descripcion_actual: wmoLabel(wcode),\n    nivel_riesgo_actual: riskLevel(wcode, viento),\n    pronostico_3dias: days\n  }\n}];\n"
+      },
+      "id": "6dfa8bf3-25fb-405f-9881-a5e36e3f4870",
+      "name": "Transformar Respuesta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -624,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.strapiurl }}/api/clima-actuals",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filters[paso_fronterizo][id][$eq]",
+              "value": "={{ $json.paso_id }}"
+            },
+            {
+              "name": "fields[0]",
+              "value": "id"
+            },
+            {
+              "name": "fields[1]",
+              "value": "documentId"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer b4748a0ff4611d007369a5119c5d70450595cdee7e6f9431a3891b5c2a16c58d5fcdbfef2cb5c1dafc30c244f43a0769bf9aab2e3daf64d98bed68e33100e22cae1a03147cd754469246db07962c0a75becb3a187b6dcd4ac413921e822b96f0f6789c2749a4e77d82dbc88ccf10a7437b29c87c7dd4f9b6875627c62c3d03e2"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8adfd422-2037-45f6-85cf-44a29fe7526b",
+      "name": "Buscar ClimaActual Existente",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -400,
+        112
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "e1",
+              "leftValue": "={{ $json.data?.length ?? 0 }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and",
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          }
+        },
+        "options": {}
+      },
+      "id": "f82cc90e-8c44-47ab-8414-841450297279",
+      "name": "IF Ya Existe Clima",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -176,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const clima = $('Transformar Respuesta').item.json;\nconst existe = $('Buscar ClimaActual Existente').item.json;\n\nconst clima_id = existe.data?.[0]?.id ?? null;\nconst clima_documentId = existe.data?.[0]?.documentId ?? null;\n\nreturn [{\n  json: {\n    ...clima,\n    clima_id,\n    clima_documentId\n  }\n}];"
+      },
+      "id": "99356577-d4ff-4dbe-b593-647a932374a1",
+      "name": "Merge Clima + ID",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "={{ $json.strapiurl }}/api/clima-actuals/{{ $json.clima_documentId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer b4748a0ff4611d007369a5119c5d70450595cdee7e6f9431a3891b5c2a16c58d5fcdbfef2cb5c1dafc30c244f43a0769bf9aab2e3daf64d98bed68e33100e22cae1a03147cd754469246db07962c0a75becb3a187b6dcd4ac413921e822b96f0f6789c2749a4e77d82dbc88ccf10a7437b29c87c7dd4f9b6875627c62c3d03e2"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  data: {\n    paso_fronterizo: {\n      connect: [\n        { documentId: $json.paso_documentId }\n      ]\n    },\n    temperatura_actual: $json.temperatura_actual,\n    humedad_actual: $json.humedad_actual,\n    viento_actual: $json.viento_actual,\n    precipitacion_actual: $json.precipitacion_actual,\n    weathercode: $json.weathercode,\n    descripcion_actual: $json.descripcion_actual,\n    nivel_riesgo_actual: $json.nivel_riesgo_actual,\n    pronostico_3dias: $json.pronostico_3dias,\n    capturado_en: $json.capturedat\n  }\n}) }}",
+        "options": {}
+      },
+      "id": "33d209f2-7c74-4240-9710-25110abfca03",
+      "name": "PUT Actualizar Clima",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        288,
+        96
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Transformar Respuesta').item.json.strapiurl }}/api/clima-actuals",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "strapiTokenApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer b4748a0ff4611d007369a5119c5d70450595cdee7e6f9431a3891b5c2a16c58d5fcdbfef2cb5c1dafc30c244f43a0769bf9aab2e3daf64d98bed68e33100e22cae1a03147cd754469246db07962c0a75becb3a187b6dcd4ac413921e822b96f0f6789c2749a4e77d82dbc88ccf10a7437b29c87c7dd4f9b6875627c62c3d03e2"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  data: {\n    paso_fronterizo: {\n      connect: [\n        { documentId: $('Transformar Respuesta').item.json.paso_documentId }\n      ]\n    },\n    temperatura_actual: $('Transformar Respuesta').item.json.temperatura_actual,\n    humedad_actual: $('Transformar Respuesta').item.json.humedad_actual,\n    viento_actual: $('Transformar Respuesta').item.json.viento_actual,\n    precipitacion_actual: $('Transformar Respuesta').item.json.precipitacion_actual,\n    weathercode: $('Transformar Respuesta').item.json.weathercode,\n    descripcion_actual: $('Transformar Respuesta').item.json.descripcion_actual,\n    nivel_riesgo_actual: $('Transformar Respuesta').item.json.nivel_riesgo_actual,\n    pronostico_3dias: $('Transformar Respuesta').item.json.pronostico_3dias,\n    capturado_en: $('Transformar Respuesta').item.json.capturedat\n  }\n}) }}",
+        "options": {}
+      },
+      "id": "9c6ab620-a979-4b67-b746-bb6b7b0f20e3",
+      "name": "POST Crear Clima",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        192,
+        288
+      ],
+      "credentials": {
+        "strapiTokenApi": {
+          "id": "eUSeEuEvTFDfOYVR",
+          "name": "Strapi FrontierAdvice"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "6099c077-c0a1-4aed-876c-d03667e8249a",
+      "name": "Volver al Loop",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        496,
+        288
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "4bd0658d-bb60-4b58-b62d-3d6cc0552599",
+      "name": "Loop Finalizado",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -848,
+        -64
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-06-24T02:50:43.460Z",
+      "createdAt": "2026-06-24T02:50:43.460Z",
+      "role": "workflow:owner",
+      "workflowId": "8cCTq64abzpQZZ6V",
+      "projectId": "0mwVSLULhlB6ku2N",
+      "project": {
+        "updatedAt": "2026-05-08T10:08:26.296Z",
+        "createdAt": "2026-05-08T08:11:46.302Z",
+        "id": "0mwVSLULhlB6ku2N",
+        "name": "Nyxu Infinity <nyxuofficial@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
+      }
+    }
+  ],
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2026-06-28T13:15:03.739Z",
+  "versionCounter": 112,
+  "versionId": "52306e44-39cc-455a-b948-f3a59eb2b43c"
+}
