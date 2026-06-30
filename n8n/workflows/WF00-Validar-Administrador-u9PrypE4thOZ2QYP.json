@@ -1,0 +1,606 @@
+{
+  "active": true,
+  "activeVersion": {
+    "updatedAt": "2026-06-26T12:06:40.000Z",
+    "createdAt": "2026-06-26T10:21:51.072Z",
+    "versionId": "c294f4a3-710e-4e48-a7cc-fe3272419599",
+    "workflowId": "u9PrypE4thOZ2QYP",
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "a15ee288-7314-4517-8408-94909e6c3b41",
+        "name": "When Executed by Another Workflow",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          -1104,
+          192
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const input = $json || {};\nconst jwt = (input.jwt || '').toString().trim();\nconst admin_key = (input.admin_key || '').toString().trim();\nconst ip = (input.ip || '').toString();\nconst user_agent = (input.user_agent || '').toString();\n\nconst errores = [];\nif (!jwt) errores.push('Falta JWT');\nif (!admin_key) errores.push('Falta X-ADMIN-KEY');\n\nreturn [{ json: { jwt, admin_key, ip, user_agent, errores, entrada_valida: errores.length === 0 } }];"
+        },
+        "id": "f439b3ba-7e3e-42b9-813b-93bde1161e89",
+        "name": "Normalizar Entrada",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -880,
+          192
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "return [{ json: { autorizado: false, codigo: 400, motivo: 'Parametros invalidos', detalle: $json.errores, usuario: null, rol: null, ip: $json.ip, user_agent: $json.user_agent } }];"
+        },
+        "id": "ed378f19-1d62-48dc-b8d6-b61063574986",
+        "name": "Salida 400",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -432,
+          288
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const esperado = (\"frontier_advice_admin_2026\" || '').toString().trim();\nconst recibido = ($json.admin_key || '').toString().trim();\nconst ok = !!esperado && esperado === recibido;\nreturn [{ json: { ...$json, admin_key_valida: ok } }];"
+        },
+        "id": "18a9e572-fa5b-46f0-8ad5-0b95216acab6",
+        "name": "Validar Admin Secret",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -432,
+          96
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "return [{ json: { autorizado: false, codigo: 403, motivo: 'X-ADMIN-KEY invalido', usuario: null, rol: null, ip: $json.ip, user_agent: $json.user_agent } }];"
+        },
+        "id": "11b7fdf6-4411-4562-89e5-fbe5068fcb43",
+        "name": "Salida 403 Secret",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          16,
+          192
+        ]
+      },
+      {
+        "parameters": {
+          "url": "=https://strapi.frontieradvice.tech/api/users/me?populate=role",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{ $json.jwt }}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "15c700c4-8eea-4b77-9baf-3cf343962628",
+        "name": "GET Usuario JWT",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          16,
+          0
+        ],
+        "continueOnFail": true
+      },
+      {
+        "parameters": {
+          "jsCode": "const u = $json || {};\nconst base = $('Validar Admin Secret').item.json;\nconst rolesPermitidos = ['admin', 'superadmin'];\nconst rol = (u.role?.type || u.role?.name || '').toString().toLowerCase();\nconst jwtValido = !u.error && !!u.id;\nconst autorizado = jwtValido && rolesPermitidos.includes(rol);\n\nreturn [{ json: {\n  autorizado,\n  codigo: autorizado ? 200 : (jwtValido ? 403 : 401),\n  motivo: autorizado ? 'OK' : (jwtValido ? 'Rol sin permisos' : 'JWT invalido o expirado'),\n  usuario: jwtValido ? { id: u.id, email: u.email, username: u.username } : null,\n  rol: rol || null,\n  ip: base.ip,\n  user_agent: base.user_agent\n} }];"
+        },
+        "id": "72cc938a-ca9f-445f-a168-6eb68949a2fa",
+        "name": "Construir Resultado Autorizacion",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          240,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "f168c6e5-7945-43fd-a4ef-bd4da6be7bac",
+                "leftValue": "={{ $json.entrada_valida }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          -656,
+          192
+        ],
+        "id": "5985d8b4-c83c-4788-9ebe-ee6616a98084",
+        "name": "Entrada Valida?"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "f168c6e5-7945-43fd-a4ef-bd4da6be7bac",
+                "leftValue": "={{ $json.entrada_valida }}",
+                "rightValue": "tr",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "ab3d6697-7b16-4bc6-99c3-052c6be27a79",
+                "leftValue": "={{ $json.admin_key_valida }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          -208,
+          96
+        ],
+        "id": "5f6ed04e-dbc3-4b93-be94-60ccaa77cab6",
+        "name": "Entrada Valida?1"
+      }
+    ],
+    "connections": {
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Normalizar Entrada",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Normalizar Entrada": {
+        "main": [
+          [
+            {
+              "node": "Entrada Valida?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Validar Admin Secret": {
+        "main": [
+          [
+            {
+              "node": "Entrada Valida?1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GET Usuario JWT": {
+        "main": [
+          [
+            {
+              "node": "Construir Resultado Autorizacion",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Entrada Valida?": {
+        "main": [
+          [
+            {
+              "node": "Validar Admin Secret",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Salida 400",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Entrada Valida?1": {
+        "main": [
+          [
+            {
+              "node": "GET Usuario JWT",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Salida 403 Secret",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Nyxu Infinity",
+    "name": "Version c294f4a3",
+    "description": "",
+    "autosaved": true,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-06-26T12:06:40.464Z",
+        "id": 126,
+        "workflowId": "u9PrypE4thOZ2QYP",
+        "versionId": "c294f4a3-710e-4e48-a7cc-fe3272419599",
+        "event": "activated",
+        "userId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
+      }
+    ]
+  },
+  "activeVersionId": "c294f4a3-710e-4e48-a7cc-fe3272419599",
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Normalizar Entrada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalizar Entrada": {
+      "main": [
+        [
+          {
+            "node": "Entrada Valida?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Admin Secret": {
+      "main": [
+        [
+          {
+            "node": "Entrada Valida?1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET Usuario JWT": {
+      "main": [
+        [
+          {
+            "node": "Construir Resultado Autorizacion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Entrada Valida?": {
+      "main": [
+        [
+          {
+            "node": "Validar Admin Secret",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Salida 400",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Entrada Valida?1": {
+      "main": [
+        [
+          {
+            "node": "GET Usuario JWT",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Salida 403 Secret",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-06-26T08:50:45.971Z",
+  "description": null,
+  "id": "u9PrypE4thOZ2QYP",
+  "isArchived": false,
+  "meta": null,
+  "name": "WF00-Validar-Administrador",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "a15ee288-7314-4517-8408-94909e6c3b41",
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1104,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $json || {};\nconst jwt = (input.jwt || '').toString().trim();\nconst admin_key = (input.admin_key || '').toString().trim();\nconst ip = (input.ip || '').toString();\nconst user_agent = (input.user_agent || '').toString();\n\nconst errores = [];\nif (!jwt) errores.push('Falta JWT');\nif (!admin_key) errores.push('Falta X-ADMIN-KEY');\n\nreturn [{ json: { jwt, admin_key, ip, user_agent, errores, entrada_valida: errores.length === 0 } }];"
+      },
+      "id": "f439b3ba-7e3e-42b9-813b-93bde1161e89",
+      "name": "Normalizar Entrada",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -880,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { autorizado: false, codigo: 400, motivo: 'Parametros invalidos', detalle: $json.errores, usuario: null, rol: null, ip: $json.ip, user_agent: $json.user_agent } }];"
+      },
+      "id": "ed378f19-1d62-48dc-b8d6-b61063574986",
+      "name": "Salida 400",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -432,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const esperado = (\"frontier_advice_admin_2026\" || '').toString().trim();\nconst recibido = ($json.admin_key || '').toString().trim();\nconst ok = !!esperado && esperado === recibido;\nreturn [{ json: { ...$json, admin_key_valida: ok } }];"
+      },
+      "id": "18a9e572-fa5b-46f0-8ad5-0b95216acab6",
+      "name": "Validar Admin Secret",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -432,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { autorizado: false, codigo: 403, motivo: 'X-ADMIN-KEY invalido', usuario: null, rol: null, ip: $json.ip, user_agent: $json.user_agent } }];"
+      },
+      "id": "11b7fdf6-4411-4562-89e5-fbe5068fcb43",
+      "name": "Salida 403 Secret",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://strapi.frontieradvice.tech/api/users/me?populate=role",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $json.jwt }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "15c700c4-8eea-4b77-9baf-3cf343962628",
+      "name": "GET Usuario JWT",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        16,
+        0
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const u = $json || {};\nconst base = $('Validar Admin Secret').item.json;\nconst rolesPermitidos = ['admin', 'superadmin'];\nconst rol = (u.role?.type || u.role?.name || '').toString().toLowerCase();\nconst jwtValido = !u.error && !!u.id;\nconst autorizado = jwtValido && rolesPermitidos.includes(rol);\n\nreturn [{ json: {\n  autorizado,\n  codigo: autorizado ? 200 : (jwtValido ? 403 : 401),\n  motivo: autorizado ? 'OK' : (jwtValido ? 'Rol sin permisos' : 'JWT invalido o expirado'),\n  usuario: jwtValido ? { id: u.id, email: u.email, username: u.username } : null,\n  rol: rol || null,\n  ip: base.ip,\n  user_agent: base.user_agent\n} }];"
+      },
+      "id": "72cc938a-ca9f-445f-a168-6eb68949a2fa",
+      "name": "Construir Resultado Autorizacion",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f168c6e5-7945-43fd-a4ef-bd4da6be7bac",
+              "leftValue": "={{ $json.entrada_valida }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -656,
+        192
+      ],
+      "id": "5985d8b4-c83c-4788-9ebe-ee6616a98084",
+      "name": "Entrada Valida?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f168c6e5-7945-43fd-a4ef-bd4da6be7bac",
+              "leftValue": "={{ $json.entrada_valida }}",
+              "rightValue": "tr",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "ab3d6697-7b16-4bc6-99c3-052c6be27a79",
+              "leftValue": "={{ $json.admin_key_valida }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -208,
+        96
+      ],
+      "id": "5f6ed04e-dbc3-4b93-be94-60ccaa77cab6",
+      "name": "Entrada Valida?1"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-06-26T08:50:45.977Z",
+      "createdAt": "2026-06-26T08:50:45.977Z",
+      "role": "workflow:owner",
+      "workflowId": "u9PrypE4thOZ2QYP",
+      "projectId": "0mwVSLULhlB6ku2N",
+      "project": {
+        "updatedAt": "2026-05-08T10:08:26.296Z",
+        "createdAt": "2026-05-08T08:11:46.302Z",
+        "id": "0mwVSLULhlB6ku2N",
+        "name": "Nyxu Infinity <nyxuofficial@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "c8525d44-4b2a-4510-b8c4-de2a1a67fa7e"
+      }
+    }
+  ],
+  "staticData": null,
+  "tags": [
+    {
+      "updatedAt": "2026-06-26T08:24:33.605Z",
+      "createdAt": "2026-06-26T08:24:33.605Z",
+      "id": "0RPis853qjZHla4O",
+      "name": "admin"
+    },
+    {
+      "updatedAt": "2026-06-26T08:50:44.362Z",
+      "createdAt": "2026-06-26T08:50:44.362Z",
+      "id": "xt9kYlDJXhYXZA9i",
+      "name": "reusable"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2026-06-26T10:21:55.319Z",
+  "versionCounter": 55,
+  "versionId": "c294f4a3-710e-4e48-a7cc-fe3272419599"
+}
