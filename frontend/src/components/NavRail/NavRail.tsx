@@ -15,6 +15,7 @@ import {
   Shield,
   Route,
   DollarSign,
+  FileText,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import styles from './NavRail.module.css';
@@ -33,6 +34,7 @@ const navItemsTop = [
 const navItemsBottom = [
   { href: '/riesgo',        icon: TriangleAlert, label: 'Riesgo' },
   { href: '/conversiones',  icon: DollarSign,    label: 'Conversiones' },
+  { href: '/requisitos',    icon: FileText,      label: 'Trámites' },
   { href: '/configuracion', icon: Settings,      label: 'Configuración' },
 ];
 

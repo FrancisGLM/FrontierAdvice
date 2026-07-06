@@ -3,14 +3,16 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowRightLeft, DollarSign, Activity, RefreshCw } from 'lucide-react';
 
+const CURRENCIES = ['USD', 'CLP', 'ARS', 'PEN'];
+
 export function CurrencyConverter() {
   const [amount, setAmount] = useState<number | string>(100);
-  const [exchangeRate, setExchangeRate] = useState<{ compra: number; venta: number; fechaActualizacion: string } | null>(null);
+  const [exchangeRate, setExchangeRate] = useState<{ rates: Record<string, number>; fechaActualizacion: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   
-  // false = USD -> CLP, true = CLP -> USD
-  const [invert, setInvert] = useState(false);
+  const [fromCurrency, setFromCurrency] = useState('USD');
+  const [toCurrency, setToCurrency] = useState('CLP');
 
   useEffect(() => {
     fetchRate();
@@ -20,11 +22,20 @@ export function CurrencyConverter() {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('https://cl.dolarapi.com/v1/cotizaciones/usd');
+      // Temporal API for multiple currencies. Will be replaced with Strapi.
+      const res = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
       if (!res.ok) throw new Error('Error fetching rate');
       const data = await res.json();
-      setExchangeRate(data);
-      // Nota: Aquí en el futuro se hará la llamada al backend de Strapi
+      
+      setExchangeRate({
+        rates: {
+          USD: 1,
+          CLP: data.rates.CLP,
+          ARS: data.rates.ARS,
+          PEN: data.rates.PEN,
+        },
+        fechaActualizacion: new Date().toISOString()
+      });
     } catch (err) {
       setError('Error al obtener el tipo de cambio');
       console.error(err);
@@ -37,13 +48,23 @@ export function CurrencyConverter() {
     if (!exchangeRate || !amount || isNaN(Number(amount))) return 0;
     const value = Number(amount);
     
-    if (invert) {
-      // CLP to USD
-      return (value / exchangeRate.venta).toFixed(2);
-    } else {
-      // USD to CLP
-      return (value * exchangeRate.compra).toFixed(0);
+    const rateFrom = exchangeRate.rates[fromCurrency];
+    const rateTo = exchangeRate.rates[toCurrency];
+    
+    if (!rateFrom || !rateTo) return 0;
+
+    const result = (value / rateFrom) * rateTo;
+    
+    // Format depending on currency
+    if (toCurrency === 'USD' || toCurrency === 'PEN') {
+      return result.toFixed(2);
     }
+    return result.toFixed(0);
+  };
+
+  const handleSwap = () => {
+    setFromCurrency(toCurrency);
+    setToCurrency(fromCurrency);
   };
 
   return (
@@ -56,7 +77,7 @@ export function CurrencyConverter() {
             </div>
             Calculadora de Divisas
           </h2>
-          <p className="text-[var(--text-secondary)] mt-2">Convierte dólares a pesos chilenos y viceversa.</p>
+          <p className="text-[var(--text-secondary)] mt-2">Convierte entre CLP, ARS, PEN y USD en tiempo real.</p>
         </div>
         <button 
           onClick={fetchRate}
@@ -89,13 +110,19 @@ export function CurrencyConverter() {
                   className="bg-transparent border-none w-full outline-none text-2xl lg:text-3xl font-bold text-[var(--text-primary)]"
                   placeholder="0.00"
                 />
-                <span className="font-bold text-[var(--text-secondary)]">{invert ? 'CLP' : 'USD'}</span>
+                <select 
+                  value={fromCurrency}
+                  onChange={(e) => setFromCurrency(e.target.value)}
+                  className="bg-transparent font-bold text-[var(--text-secondary)] outline-none cursor-pointer"
+                >
+                  {CURRENCIES.map(c => <option key={c} value={c} className="bg-[var(--bg-solid)] text-[var(--text-primary)]">{c}</option>)}
+                </select>
               </div>
             </div>
 
             {/* Swap Button */}
             <button 
-              onClick={() => setInvert(!invert)}
+              onClick={handleSwap}
               className="w-12 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform shrink-0 z-10 -my-4 lg:my-0 lg:-mx-4"
             >
               <ArrowRightLeft size={20} className="lg:rotate-0 rotate-90" />
@@ -111,7 +138,13 @@ export function CurrencyConverter() {
                 <div className="w-full text-2xl lg:text-3xl font-bold text-[var(--text-primary)] overflow-hidden text-ellipsis">
                   {loading ? '...' : calculateResult()}
                 </div>
-                <span className="font-bold text-[var(--text-secondary)]">{invert ? 'USD' : 'CLP'}</span>
+                <select 
+                  value={toCurrency}
+                  onChange={(e) => setToCurrency(e.target.value)}
+                  className="bg-transparent font-bold text-[var(--text-secondary)] outline-none cursor-pointer"
+                >
+                  {CURRENCIES.map(c => <option key={c} value={c} className="bg-[var(--bg-solid)] text-[var(--text-primary)]">{c}</option>)}
+                </select>
               </div>
             </div>
           </div>
@@ -121,16 +154,13 @@ export function CurrencyConverter() {
            <div className="flex items-center gap-2 text-[var(--text-secondary)]">
               <Activity size={16} />
               <span>
-                Valor de DolarAPI: 
-                <span className="text-[var(--text-primary)] font-semibold ml-2">
-                   {loading ? '...' : `$${exchangeRate?.compra} (C) / $${exchangeRate?.venta} (V)`}
-                </span>
+                Referencia temporal (API Externa).
               </span>
            </div>
            {exchangeRate && (
              <div className="text-[var(--text-secondary)] text-xs sm:text-right">
                Última actualización:<br/>
-               {new Date(exchangeRate.fechaActualizacion).toLocaleString()}
+               {new Date(exchangeRate.fechaActualizacion).toLocaleString('es-CL')}
              </div>
            )}
         </div>
