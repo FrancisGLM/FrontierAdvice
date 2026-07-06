@@ -10,7 +10,7 @@ const MAX_REQUESTS_PER_WINDOW = 60; // 60 requests per minute per IP
 export function middleware(request: NextRequest) {
   // Only apply rate limiting to API routes
   if (request.nextUrl.pathname.startsWith('/api/')) {
-    const ip = request.ip ?? request.headers.get('x-forwarded-for') ?? 'unknown-ip';
+    const ip = request.headers.get('x-forwarded-for') ?? 'unknown-ip';
     const now = Date.now();
 
     const requestData = rateLimitMap.get(ip);
