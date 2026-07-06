@@ -1,0 +1,156 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-07-06T07:04:10.767Z",
+  "id": "fs2TmGJ5wpoZkCe2",
+  "isArchived": false,
+  "meta": null,
+  "name": "Test PPP",
+  "nodes": [
+    {
+      "parameters": {
+        "additionalFields": {}
+      },
+      "type": "@watzon/n8n-nodes-perplexity.perplexity",
+      "typeVersion": 1,
+      "position": [
+        -928,
+        -80
+      ],
+      "id": "63d44d45-7281-4cac-a6c3-ecd8139f93c5",
+      "name": "Perplexity"
+    },
+    {
+      "parameters": {
+        "messages": {
+          "message": [
+            {}
+          ]
+        },
+        "options": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.perplexity",
+      "typeVersion": 2,
+      "position": [
+        -704,
+        16
+      ],
+      "id": "c3bbe9b6-8cc9-4483-9290-7350d85c3dcf",
+      "name": "Message a model"
+    },
+    {
+      "parameters": {
+        "messages": {
+          "message": [
+            {}
+          ]
+        },
+        "options": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.perplexityTool",
+      "typeVersion": 2,
+      "position": [
+        -704,
+        -192
+      ],
+      "id": "f1a7843f-82bb-4632-903e-d78f712a574f",
+      "name": "Message a model in Perplexity"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -240,
+        -240
+      ],
+      "id": "252c8d4e-f262-4e41-b62c-89a99948a265",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -240,
+        16
+      ],
+      "id": "badd04eb-dff2-4d4b-b1b1-a344b02337cc",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "gkGbag9Eoxr0uPjN",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -384,
+        -32
+      ],
+      "id": "444fedb4-f3ec-4c2e-b59e-3ab7ed143705",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "lSu0LiqTeh12r5KI",
+          "name": "OpenAI account"
+        }
+      }
+    }
+  ],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-07-06T07:04:10.771Z",
+      "createdAt": "2026-07-06T07:04:10.771Z",
+      "role": "workflow:owner",
+      "workflowId": "fs2TmGJ5wpoZkCe2",
+      "projectId": "0mwVSLULhlB6ku2N"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-07-06T07:34:47.704Z",
+  "versionId": "1ac5cb4f-f10c-4864-9d7b-c6c1ef3af8e7"
+}
