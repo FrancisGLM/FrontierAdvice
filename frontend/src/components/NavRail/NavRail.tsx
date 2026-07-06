@@ -12,9 +12,9 @@ import {
   Sun,
   Moon,
   Mountain,
-  Bug,
   Shield,
   Route,
+  DollarSign,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import styles from './NavRail.module.css';
@@ -32,6 +32,7 @@ const navItemsTop = [
 
 const navItemsBottom = [
   { href: '/riesgo',        icon: TriangleAlert, label: 'Riesgo' },
+  { href: '/conversiones',  icon: DollarSign,    label: 'Conversiones' },
   { href: '/configuracion', icon: Settings,      label: 'Configuración' },
 ];
 

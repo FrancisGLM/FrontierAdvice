@@ -6,6 +6,7 @@ import WeatherForecast from './WeatherForecast';
 import CurrentWeather from './CurrentWeather';
 import PredictionBadge from './PredictionBadge';
 import styles from './PasoInfo.module.css';
+import { BorderInfoModal } from '@/components/BorderInfoModal';
 
 interface PasoInfoPanelProps {
   paso: PasoFronterizo | null;
@@ -68,6 +69,7 @@ function CountryFlag({ country }: { country: 'CL' | 'AR' | 'BO' | 'PE' }) {
 export default function PasoInfoPanel({ paso, onClose }: PasoInfoPanelProps) {
   const [activePaso, setActivePaso] = useState<PasoFronterizo | null>(paso);
   const [isMounted, setIsMounted] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   
   // Refs para alto rendimiento en mobile (evitar re-renders)
   const panelRef = useRef<HTMLElement>(null);
@@ -261,6 +263,15 @@ export default function PasoInfoPanel({ paso, onClose }: PasoInfoPanelProps) {
             </div>
           )}
 
+          {/* Botón Requisitos */}
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="w-full mt-2 mb-4 py-3 px-4 bg-[var(--bg-solid)] border border-[var(--border-strong)] hover:bg-[var(--border-strong)] text-[var(--text-primary)] rounded-xl font-medium transition-colors flex items-center justify-center gap-2"
+          >
+            <Info size={16} style={{ color: '#3b82f6' }} />
+            <span style={{ fontSize: '0.875rem' }}>Ver Requisitos Fronterizos</span>
+          </button>
+
           {/* Meta info */}
           <div className={styles.metaList}>
             {displayPaso.altitud && (
@@ -285,6 +296,8 @@ export default function PasoInfoPanel({ paso, onClose }: PasoInfoPanelProps) {
           <WeatherForecast pronostico={displayPaso.pronostico} />
         </div>
       </aside>
+
+      <BorderInfoModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
       {/* Mobile Backdrop */}
       <div 
