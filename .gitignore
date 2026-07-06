@@ -2,43 +2,54 @@
 .env
 .env.*
 !.env.example
+n8n/.env*
+strapi/.env*
+frontend/.env*
+waha/.env*
 
 # Node
 node_modules/
-npm-debug.log
-yarn-error.log
+n8n/node_modules/
+strapi/node_modules/
+frontend/node_modules/
+npm-debug.log*
+yarn-error.log*
+yarn-debug.log*
 
 # Mac/Windows
 .DS_Store
 Thumbs.db
 
 # N8N y Docker
-n8n/.env
-n8n/.env*
-n8n/node_modules/
 n8n/local-files/
 
 # Strapi
-strapi/.env
 strapi/.tmp/
 strapi/build/
 strapi/dist/
+strapi/public/uploads/
 
 # Frontend
-frontend/.env
-frontend/.env.local
 frontend/.next/
+frontend/out/
+frontend/build/
+frontend/tsconfig.tsbuildinfo
+frontend/.eslintcache
 
 # Logs
 n8n/*.log
 strapi/*.log
+frontend/*.log
+waha/*.log
 *.log
 
-# WAHA
-waha/.env*
-
 # Docs
-docs/*.txt
-docs/*.md
-docs/*.json
-docs
+docs/
+
+# AI
+.agents/
+
+# Archivos temporales o locales de prueba
+clima.json
+
+dump.sql

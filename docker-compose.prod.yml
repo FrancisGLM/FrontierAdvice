@@ -1,0 +1,92 @@
+services:
+  strapiDB:
+    container_name: strapiDB
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - strapi-data:/var/lib/postgresql/data
+    networks:
+      - frontier-network
+
+  strapi:
+    container_name: strapi
+    build: 
+      context: ./strapi
+      dockerfile: Dockerfile.prod
+    restart: unless-stopped
+    env_file: ./strapi/.env
+    environment:
+      NODE_ENV: production
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: strapiDB
+      DATABASE_PORT: 5432
+      DATABASE_NAME: ${DB_NAME}
+      DATABASE_USERNAME: ${DB_USER}
+      DATABASE_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "1337:1337"
+    volumes:
+      - ./strapi/public/uploads:/opt/app/public/uploads
+      - ./strapi/.env:/opt/app/.env
+    depends_on:
+      - strapiDB
+    networks:
+      - frontier-network
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:latest
+    container_name: n8n-frontier
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    env_file:
+      - ./n8n/.env
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./n8n/local-files:/files
+    networks:
+      - frontier-network
+
+
+  frontend:
+    container_name: frontier-frontend
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_STRAPI_URL: https://strapi.frontieradvice.tech
+    ports:
+      - "3000:3000"
+    networks:
+      - frontier-network
+    depends_on:
+      - strapi
+
+  waha-frontier:
+    image: devlikeapro/waha
+    container_name: waha-frontier
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    env_file:
+      - ./waha/.env
+    volumes:
+      - waha_sessions:/app/.sessions
+    networks:
+      - frontier-network
+
+volumes:
+  strapi-data:
+  n8n_data:
+  waha_sessions:
+  
+networks:
+  frontier-network:
+    driver: bridge
