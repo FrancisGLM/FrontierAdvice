@@ -22,7 +22,7 @@ services:
     restart: unless-stopped
     env_file: ./strapi/.env
     environment:
-      NODE_ENV: production
+      NODE_ENV: development
       DATABASE_CLIENT: postgres
       DATABASE_HOST: strapiDB
       DATABASE_PORT: 5432
@@ -31,9 +31,13 @@ services:
       DATABASE_PASSWORD: ${DB_PASSWORD}
     ports:
       - "1337:1337"
+    command: npm run develop
     volumes:
       - ./strapi/public/uploads:/opt/app/public/uploads
       - ./strapi/.env:/opt/app/.env
+      - ./strapi/src:/opt/app/src
+      - ./strapi/config:/opt/app/config
+      - ./strapi/types:/opt/app/types
     depends_on:
       - strapiDB
     networks:
