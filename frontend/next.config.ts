@@ -16,6 +16,14 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ['frontieradvice.tech', 'strapi.frontieradvice.tech'],
   turbopack: {},
   devIndicators: false,
+  async rewrites() {
+    return [
+      {
+        source: '/api/n8n/webhook/:path*',
+        destination: `${process.env.N8N_SERVER_URL || 'https://n8n.frontieradvice.tech'}/webhook/:path*`,
+      },
+    ];
+  },
   async headers() {
     return [
       {

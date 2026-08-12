@@ -63,6 +63,8 @@ services:
     restart: unless-stopped
     environment:
       NEXT_PUBLIC_STRAPI_URL: https://strapi.frontieradvice.tech
+      NEXT_PUBLIC_N8N_WEBHOOK_URL: /api/n8n/webhook
+      N8N_SERVER_URL: http://n8n-frontier:5678
     volumes:
       - ./frontend/src:/app/src
       - ./frontend/public:/app/public
